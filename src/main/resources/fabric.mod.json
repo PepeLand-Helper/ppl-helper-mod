@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "name": "PepeLand Helper",
+  "id": "pplhelper",
+  "version": "${version}",
+  "description": "Проект направленный на помощь игроку в ориентировании на сервере",
+  "authors": [
+    "Kel Cuprum"
+  ],
+  "contact": {
+    "repo": "https://github.com/kel-cu/pplhelper",
+    "homepage": "https://github.com/kel-cu/pplhelper",
+    "issues": "https://github.com/kel-cu/pplhelper/issues",
+    "email": "me@kelcuprum.ru"
+  },
+  "license": "GPL-3.0",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "ru.kelcuprum.pplhelper.PepelandHelper"
+    ],
+    "modmenu": [
+      "ru.kelcuprum.pplhelper.gui.ModMenuIntegration"
+    ]
+  },
+  "mixins": [
+    "pplhelper.mixin.json"
+  ],
+  "accessWidener": "pplhelper.accesswidener",
+  "icon": "assets/pplhelper/icon.png",
+  "depends": {
+    "fabricloader": "*",
+    "fabric": "*",
+    "alinlib": "*",
+    "minecraft": [">=1.21"]
+  },
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.modrinth": "https://modrinth.com/mod/pplhelper",
+        "modmenu.donate": "https://kelcu.ru/don",
+        "modmenu.discord": "https://kelcu.ru/ds"
+      }
+    }
+  }
+}

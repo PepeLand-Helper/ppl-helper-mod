@@ -1,0 +1,56 @@
+{
+  "pplhelper": "PepeLand Helper",
+  "pplhelper.error": "Произошла ошибка :(",
+  "pplhelper.configs": "Конфиги",
+
+  "pplhelper.key.open.projects": "Открыть проекты",
+  "pplhelper.key.open.news": "Открыть новости",
+  "pplhelper.key.open.config": "Открыть настройки",
+  "pplhelper.key.unfollow_project": "Открепить проект",
+
+  "pplhelper.configs.enable_toast": "Включить уведомления",
+  "pplhelper.configs.api": "PepeLand Helper API",
+  "pplhelper.configs.api_url": "Адрес API",
+  "pplhelper.configs.pack_updates.notice": "Включить оповещения о новой версии пака",
+  "pplhelper.configs.pack_updates.auto_update": "Автообновление",
+  "pplhelper.configs.pack_updates.only_emote": "Только эмоуты",
+
+  "pplhelper.pack": "Ресурс пак",
+  "pplhelper.pack.not_installed": "У вас не установлен официальный пак!",
+  "pplhelper.pack.download": "Скачать?",
+  "pplhelper.pack.download_update": "Установить обновление?",
+  "pplhelper.pack.installed": "Установленная версия пака:",
+
+  "pplhelper.pack.download_screen": "Идет загрузка пака",
+  "pplhelper.pack.download_screen.wait": "Пожалуйста подождите",
+  "pplhelper.pack.downloaded": "Ресурс пак загружен!",
+  "pplhelper.pack.not_selected": "Поставить установленный пак",
+  "pplhelper.pack.file_broken": "Не удалось получить пак (файл повреждён)",
+  "pplhelper.pack.update.avalible": "Доступно обновление пака!",
+  "pplhelper.pack.update.avalible.details": "Новая версия: %1$s",
+  "pplhelper.pack.update.avalible.description": "У вас старая версия v%1$s!\nВы можете обновиться на v%2$s или же отказаться от обновления и жить в кайф",
+
+  "pplhelper.pack.update.avalible.accept": "Установить",
+  "pplhelper.pack.update.avalible.later": "Потом установлю...",
+  "pplhelper.pack.update.avalible.auto": "Устанавливать автомат.",
+  "pplhelper.pack.update.avalible.unfollow": "Не отслеживать",
+
+  "pplhelper.news": "Новости",
+  "pplhelper.projects": "Проекты",
+
+  "pplhelper.project": "Проект",
+  "pplhelper.project.coordinates": "Координаты:",
+  "pplhelper.project.coordinates.overworld": "Верх. мир",
+  "pplhelper.project.coordinates.nether": "Ад",
+  "pplhelper.project.coordinates.end": "Энд",
+  "pplhelper.project.abi": "Показать в ABI",
+  "pplhelper.project.abi.unfollow": "Убрать из ABI",
+  "pplhelper.project.web": "Страница в браузере",
+
+  "pplhelper.commands": "Команды",
+  "pplhelper.commands.description": "Список команд. Чтобы скопировать команду, нажмите на кнопку",
+  "pplhelper.commands.notice.description": "Команда скопирована!",
+  "pplhelper.mods": "Моды",
+  "pplhelper.mods.installed": "(Установлено)",
+  "pplhelper.mods.description": "Список модов, которые могут улучшить игру на сервере"
+}

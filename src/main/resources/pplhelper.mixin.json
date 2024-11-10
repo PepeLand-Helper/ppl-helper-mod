@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "ru.kelcuprum.pplhelper.mixin",
+  "plugin": "ru.kelcuprum.pplhelper.mixin.PPLHelperMixinPlugin",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "ABIMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
