@@ -27,7 +27,6 @@ import ru.kelcuprum.pplhelper.gui.configs.ConfigScreen;
 import ru.kelcuprum.pplhelper.gui.message.DownloadScreen;
 import ru.kelcuprum.pplhelper.gui.message.NewUpdateScreen;
 import ru.kelcuprum.pplhelper.gui.screens.ProjectsScreen;
-import ru.kelcuprum.pplhelper.gui.screens.project.ProjectScreen;
 
 public class PepelandHelper implements ClientModInitializer {
     public static final Logger LOG = LogManager.getLogger("PPL Helper");

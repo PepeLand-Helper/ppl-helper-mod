@@ -1,8 +1,5 @@
 package ru.kelcuprum.pplhelper.gui.screens;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import ru.kelcuprum.alinlib.AlinLib;
@@ -12,9 +9,7 @@ import ru.kelcuprum.alinlib.gui.components.text.TextBox;
 import ru.kelcuprum.alinlib.gui.screens.ConfigScreenBuilder;
 import ru.kelcuprum.pplhelper.PepelandHelper;
 import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
-import ru.kelcuprum.pplhelper.api.components.Mod;
 import ru.kelcuprum.pplhelper.api.components.Project;
-import ru.kelcuprum.pplhelper.gui.components.ModButton;
 import ru.kelcuprum.pplhelper.gui.components.ProjectButton;
 import ru.kelcuprum.pplhelper.gui.configs.ConfigScreen;
 import ru.kelcuprum.pplhelper.gui.configs.UpdaterScreen;

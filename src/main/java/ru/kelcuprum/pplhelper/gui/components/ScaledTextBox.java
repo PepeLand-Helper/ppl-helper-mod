@@ -1,15 +1,10 @@
 package ru.kelcuprum.pplhelper.gui.components;
 
-import net.minecraft.Util;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
 import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.gui.GuiUtils;
 import ru.kelcuprum.alinlib.gui.components.text.TextBox;
-
-import java.util.Objects;
 
 import static ru.kelcuprum.alinlib.gui.GuiUtils.DEFAULT_HEIGHT;
 import static ru.kelcuprum.alinlib.gui.GuiUtils.DEFAULT_WIDTH;

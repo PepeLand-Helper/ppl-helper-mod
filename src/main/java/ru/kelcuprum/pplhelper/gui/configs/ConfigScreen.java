@@ -10,7 +10,6 @@ import ru.kelcuprum.alinlib.gui.components.text.CategoryBox;
 import ru.kelcuprum.alinlib.gui.components.text.TextBox;
 import ru.kelcuprum.alinlib.gui.screens.ConfigScreenBuilder;
 import ru.kelcuprum.pplhelper.PepelandHelper;
-import ru.kelcuprum.pplhelper.gui.components.ScaledTextBox;
 import ru.kelcuprum.pplhelper.gui.message.ErrorScreen;
 import ru.kelcuprum.pplhelper.gui.screens.ModsScreen;
 import ru.kelcuprum.pplhelper.gui.screens.CommandsScreen;

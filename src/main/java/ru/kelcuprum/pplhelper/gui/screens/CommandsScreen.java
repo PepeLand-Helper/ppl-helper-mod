@@ -15,7 +15,6 @@ import ru.kelcuprum.alinlib.gui.screens.ConfigScreenBuilder;
 import ru.kelcuprum.alinlib.gui.toast.ToastBuilder;
 import ru.kelcuprum.pplhelper.PepelandHelper;
 import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
-import ru.kelcuprum.pplhelper.gui.components.ScaledTextBox;
 import ru.kelcuprum.pplhelper.gui.configs.ConfigScreen;
 import ru.kelcuprum.pplhelper.gui.configs.UpdaterScreen;
 import ru.kelcuprum.pplhelper.gui.message.ErrorScreen;
