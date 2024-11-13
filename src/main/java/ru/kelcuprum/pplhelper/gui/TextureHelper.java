@@ -89,7 +89,6 @@ public class TextureHelper {
                 }
             } catch (Exception e) {
                 PepelandHelper.log("Error loading image from URL: " + url + " - " + e.getMessage());
-                e.printStackTrace();
                 resourceLocationMap.put(id, PACK_INFO);
                 return;
             }
