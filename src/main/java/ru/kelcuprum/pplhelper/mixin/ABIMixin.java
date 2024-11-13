@@ -1,8 +1,8 @@
 package ru.kelcuprum.pplhelper.mixin;
 
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -22,14 +22,7 @@ public class ABIMixin {
     private static void getMessage(CallbackInfoReturnable<String> cir){
         if(PepelandHelper.selectedProject == null) return;
         String huy = "\\n";
-        String coordinates = "";
-        if(World.getCodeName().equals("minecraft:overworld") && PepelandHelper.selectedProject.coordinates$overworld != null && !PepelandHelper.selectedProject.coordinates$overworld.isEmpty())
-            coordinates = PepelandHelper.selectedProject.coordinates$overworld;
-        else if(World.getCodeName().equals("minecraft:the_nether") && PepelandHelper.selectedProject.coordinates$nether != null && !PepelandHelper.selectedProject.coordinates$nether.isEmpty())
-            coordinates = PepelandHelper.selectedProject.coordinates$nether;
-        else if(World.getCodeName().equals("minecraft:the_end") && PepelandHelper.selectedProject.coordinates$end != null && !PepelandHelper.selectedProject.coordinates$end.isEmpty())
-            coordinates = PepelandHelper.selectedProject.coordinates$end;
-        String parsedCoordinates = coordinates.replaceAll("[^0-9 ]", "");
+        String parsedCoordinates = getString();
         huy += String.format("&6%s:&r %s", PepelandHelper.selectedProject.world, parsedCoordinates);
         LocalPlayer p = AlinLib.MINECRAFT.player;
         if(p != null) {
@@ -39,6 +32,19 @@ public class ABIMixin {
         }
         cir.setReturnValue(cir.getReturnValue()+Localization.fixFormatCodes(huy));
     }
+
+    @Unique
+    private static @NotNull String getString() {
+        String coordinates = "";
+        if(World.getCodeName().equals("minecraft:overworld") && PepelandHelper.selectedProject.coordinates$overworld != null && !PepelandHelper.selectedProject.coordinates$overworld.isEmpty())
+            coordinates = PepelandHelper.selectedProject.coordinates$overworld;
+        else if(World.getCodeName().equals("minecraft:the_nether") && PepelandHelper.selectedProject.coordinates$nether != null && !PepelandHelper.selectedProject.coordinates$nether.isEmpty())
+            coordinates = PepelandHelper.selectedProject.coordinates$nether;
+        else if(World.getCodeName().equals("minecraft:the_end") && PepelandHelper.selectedProject.coordinates$end != null && !PepelandHelper.selectedProject.coordinates$end.isEmpty())
+            coordinates = PepelandHelper.selectedProject.coordinates$end;
+        return coordinates.replaceAll("[^0-9 ]", "");
+    }
+
     @Unique
     private static float dist(int i, int j, int k, int l) {
         int m = k - i;
