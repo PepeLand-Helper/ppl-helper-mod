@@ -40,7 +40,7 @@
   "pplhelper.projects.description": "Здесь вы встретите проекты, которые могут быть вам по душе",
 
   "pplhelper.project": "Проект",
-  "pplhelper.project.coordinates": "Координаты:",
+  "pplhelper.project.coordinates": "Координаты %s:",
   "pplhelper.project.coordinates.overworld": "Верх. мир",
   "pplhelper.project.coordinates.nether": "Ад",
   "pplhelper.project.coordinates.end": "Энд",

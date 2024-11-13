@@ -54,11 +54,13 @@ public class ProjectScreen extends Screen {
         addRenderableWidget(new TextBox(x + iconSize, y + 18, size - iconSize, 18, Component.literal(project.creators), false));
         y += 41;
         if(project.description != null && !project.description.isEmpty()) {
-            MessageBox msg = new Blockquote(x, y, size, 20, Component.literal(project.description), false);
+            String desc = project.description;
+            if(desc.length() > 93) desc = desc.substring(0, 92)+"...";
+            MessageBox msg = new Blockquote(x, y, size, 20, Component.literal(desc), false);
             addRenderableWidget(msg);
             y += (5 + msg.getHeight());
         }
-        MutableComponent coord = Component.empty().append(Component.translatable("pplhelper.project.coordinates"));
+        MutableComponent coord = Component.empty().append(Component.translatable("pplhelper.project.coordinates", project.world));
         if(project.coordinates$overworld != null && !project.coordinates$overworld.isEmpty())
             coord.append("\n").append(Component.translatable("pplhelper.project.coordinates.overworld")).append(": ").append(project.coordinates$overworld);
         if(project.coordinates$nether != null && !project.coordinates$nether.isEmpty())
@@ -88,12 +90,12 @@ public class ProjectScreen extends Screen {
         widgets = new ArrayList<>();
         int x = 220;
         this.scroller = addRenderableWidget(new ConfigureScrolWidget(this.width - 8, 0, 4, this.height, Component.empty(), scroller -> {
-            scroller.innerHeight = 15;
+            scroller.innerHeight = widgets.getFirst() instanceof ScaledTextBox ? 15 : 5;
             for(AbstractWidget widget : widgets){
                 if(widget.visible){
                     widget.setWidth(width-225);
                     widget.setPosition(x, ((int) (scroller.innerHeight - scroller.scrollAmount())));
-                    scroller.innerHeight += (widget.getHeight()+5);
+                    scroller.innerHeight += (widget.getHeight()+3);
                 } else widget.setY(-widget.getHeight());
             }
             scroller.innerHeight-=8;
@@ -167,7 +169,7 @@ public class ProjectScreen extends Screen {
                 int j = 0;
                 for(int i = 0; i<string.length() && string.split("")[i].equals("#"); i++) j = i;
                 string = parse(string, true);
-                widgets.add(new ScaledTextBox(225, -40, width-230, AlinLib.MINECRAFT.font.lineHeight+2, Component.literal(string.substring(j+(string.contains("# ") ? 1 : 0))), false, 1.5F-((float) j /6)));
+                widgets.add(new ScaledTextBox(225, -40, width-230, AlinLib.MINECRAFT.font.lineHeight+2, Component.literal(string.substring(j+(string.contains("# ") ? 2 : 0))), false, 1.5F-((float) j /6)));
             } else if(string.startsWith(">")) {
                 if(lastIsPlain){
                     lastIsPlain = false;
