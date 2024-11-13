@@ -68,8 +68,8 @@ public class TextureHelper {
                 BufferedImage bufferedImage = isFileExists ? ImageIO.read(getTextureFile(id)) : ImageIO.read(new URL(url));
                 int widthScale = bufferedImage.getWidth() / width;
                 int heightScale = bufferedImage.getHeight() / height;
-                int widthScaled = bufferedImage.getWidth() / widthScale;
-                int heightScaled = bufferedImage.getHeight() / heightScale;
+                int widthScaled = widthScale > 0 ? bufferedImage.getWidth() / widthScale : 1;
+                int heightScaled = heightScale > 0 ? bufferedImage.getHeight() / heightScale : 1;
                 if (widthScaled > width) {
                     int x = (bufferedImage.getWidth() - width*widthScale) / 2;
                     bufferedImage = bufferedImage.getSubimage(x, 0, width*widthScale, bufferedImage.getHeight());
@@ -89,6 +89,7 @@ public class TextureHelper {
                 }
             } catch (Exception e) {
                 PepelandHelper.log("Error loading image from URL: " + url + " - " + e.getMessage());
+                e.printStackTrace();
                 resourceLocationMap.put(id, PACK_INFO);
                 return;
             }
