@@ -17,12 +17,14 @@ import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.api.KeyMappingHelper;
 import ru.kelcuprum.alinlib.api.events.client.ClientLifecycleEvents;
 import ru.kelcuprum.alinlib.api.events.client.ClientTickEvents;
+import ru.kelcuprum.alinlib.api.events.client.TextureManagerEvent;
 import ru.kelcuprum.alinlib.config.Config;
 import ru.kelcuprum.alinlib.config.Localization;
 import ru.kelcuprum.alinlib.gui.GuiUtils;
 import ru.kelcuprum.alinlib.gui.screens.ConfirmScreen;
 import ru.kelcuprum.pplhelper.api.PepeLandAPI;
 import ru.kelcuprum.pplhelper.api.components.Project;
+import ru.kelcuprum.pplhelper.gui.TextureHelper;
 import ru.kelcuprum.pplhelper.gui.configs.ConfigScreen;
 import ru.kelcuprum.pplhelper.gui.message.DownloadScreen;
 import ru.kelcuprum.pplhelper.gui.message.NewUpdateScreen;
@@ -83,6 +85,8 @@ public class PepelandHelper implements ClientModInitializer {
             if(key3.consumeClick()) AlinLib.MINECRAFT.setScreen(new ConfigScreen().build(AlinLib.MINECRAFT.screen));
             if(key4.consumeClick()) selectedProject = null;
         });
+        ClientLifecycleEvents.CLIENT_STOPPING.register((s) -> TextureHelper.saveMap());
+        TextureManagerEvent.INIT.register(TextureHelper::loadTextures);
     }
 
     public static String getInstalledPack(){

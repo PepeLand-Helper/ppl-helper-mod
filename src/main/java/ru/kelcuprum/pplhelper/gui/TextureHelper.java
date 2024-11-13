@@ -107,12 +107,12 @@ public class TextureHelper {
 
 
     public static File getTextureFile(String url) {
-        return new File("./pplhelper/textures/" + url + ".png");
+        return new File("./config/pplhelper/textures/" + url + ".png");
     }
 
     public static void saveMap() {
         try {
-            Path path = new File("./pplhelper/textures/map.json").toPath();
+            Path path = new File("./config/pplhelper/textures/map.json").toPath();
             Files.createDirectories(path.getParent());
             Files.writeString(path, map.toString());
         } catch (IOException e) {
@@ -136,7 +136,7 @@ public class TextureHelper {
     }
 
     public static void loadMap() {
-        File mapFile = new File("./pplhelper/textures/map.json");
+        File mapFile = new File("./config/pplhelper/textures/map.json");
         if (mapFile.exists() && mapFile.isFile()) {
             try {
                 map = GsonHelper.parseArray(Files.readString(mapFile.toPath()));
