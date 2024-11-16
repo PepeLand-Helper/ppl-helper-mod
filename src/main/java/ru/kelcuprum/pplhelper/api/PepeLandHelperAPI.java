@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import ru.kelcuprum.alinlib.WebAPI;
 import ru.kelcuprum.pplhelper.PepelandHelper;
+import ru.kelcuprum.pplhelper.api.components.News;
 import ru.kelcuprum.pplhelper.api.components.Project;
 
 import java.util.ArrayList;
@@ -46,6 +47,24 @@ public class PepeLandHelperAPI {
     public static String getProjectContent(int id){
         try {
             return WebAPI.getString(getURI(String.format("projects/%s/content", id), false));
+        } catch (Exception ex){
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public static List<News> getNews(){
+        try {
+            JsonObject projects = WebAPI.getJsonObject(getURI("news"));
+            List<News> list = new ArrayList<>();
+            for(JsonElement element : projects.getAsJsonArray("items")) list.add(new News(element.getAsJsonObject()));
+            return list;
+        } catch (Exception ex){
+            throw new RuntimeException(ex);
+        }
+    }
+    public static String getNewsContent(int id){
+        try {
+            return WebAPI.getString(getURI(String.format("news/%s/content", id), false));
         } catch (Exception ex){
             throw new RuntimeException(ex);
         }

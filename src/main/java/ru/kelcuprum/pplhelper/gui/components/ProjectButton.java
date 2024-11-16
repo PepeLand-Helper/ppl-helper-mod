@@ -28,7 +28,7 @@ public class ProjectButton extends Button {
         if (getY() < guiGraphics.guiHeight() && !(getY() <= -getHeight())) {
             int x = 5;
             if(project.icon != null && !project.icon.isEmpty()) {
-                ResourceLocation icon = TextureHelper.getTexture(project.icon, String.format("project_%s", project.id));
+                ResourceLocation icon = TextureHelper.getTexture(project.icon, String.format("project_%s", project.id), 128, 128);
                 guiGraphics.blit(icon, getX() + 2, getY() + 2, 0.0F, 0.0F, 36, 36, 36, 36);
                 x+=40;
             }

@@ -29,7 +29,7 @@ public class ModButton extends Button {
     @Override
     public void renderText(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (getY() < guiGraphics.guiHeight() && !(getY() <= -getHeight())) {
-            ResourceLocation icon = TextureHelper.getTexture(track.icon, track.modid);
+            ResourceLocation icon = TextureHelper.getTexture(track.icon, track.modid, 128, 128);
             guiGraphics.blit(icon, getX() + 2, getY() + 2, 0.0F, 0.0F, 36, 36, 36, 36);
             renderString(guiGraphics, getMessage().getString(), getX() + 45, getY() + 8);
             renderString(guiGraphics, track.description, getX() + 45, getY() + height - 8 - AlinLib.MINECRAFT.font.lineHeight);

@@ -39,14 +39,18 @@
   "pplhelper.projects": "Проекты",
   "pplhelper.projects.description": "Здесь вы встретите проекты, которые могут быть вам по душе",
 
-  "pplhelper.project": "Проект",
-  "pplhelper.project.coordinates": "Координаты %s:",
+  "pplhelper.project": "Проект > %s",
+  "pplhelper.project.coordinates": "§lКоординаты %s§r:",
   "pplhelper.project.coordinates.overworld": "Верх. мир",
   "pplhelper.project.coordinates.nether": "Ад",
   "pplhelper.project.coordinates.end": "Энд",
+  "pplhelper.project.creators": "§lСтроители:§r %s",
   "pplhelper.project.abi": "Показать в ABI",
   "pplhelper.project.abi.unfollow": "Убрать из ABI",
   "pplhelper.project.web": "Страница в браузере",
+
+
+  "pplhelper.news.page": "Новость > %s",
 
   "pplhelper.commands": "Команды",
   "pplhelper.commands.description": "Список команд. Чтобы скопировать команду, нажмите на кнопку",

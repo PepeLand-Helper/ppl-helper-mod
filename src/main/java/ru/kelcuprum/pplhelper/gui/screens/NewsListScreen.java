@@ -1,25 +1,28 @@
-package ru.kelcuprum.pplhelper.gui.configs;
+package ru.kelcuprum.pplhelper.gui.screens;
 
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import ru.kelcuprum.alinlib.AlinLib;
-import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBooleanBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
-import ru.kelcuprum.alinlib.gui.components.builder.editbox.EditBoxBuilder;
-import ru.kelcuprum.alinlib.gui.components.text.CategoryBox;
+import ru.kelcuprum.alinlib.gui.components.text.MessageBox;
 import ru.kelcuprum.alinlib.gui.components.text.TextBox;
 import ru.kelcuprum.alinlib.gui.screens.ConfigScreenBuilder;
 import ru.kelcuprum.pplhelper.PepelandHelper;
+import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
+import ru.kelcuprum.pplhelper.api.components.News;
+import ru.kelcuprum.pplhelper.gui.components.NewsButton;
+import ru.kelcuprum.pplhelper.gui.configs.ConfigScreen;
+import ru.kelcuprum.pplhelper.gui.configs.UpdaterScreen;
 import ru.kelcuprum.pplhelper.gui.message.ErrorScreen;
-import ru.kelcuprum.pplhelper.gui.screens.ModsScreen;
-import ru.kelcuprum.pplhelper.gui.screens.CommandsScreen;
-import ru.kelcuprum.pplhelper.gui.screens.NewsListScreen;
-import ru.kelcuprum.pplhelper.gui.screens.ProjectsScreen;
 
+import java.util.List;
+
+import static ru.kelcuprum.alinlib.gui.GuiUtils.DEFAULT_WIDTH;
 import static ru.kelcuprum.alinlib.gui.Icons.*;
-import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.*;
+import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.MODS;
+import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.PROJECTS;
 
-public class ConfigScreen {
+public class NewsListScreen {
     public Screen parent;
     public Screen build(Screen parent){
         this.parent = parent;
@@ -32,12 +35,17 @@ public class ConfigScreen {
                 .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.pack")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new UpdaterScreen().build(parent))).setIcon(PepelandHelper.Icons.PACK_INFO))
                 .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.configs")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ConfigScreen().build(parent))).setIcon(OPTIONS))
 
-                .addWidget(new TextBox(Component.translatable("pplhelper.configs")))
-                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.enable_toast"), true).setConfig(PepelandHelper.config,"ENABLE.TOAST"))
-                .addWidget(new CategoryBox(Component.translatable("pplhelper.configs.api"))
-                        .addValue(new EditBoxBuilder(Component.translatable("pplhelper.configs.api_url")).setValue("https://api-h.pplmods.ru/").setConfig(PepelandHelper.config, "API_URL"))
-                );
-
+                .addWidget(new TextBox(Component.translatable("pplhelper.projects")))
+                .addWidget(new MessageBox(Component.translatable("pplhelper.projects.description")));
+        try {
+            List<News> projects = PepeLandHelperAPI.getNews();
+            for(News project : projects){
+                builder.addWidget(new NewsButton(0, -40, DEFAULT_WIDTH(), project, parent));
+            }
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return new ErrorScreen(ex, parent);
+        }
         return builder.build();
     }
 }

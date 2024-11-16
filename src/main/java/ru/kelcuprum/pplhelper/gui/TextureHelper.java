@@ -18,9 +18,7 @@ import ru.kelcuprum.pplhelper.PepelandHelper;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -35,7 +33,7 @@ public class TextureHelper {
     public static JsonArray map = new JsonArray();
     // Internet
     public static ResourceLocation getTexture(String url, String id) {
-        return getTexture(url, id, 128, 128);
+        return getTexture(url, id, -1, -1);
     }
     public static ResourceLocation getTexture(String url, String id, int width, int height) {
         id = formatUrls(id.toLowerCase());
@@ -68,31 +66,31 @@ public class TextureHelper {
                 BufferedImage bufferedImage = isFileExists ? ImageIO.read(getTextureFile(id)) : ImageIO.read(new URL(url));
                 int widthScale = bufferedImage.getWidth() / width;
                 int heightScale = bufferedImage.getHeight() / height;
-                int widthScaled = widthScale > 0 ? bufferedImage.getWidth() / widthScale : 1;
-                int heightScaled = heightScale > 0 ? bufferedImage.getHeight() / heightScale : 1;
-                if (widthScaled > width) {
-                    int x = (bufferedImage.getWidth() - width*widthScale) / 2;
-                    bufferedImage = bufferedImage.getSubimage(x, 0, width*widthScale, bufferedImage.getHeight());
+                int widthScaled = widthScale > 0 ? bufferedImage.getWidth() / widthScale : bufferedImage.getWidth();
+                int heightScaled = heightScale > 0 ? bufferedImage.getHeight() / heightScale : bufferedImage.getHeight();
+                if (widthScaled > width && width != -1) {
+                    int x = (bufferedImage.getWidth() - (width*widthScale)) / 2;
+                    bufferedImage = bufferedImage.getSubimage(x, 0, bufferedImage.getWidth()-(x*2), bufferedImage.getHeight());
                 }
-                if (heightScaled > height) {
-                    int x = (bufferedImage.getHeight() - height*heightScale) / 2;
-                    bufferedImage = bufferedImage.getSubimage(0, x, bufferedImage.getWidth(), height*heightScale);
+                if (heightScaled > height && height != -1) {
+                    int y = (bufferedImage.getHeight() - (height*heightScale)) / 2;
+                    bufferedImage = bufferedImage.getSubimage(0, y, bufferedImage.getWidth(), bufferedImage.getHeight()-(y*2));
                 }
-                BufferedImage scaleImage = toBufferedImage(bufferedImage.getScaledInstance(width, height, 2));
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                ImageIO.write(scaleImage, "png", byteArrayOutputStream);
-                byte[] bytesOfImage = byteArrayOutputStream.toByteArray();
-                image = NativeImage.read(bytesOfImage);
+                ImageIO.write(bufferedImage, "png", byteArrayOutputStream);
+                InputStream is = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+                image = NativeImage.read(is);
                 if (!isFileExists) {
                     Files.createDirectories(textureFile.toPath().getParent());
-                    Files.write(textureFile.toPath(), bytesOfImage);
+                    Files.write(textureFile.toPath(), byteArrayOutputStream.toByteArray());
                 }
+                texture = new DynamicTexture(image);
+                urlsTextures.put(url, texture);
             } catch (Exception e) {
                 PepelandHelper.log("Error loading image from URL: " + url + " - " + e.getMessage());
                 resourceLocationMap.put(id, PACK_INFO);
                 return;
             }
-            texture = new DynamicTexture(image);
         }
         if (textureManager != null) {
             textureManager.register(textureId, texture);
@@ -127,7 +125,7 @@ public class TextureHelper {
             for (JsonElement json : finalMap) {
                 JsonObject data = json.getAsJsonObject();
                 ResourceLocation l = GuiUtils.getResourceLocation("pplhelper", data.get("id").getAsString());
-//                registerTexture(data.get("url").getAsString(), data.get("id").getAsString(), textureManager, l);
+                registerTexture(data.get("url").getAsString(), data.get("id").getAsString(), -1, -1, textureManager, l);
             }
         } catch (Exception e) {
             PepelandHelper.log("MAP ERROR!", Level.ERROR);
