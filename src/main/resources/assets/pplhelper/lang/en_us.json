@@ -47,7 +47,7 @@
   "pplhelper.project.creators": "§lСтроители:§r %s",
   "pplhelper.project.abi": "Показать в ABI",
   "pplhelper.project.abi.unfollow": "Убрать из ABI",
-  "pplhelper.project.web": "Страница в браузере",
+  "pplhelper.project.web": "Открыть страницу сайта",
 
 
   "pplhelper.news.page": "Новость > %s",
