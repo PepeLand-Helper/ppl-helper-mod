@@ -9,14 +9,13 @@ import ru.kelcuprum.alinlib.gui.GuiUtils;
 import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
 import ru.kelcuprum.alinlib.gui.components.buttons.Button;
 import ru.kelcuprum.pplhelper.api.components.News;
-import ru.kelcuprum.pplhelper.gui.screens.NewsListScreen;
 import ru.kelcuprum.pplhelper.gui.screens.project.NewsScreen;
 
 public class NewsButton extends Button {
     protected News news;
 
     public NewsButton(int x, int y, int width, News news, Screen screen) {
-        super(new ButtonBuilder().setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new NewsScreen(new NewsListScreen().build(screen), news))).setTitle(Component.empty()).setStyle(GuiUtils.getSelected()).setSize(width, 40).setPosition(x, y));
+        super(new ButtonBuilder().setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new NewsScreen(screen, news))).setTitle(Component.empty()).setStyle(GuiUtils.getSelected()).setSize(width, 40).setPosition(x, y));
         this.news = news;
         setMessage(Component.literal(news.title));
     }

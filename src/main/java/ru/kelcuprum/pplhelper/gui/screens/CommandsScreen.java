@@ -15,6 +15,7 @@ import ru.kelcuprum.alinlib.gui.screens.ConfigScreenBuilder;
 import ru.kelcuprum.alinlib.gui.toast.ToastBuilder;
 import ru.kelcuprum.pplhelper.PepelandHelper;
 import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
+import ru.kelcuprum.pplhelper.gui.components.Blockquote;
 import ru.kelcuprum.pplhelper.gui.configs.ConfigScreen;
 import ru.kelcuprum.pplhelper.gui.configs.UpdaterScreen;
 import ru.kelcuprum.pplhelper.gui.message.ErrorScreen;
@@ -28,8 +29,8 @@ public class CommandsScreen {
     public Screen build(Screen parent){
         this.parent = parent;
         ConfigScreenBuilder builder = new ConfigScreenBuilder(parent, Component.translatable("pplhelper"))
-                .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.news")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new NewsListScreen().build(parent))).setIcon(WIKI))
-                .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.projects")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ProjectsScreen().build(parent))).setIcon(PROJECTS))
+                .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.news")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new NewsListScreen(parent))).setIcon(WIKI))
+                .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.projects")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ProjectsScreen(parent))).setIcon(PROJECTS))
                 .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.commands")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new CommandsScreen().build(parent))).setIcon(LIST))
                 .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.mods")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ModsScreen().build(parent))).setIcon(MODS))
 
@@ -46,7 +47,7 @@ public class CommandsScreen {
                 if(data.has("description")) cat.addValue(new MessageBox(Component.literal(data.get("description").getAsString()), false));
                 for(JsonElement element1 : data.getAsJsonArray("commands")){
                     JsonObject cmd = element1.getAsJsonObject();
-                    MessageBox box = new MessageBox(Component.literal(Localization.fixFormatCodes("&l/"+cmd.get("cmd").getAsString()+"&r - " + cmd.get("description").getAsString())), false, (s) -> {
+                    Blockquote box = new Blockquote(Component.literal(Localization.fixFormatCodes("&l/"+cmd.get("cmd").getAsString()+"&r - " + cmd.get("description").getAsString())), false, (s) -> {
                                 AlinLib.MINECRAFT.keyboardHandler.setClipboard("/" + cmd.get("cmd").getAsString());
                                 new ToastBuilder().setTitle(Component.translatable("pplhelper"))
                                         .setIcon(PepelandHelper.Icons.WHITE_PEPE)

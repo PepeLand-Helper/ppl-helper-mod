@@ -16,6 +16,7 @@ import ru.kelcuprum.alinlib.gui.components.text.TextBox;
 import ru.kelcuprum.pplhelper.PepelandHelper;
 import ru.kelcuprum.pplhelper.api.components.News;
 import ru.kelcuprum.pplhelper.gui.TextureHelper;
+import ru.kelcuprum.pplhelper.gui.components.BannerWidget;
 import ru.kelcuprum.pplhelper.gui.components.HorizontalRule;
 import ru.kelcuprum.pplhelper.gui.components.ScaledTextBox;
 
@@ -62,19 +63,19 @@ public class NewsScreen extends Screen {
                     if(widget instanceof ImageWidget) widget.setWidth(Math.min(widget.getWidth(), size));
                     else widget.setWidth(size);
                     widget.setPosition(x, (y+(int) (scroller.innerHeight - scroller.scrollAmount())));
-                    scroller.innerHeight += (widget.getHeight()+((widget instanceof ImageWidget) ? 5 : 3));
+                    scroller.innerHeight += (widget.getHeight()+((widget instanceof ImageWidget) ? 5 : (widget instanceof BannerWidget) ? 7 : 3));
                 } else widget.setY(-widget.getHeight());
             }
             scroller.innerHeight-=8;
         }));
         if(news.banner != null && !news.banner.isEmpty()){
-            lastBanner = TextureHelper.getTexture(news.banner, String.format("news_banner_%s", news.id), -1, 600);
-            if(lastBanner != PACK_INFO) widgets.add(new ImageWidget(x, -160, size,(int) (160*scale), lastBanner, 750, 300, true, Component.empty()));
+            lastBanner = TextureHelper.getBanner(news.banner, String.format("news_banner_%s", news.id));
+            if(lastBanner != PACK_INFO) widgets.add(new BannerWidget(x, -160, size,(int) (160*scale), news.banner, String.format("news_banner_%s", news.id), Component.empty()));
         }
         widgets.add(new ScaledTextBox(x, -40, size, 12, Component.literal(news.title), true, 1.5f));
         widgets.add(new MessageBox(x, -40, size, 20, Component.literal(news.description), true));
         widgets.add(new HorizontalRule(x, -4, size));
-        widgets.addAll(parseMarkdown(news.content, x, size, this));
+        widgets.addAll(parseMarkdown(news.content, x, size, String.format("news_%s_",news.id)+"%s", this));
 
         addWidgetsToScroller(widgets);
     }

@@ -30,6 +30,7 @@ public class TextureHelper {
     public static HashMap<String, ResourceLocation> resourceLocationMap = new HashMap<>();
     public static HashMap<String, Boolean> urls = new HashMap<>();
     public static HashMap<String, DynamicTexture> urlsTextures = new HashMap<>();
+    public static HashMap<String, NativeImage> urlsImages = new HashMap<>();
     public static JsonArray map = new JsonArray();
     // Internet
     public static ResourceLocation getTexture(String url, String id) {
@@ -86,6 +87,74 @@ public class TextureHelper {
                 }
                 texture = new DynamicTexture(image);
                 urlsTextures.put(url, texture);
+                urlsImages.put(url, image);
+            } catch (Exception e) {
+                PepelandHelper.log("Error loading image from URL: " + url + " - " + e.getMessage());
+                resourceLocationMap.put(id, PACK_INFO);
+                return;
+            }
+        }
+        if (textureManager != null) {
+            textureManager.register(textureId, texture);
+            resourceLocationMap.put(id, textureId);
+            JsonObject data = new JsonObject();
+            data.addProperty("url", url);
+            data.addProperty("id", id);
+            if (!map.contains(data)) map.add(data);
+        }
+    }
+
+    public static ResourceLocation getBanner(String url, String id) {
+        id = formatUrls(id.toLowerCase());
+        if (resourceLocationMap.containsKey(id)) return resourceLocationMap.get(id);
+        else {
+            if (!urls.getOrDefault(id, false)) {
+                urls.put(id, true);
+                String finalId = id;
+                new Thread(() -> registerBanner(url, finalId, AlinLib.MINECRAFT.getTextureManager(), GuiUtils.getResourceLocation("pplhelper", finalId))).start();
+            }
+            return PACK_INFO;
+        }
+    }
+
+    @Async.Execute
+    public static void registerBanner(String url, String id, TextureManager textureManager, ResourceLocation textureId) {
+        PepelandHelper.log(String.format("REGISTER: %s %s", url, id), Level.DEBUG);
+        DynamicTexture texture;
+        if (urlsTextures.containsKey(url)) {
+            JsonObject data = new JsonObject();
+            data.addProperty("url", url);
+            data.addProperty("id", id);
+            if (!map.contains(data)) map.add(data);
+            texture = urlsTextures.get(url);
+        } else {
+            NativeImage image;
+            File textureFile = getTextureFile(id);
+            boolean isFileExists = textureFile.exists();
+            try {
+                BufferedImage bufferedImage = isFileExists ? ImageIO.read(getTextureFile(id)) : ImageIO.read(new URL(url));
+//                double scale = (double) bufferedImage.getWidth() / 750;
+//                int height = (int) (bufferedImage.getHeight() / scale);
+                double widthScale = (double) bufferedImage.getWidth() / 750;
+                int threeHundredBucks = (int) (300 * widthScale);
+                double scale = (double) bufferedImage.getHeight() / threeHundredBucks;
+                int height = (int) (bufferedImage.getHeight() / scale);
+//                PepelandHelper.log("height: "+height);
+                if (bufferedImage.getHeight() > height && !isFileExists) {
+                    int y = (bufferedImage.getHeight() - height) / 2;
+                    bufferedImage = bufferedImage.getSubimage(0, y, bufferedImage.getWidth(), bufferedImage.getHeight()-(y*2));
+                }
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                ImageIO.write(bufferedImage, "png", byteArrayOutputStream);
+                InputStream is = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+                image = NativeImage.read(is);
+                if (!isFileExists) {
+                    Files.createDirectories(textureFile.toPath().getParent());
+                    Files.write(textureFile.toPath(), byteArrayOutputStream.toByteArray());
+                }
+                texture = new DynamicTexture(image);
+                urlsTextures.put(url, texture);
+                urlsImages.put(url, image);
             } catch (Exception e) {
                 PepelandHelper.log("Error loading image from URL: " + url + " - " + e.getMessage());
                 resourceLocationMap.put(id, PACK_INFO);

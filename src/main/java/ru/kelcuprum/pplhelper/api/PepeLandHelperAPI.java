@@ -3,6 +3,7 @@ package ru.kelcuprum.pplhelper.api;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.minecraft.network.chat.Component;
 import ru.kelcuprum.alinlib.WebAPI;
 import ru.kelcuprum.pplhelper.PepelandHelper;
 import ru.kelcuprum.pplhelper.api.components.News;
@@ -14,9 +15,7 @@ import java.util.List;
 import static ru.kelcuprum.pplhelper.api.PepeLandAPI.uriEncode;
 
 public class PepeLandHelperAPI {
-    public static String API_URL =
-            PepelandHelper.config.getString("API_URL", "https://api-h.pplmods.ru/");
-    //"http://localhost:6955/";
+    public static String API_URL = PepelandHelper.config.getString("API_URL", "https://api-h.pplmods.ru/");
     public static String getURI(String url){
         return getURI(url, true);
     }
@@ -27,16 +26,34 @@ public class PepeLandHelperAPI {
 
     public static JsonArray getRecommendMods(){
         try {
-            JsonArray array = WebAPI.getJsonArray(getURI("mods.json"));
-            return array;
+            return WebAPI.getJsonArray(getURI("mods"));
         } catch (Exception ex){
             throw new RuntimeException(ex);
         }
     }
-
-    public static List<Project> getProjects(){
+    public static JsonArray getCommands(){
         try {
-            JsonObject projects = WebAPI.getJsonObject(getURI("projects"));
+            return WebAPI.getJsonArray(getURI("commands"));
+        } catch (Exception ex){
+            throw new RuntimeException(ex);
+        }
+    }
+    public static String[] getWorlds(){
+        try {
+            JsonArray array = WebAPI.getJsonArray(getURI("worlds"));
+            String[] worlds = new String[array.size()+1];
+            worlds[0] = Component.translatable("pplhelper.project.world.all").getString();
+            for(int i = 1; i<array.size()+1;i++) worlds[i] = array.get(i-1).getAsString();
+            return worlds;
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return new String[0];
+        }
+    }
+
+    public static List<Project> getProjects(String query, String world){
+        try {
+            JsonObject projects = WebAPI.getJsonObject(getURI("projects?query"+uriEncode(query)+"&world="+uriEncode(world.equals(Component.translatable("pplhelper.project.world.all").getString()) ? "" : world), false));
             List<Project> list = new ArrayList<>();
             for(JsonElement element : projects.getAsJsonArray("items")) list.add(new Project(element.getAsJsonObject()));
             return list;
@@ -52,9 +69,9 @@ public class PepeLandHelperAPI {
         }
     }
 
-    public static List<News> getNews(){
+    public static List<News> getNews(String search){
         try {
-            JsonObject projects = WebAPI.getJsonObject(getURI("news"));
+            JsonObject projects = WebAPI.getJsonObject(getURI("news?query="+uriEncode(search), false));
             List<News> list = new ArrayList<>();
             for(JsonElement element : projects.getAsJsonArray("items")) list.add(new News(element.getAsJsonObject()));
             return list;
@@ -65,15 +82,6 @@ public class PepeLandHelperAPI {
     public static String getNewsContent(int id){
         try {
             return WebAPI.getString(getURI(String.format("news/%s/content", id), false));
-        } catch (Exception ex){
-            throw new RuntimeException(ex);
-        }
-    }
-
-    public static JsonArray getCommands(){
-        try {
-            JsonArray array = WebAPI.getJsonArray(getURI("commands.json"));
-            return array;
         } catch (Exception ex){
             throw new RuntimeException(ex);
         }

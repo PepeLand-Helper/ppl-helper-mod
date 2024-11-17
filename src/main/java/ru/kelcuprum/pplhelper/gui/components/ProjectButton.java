@@ -11,14 +11,13 @@ import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
 import ru.kelcuprum.alinlib.gui.components.buttons.Button;
 import ru.kelcuprum.pplhelper.api.components.Project;
 import ru.kelcuprum.pplhelper.gui.TextureHelper;
-import ru.kelcuprum.pplhelper.gui.screens.ProjectsScreen;
 import ru.kelcuprum.pplhelper.gui.screens.project.ProjectScreen;
 
 public class ProjectButton extends Button {
     protected Project project;
 
     public ProjectButton(int x, int y, int width, Project project, Screen screen) {
-        super(new ButtonBuilder().setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ProjectScreen(new ProjectsScreen().build(screen), project))).setTitle(Component.empty()).setStyle(GuiUtils.getSelected()).setSize(width, 40).setPosition(x, y));
+        super(new ButtonBuilder().setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ProjectScreen(screen, project))).setTitle(Component.empty()).setStyle(GuiUtils.getSelected()).setSize(width, 40).setPosition(x, y));
         this.project = project;
         setMessage(Component.literal(project.title));
     }

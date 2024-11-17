@@ -20,6 +20,7 @@ import ru.kelcuprum.alinlib.gui.components.text.TextBox;
 import ru.kelcuprum.pplhelper.PepelandHelper;
 import ru.kelcuprum.pplhelper.api.components.Project;
 import ru.kelcuprum.pplhelper.gui.TextureHelper;
+import ru.kelcuprum.pplhelper.gui.components.BannerWidget;
 import ru.kelcuprum.pplhelper.gui.components.Blockquote;
 import ru.kelcuprum.pplhelper.gui.components.HorizontalRule;
 import ru.kelcuprum.pplhelper.gui.components.ScaledTextBox;
@@ -109,14 +110,14 @@ public class ProjectScreen extends Screen {
                     if(widget instanceof ImageWidget) widget.setWidth(Math.min(widget.getWidth(), size));
                     else widget.setWidth(size);
                     widget.setPosition(x, (y+(int) (scroller.innerHeight - scroller.scrollAmount())));
-                    scroller.innerHeight += (widget.getHeight()+((widget instanceof ImageWidget) ? 5 : 3));
+                    scroller.innerHeight += (widget.getHeight()+((widget instanceof ImageWidget) ? 5 : (widget instanceof BannerWidget) ? 7 : 3));
                 } else widget.setY(-widget.getHeight());
             }
             scroller.innerHeight-=8;
         }));
         if(project.banner != null && !project.banner.isEmpty()){
-            lastBanner = TextureHelper.getTexture(project.banner, String.format("project_banner_%s", project.id), -1, 600);
-            if(lastBanner != PACK_INFO) widgets.add(new ImageWidget(x, -160, size,(int) (160*scale), lastBanner, 750, 300, true, Component.empty()));
+            lastBanner = TextureHelper.getBanner(project.banner, String.format("project_banner_%s", project.id));
+            if(lastBanner != PACK_INFO) widgets.add(new BannerWidget(x, -160, size,(int) (160*scale), project.banner, String.format("project_banner_%s", project.id), Component.empty()));
         }
         widgets.add(new ScaledTextBox(x, -40, size, 12, Component.literal(project.title), true, 1.5f));
         widgets.add(new MessageBox(x, -40, size, 20, Component.literal(project.description), true));
@@ -137,7 +138,7 @@ public class ProjectScreen extends Screen {
             }).setPosition(x, y).setWidth(size).build());
         }
         widgets.add(new HorizontalRule(x, -4, size));
-        widgets.addAll(parseMarkdown(project.content, x, size, this));
+        widgets.addAll(parseMarkdown(project.content, x, size, String.format("project_%s_",project.id)+"%s", this));
 
         addWidgetsToScroller(widgets);
     }
@@ -222,7 +223,7 @@ public class ProjectScreen extends Screen {
         super.tick();
     }
 
-    public static List<AbstractWidget> parseMarkdown(String content, int x, int width, Screen screen){
+    public static List<AbstractWidget> parseMarkdown(String content, int x, int width, String idForImage, Screen screen){
         List<AbstractWidget> widgets = new ArrayList<>();
         String[] strings = parse(content, false).split("\n");
         boolean lastIsPlain = false;
@@ -253,7 +254,7 @@ public class ProjectScreen extends Screen {
                         iHeight = i.getHeight();
                     }
                 }
-                ResourceLocation image = TextureHelper.getTexture(unparse(string.replaceAll("!\\[(.+?)]\\((.+?)\\)", "$2")), String.format("image_%s", unparse(string.replaceAll("!\\[(.+?)]\\((.+?)\\)", "$1"))));
+                ResourceLocation image = TextureHelper.getTexture(unparse(string.replaceAll("!\\[(.+?)]\\((.+?)\\)", "$2")), String.format(idForImage, unparse(string.replaceAll("!\\[(.+?)]\\((.+?)\\)", "$1"))));
                 if(image == PACK_INFO) widgets.add(new ButtonBuilder(Component.literal(string.replaceAll("!\\[(.+?)]\\((.+?)\\)", "$1")),
                         Component.literal(unparse(string.replaceAll("!\\[(.+?)]\\((.+?)\\)", "$2"))),
                         (s) -> PepelandHelper.confirmLinkNow(screen, unparse(finalString.replaceAll("!\\[(.+?)]\\((.+?)\\)", "$2")) )).setPosition(x, -40).setWidth(width-230).build());

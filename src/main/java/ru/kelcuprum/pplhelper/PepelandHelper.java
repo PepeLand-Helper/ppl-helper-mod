@@ -28,6 +28,7 @@ import ru.kelcuprum.pplhelper.gui.TextureHelper;
 import ru.kelcuprum.pplhelper.gui.configs.ConfigScreen;
 import ru.kelcuprum.pplhelper.gui.message.DownloadScreen;
 import ru.kelcuprum.pplhelper.gui.message.NewUpdateScreen;
+import ru.kelcuprum.pplhelper.gui.screens.NewsListScreen;
 import ru.kelcuprum.pplhelper.gui.screens.ProjectsScreen;
 
 public class PepelandHelper implements ClientModInitializer {
@@ -81,7 +82,8 @@ public class PepelandHelper implements ClientModInitializer {
                 "pplhelper"
         ));
         ClientTickEvents.START_CLIENT_TICK.register((s) -> {
-            if(key1.consumeClick()) AlinLib.MINECRAFT.setScreen(new ProjectsScreen().build(AlinLib.MINECRAFT.screen));
+            if(key1.consumeClick()) AlinLib.MINECRAFT.setScreen(new ProjectsScreen(AlinLib.MINECRAFT.screen));
+            if(key2.consumeClick()) AlinLib.MINECRAFT.setScreen(new NewsListScreen(AlinLib.MINECRAFT.screen));
             if(key3.consumeClick()) AlinLib.MINECRAFT.setScreen(new ConfigScreen().build(AlinLib.MINECRAFT.screen));
             if(key4.consumeClick()) selectedProject = null;
         });
@@ -121,5 +123,4 @@ public class PepelandHelper implements ClientModInitializer {
         Minecraft minecraft = Minecraft.getInstance();
         minecraft.setScreen(new ConfirmScreen(screen, Icons.WHITE_PEPE, Component.translatable("pplhelper"), Component.translatable("chat.link.confirmTrusted"), link));
     }
-
 }

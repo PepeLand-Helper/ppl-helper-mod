@@ -11,13 +11,13 @@
     "AndcoolSystems [PPL Pack Updater]"
   ],
   "contact": {
-    "repo": "https://github.com/kel-cu/pplhelper",
-    "homepage": "https://github.com/kel-cu/pplhelper",
-    "issues": "https://github.com/kel-cu/pplhelper/issues",
+    "repo": "https://github.com/kel-cu/ppl-helper",
+    "homepage": "https://h.pplmods.ru",
+    "issues": "https://github.com/kel-cu/ppl-helper/issues",
     "email": "me@kelcuprum.ru"
   },
   "license": "GPL-3.0",
-  "environment": "*",
+  "environment": "client",
   "entrypoints": {
     "client": [
       "ru.kelcuprum.pplhelper.PepelandHelper"
@@ -41,8 +41,7 @@
     "modmenu": {
       "links": {
         "modmenu.modrinth": "https://modrinth.com/mod/pplhelper",
-        "modmenu.donate": "https://kelcu.ru/don",
-        "modmenu.discord": "https://kelcu.ru/ds"
+        "modmenu.donate": "https://kelcu.ru/don"
       }
     }
   }

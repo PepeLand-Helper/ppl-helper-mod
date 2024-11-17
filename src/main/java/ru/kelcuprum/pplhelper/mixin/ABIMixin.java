@@ -23,6 +23,7 @@ public class ABIMixin {
         if(PepelandHelper.selectedProject == null) return;
         String huy = "\\n";
         String parsedCoordinates = getString();
+        if(parsedCoordinates.isEmpty()) return;
         huy += String.format("&6%s:&r %s", PepelandHelper.selectedProject.world, parsedCoordinates);
         LocalPlayer p = AlinLib.MINECRAFT.player;
         if(p != null) {

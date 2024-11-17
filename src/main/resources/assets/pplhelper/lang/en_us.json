@@ -36,10 +36,15 @@
   "pplhelper.pack.update.avalible.unfollow": "Не отслеживать",
 
   "pplhelper.news": "Новости",
+  "pplhelper.news.search": "Поиск",
+  "pplhelper.news.find": "Найти",
+  "pplhelper.news.not_found": "По вашему запросу был найден только этот чувак",
   "pplhelper.projects": "Проекты",
   "pplhelper.projects.description": "Здесь вы встретите проекты, которые могут быть вам по душе",
 
-  "pplhelper.project": "Проект > %s",
+  "pplhelper.project": "Проекты > %s",
+  "pplhelper.project.world": "Мир",
+  "pplhelper.project.world.all": "Все",
   "pplhelper.project.coordinates": "§lКоординаты %s§r:",
   "pplhelper.project.coordinates.overworld": "Верх. мир",
   "pplhelper.project.coordinates.nether": "Ад",
@@ -50,7 +55,7 @@
   "pplhelper.project.web": "Открыть страницу сайта",
 
 
-  "pplhelper.news.page": "Новость > %s",
+  "pplhelper.news.page": "Новости > %s",
 
   "pplhelper.commands": "Команды",
   "pplhelper.commands.description": "Список команд. Чтобы скопировать команду, нажмите на кнопку",
