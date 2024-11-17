@@ -4,6 +4,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import ru.kelcuprum.alinlib.AlinLib;
@@ -30,7 +31,11 @@ public class ModButton extends Button {
     public void renderText(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (getY() < guiGraphics.guiHeight() && !(getY() <= -getHeight())) {
             ResourceLocation icon = TextureHelper.getTexture(track.icon, track.modid, 128, 128);
-            guiGraphics.blit(icon, getX() + 2, getY() + 2, 0.0F, 0.0F, 36, 36, 36, 36);
+            guiGraphics.blit(
+                    //#if MC >= 12102
+                    RenderType::guiTextured,
+                    //#endif
+                    icon, getX() + 2, getY() + 2, 0.0F, 0.0F, 36, 36, 36, 36);
             renderString(guiGraphics, getMessage().getString(), getX() + 45, getY() + 8);
             renderString(guiGraphics, track.description, getX() + 45, getY() + height - 8 - AlinLib.MINECRAFT.font.lineHeight);
         }

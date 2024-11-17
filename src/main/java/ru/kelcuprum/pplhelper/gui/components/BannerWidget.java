@@ -40,7 +40,11 @@ public class BannerWidget extends AbstractWidget {
         ResourceLocation image = TextureHelper.getBanner(url, id);
         if(image == PACK_INFO) return;
         nativeImage = TextureHelper.urlsImages.get(url);
-        guiGraphics.blit(image, getX(), getY(), 0.0F, 0.0F, getWidth(), getHeight(), getWidth(), getHeight());
+        guiGraphics.blit(
+                //#if MC >= 12102
+                RenderType::guiTextured,
+                //#endif
+                image, getX(), getY(), 0.0F, 0.0F, getWidth(), getHeight(), getWidth(), getHeight());
     }
 
     @Override

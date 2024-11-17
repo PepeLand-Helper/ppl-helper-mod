@@ -35,7 +35,7 @@
     "fabricloader": "*",
     "fabric": "*",
     "alinlib": "*",
-    "minecraft": [">=1.21"]
+    "minecraft": "${minecraft_dependency}"
   },
   "custom": {
     "modmenu": {

@@ -61,6 +61,6 @@
   "pplhelper.commands.description": "Список команд. Чтобы скопировать команду, нажмите на кнопку",
   "pplhelper.commands.notice.description": "Команда скопирована!",
   "pplhelper.mods": "Моды",
-  "pplhelper.mods.installed": "(Установлено)",
+  "pplhelper.mods.installed": "(Установлен)",
   "pplhelper.mods.description": "Список модов, которые могут улучшить игру на сервере"
 }
