@@ -4,6 +4,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.gui.GuiUtils;
+import ru.kelcuprum.alinlib.gui.components.builder.text.TextBuilder;
 import ru.kelcuprum.alinlib.gui.components.text.TextBox;
 
 import static ru.kelcuprum.alinlib.gui.GuiUtils.DEFAULT_HEIGHT;
@@ -42,7 +43,8 @@ public class ScaledTextBox extends TextBox {
     boolean isCentered;
 
     public ScaledTextBox(int x, int y, int width, int height, Component label, boolean isCenter, float scale, OnPress onPress) {
-        super(x, y, width, height, label, isCenter, onPress);
+        super(new TextBuilder(label, onPress).setAlign(isCenter ? TextBuilder.ALIGN.CENTER : TextBuilder.ALIGN.LEFT).setPosition(x, y).setSize(width, height));
+        //        super(x, y, width, height, label, isCenter, onPress);
         this.scale = scale;
         this.isCentered = isCenter;
         this.setHeight((int) (height*scale));

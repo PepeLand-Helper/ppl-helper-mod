@@ -15,12 +15,11 @@ import java.util.List;
 import static ru.kelcuprum.pplhelper.api.PepeLandAPI.uriEncode;
 
 public class PepeLandHelperAPI {
-    public static String API_URL = PepelandHelper.config.getString("API_URL", "https://api-h.pplmods.ru/");
     public static String getURI(String url){
         return getURI(url, true);
     }
     public static String getURI(String url, boolean uriEncode){
-        return String.format("%1$s%2$s", API_URL, uriEncode ? uriEncode(url) : url);
+        return String.format("%1$s%2$s", PepelandHelper.config.getString("API_URL", "https://api-h.pplmods.ru/"), uriEncode ? uriEncode(url) : url);
     }
 
 

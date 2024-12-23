@@ -6,7 +6,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
-import ru.kelcuprum.alinlib.gui.components.text.MessageBox;
+import ru.kelcuprum.alinlib.gui.components.builder.text.TextBuilder;
 import ru.kelcuprum.alinlib.gui.components.text.TextBox;
 import ru.kelcuprum.pplhelper.PepelandHelper;
 
@@ -20,12 +20,13 @@ public class NewUpdateScreen extends Screen {
         this.oldVer = oldVer;
         this.pack = pack;
     }
-    MessageBox msg;
+    TextBox msg;
     @Override
     protected void init() {
         int y = height / 2 - 20;
-        addRenderableOnly(new TextBox(width/2-125, 10, 250, 20, title, true));
-        msg = addRenderableOnly(new MessageBox(width/2-125, 40, 250, 40, Component.translatable("pplhelper.pack.update.avalible.description", oldVer, pack.get("version").getAsString()), true));
+        addRenderableOnly(new TextBuilder(title).setPosition(width/2-125, 10).setSize(250, 20).build());
+        msg = (TextBox) addRenderableOnly(new TextBuilder( Component.translatable("pplhelper.pack.update.avalible.description", oldVer, pack.get("version").getAsString()))
+                .setType(TextBuilder.TYPE.MESSAGE).setAlign(TextBuilder.ALIGN.CENTER).setPosition(width/2-125, 40).setSize(250, 40).build());
         addRenderableWidget(new ButtonBuilder(Component.translatable("pplhelper.pack.update.avalible.accept"))
                 .setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new DownloadScreen(parent, pack, PepelandHelper.config.getBoolean("PACK_UPDATES.ONLY_EMOTE", false))))
                 .setPosition(width/2-150, height-50).setWidth(148).build());

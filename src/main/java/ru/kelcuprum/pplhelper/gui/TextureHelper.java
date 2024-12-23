@@ -16,12 +16,12 @@ import ru.kelcuprum.alinlib.gui.GuiUtils;
 import ru.kelcuprum.pplhelper.PepelandHelper;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
 
 import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.PACK_INFO;
@@ -34,30 +34,24 @@ public class TextureHelper {
     public static JsonArray map = new JsonArray();
     // Internet
     public static ResourceLocation getTexture(String url, String id) {
-        return getTexture(url, id, -1, -1);
-    }
-    public static ResourceLocation getTexture(String url, String id, int width, int height) {
         id = formatUrls(id.toLowerCase());
         if (resourceLocationMap.containsKey(id)) return resourceLocationMap.get(id);
         else {
             if (!urls.getOrDefault(id, false)) {
                 urls.put(id, true);
                 String finalId = id;
-                new Thread(() -> registerTexture(url, finalId, width, height, AlinLib.MINECRAFT.getTextureManager(), GuiUtils.getResourceLocation("pplhelper", finalId))).start();
+                new Thread(() -> registerTexture(url, finalId, AlinLib.MINECRAFT.getTextureManager(), GuiUtils.getResourceLocation("pplhelper", finalId))).start();
             }
             return PACK_INFO;
         }
     }
 
     @Async.Execute
-    public static void registerTexture(String url, String id, int width, int height, TextureManager textureManager, ResourceLocation textureId) {
-        PepelandHelper.log(String.format("REGISTER: %s %s", url, id), Level.DEBUG);
+    public static void registerTexture(String url, String id, TextureManager textureManager, ResourceLocation textureId) {
+        PepelandHelper.LOG.debug(String.format("REGISTER: %s %s", url, id));
         DynamicTexture texture;
         if (urlsTextures.containsKey(url)) {
-            JsonObject data = new JsonObject();
-            data.addProperty("url", url);
-            data.addProperty("id", id);
-            if (!map.contains(data)) map.add(data);
+            addToMap(id, url);
             texture = urlsTextures.get(url);
         } else {
             NativeImage image;
@@ -65,18 +59,6 @@ public class TextureHelper {
             boolean isFileExists = textureFile.exists();
             try {
                 BufferedImage bufferedImage = isFileExists ? ImageIO.read(getTextureFile(id)) : ImageIO.read(new URL(url));
-                int widthScale = bufferedImage.getWidth() / width;
-                int heightScale = bufferedImage.getHeight() / height;
-                int widthScaled = widthScale > 0 ? bufferedImage.getWidth() / widthScale : bufferedImage.getWidth();
-                int heightScaled = heightScale > 0 ? bufferedImage.getHeight() / heightScale : bufferedImage.getHeight();
-                if (widthScaled > width && width != -1) {
-                    int x = (bufferedImage.getWidth() - (width*widthScale)) / 2;
-                    bufferedImage = bufferedImage.getSubimage(x, 0, bufferedImage.getWidth()-(x*2), bufferedImage.getHeight());
-                }
-                if (heightScaled > height && height != -1) {
-                    int y = (bufferedImage.getHeight() - (height*heightScale)) / 2;
-                    bufferedImage = bufferedImage.getSubimage(0, y, bufferedImage.getWidth(), bufferedImage.getHeight()-(y*2));
-                }
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                 ImageIO.write(bufferedImage, "png", byteArrayOutputStream);
                 InputStream is = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
@@ -89,7 +71,7 @@ public class TextureHelper {
                 urlsTextures.put(url, texture);
                 urlsImages.put(url, image);
             } catch (Exception e) {
-                PepelandHelper.log("Error loading image from URL: " + url + " - " + e.getMessage());
+                PepelandHelper.LOG.log("Error loading image from URL: " + url + " - " + e.getMessage());
                 resourceLocationMap.put(id, PACK_INFO);
                 return;
             }
@@ -97,10 +79,7 @@ public class TextureHelper {
         if (textureManager != null) {
             textureManager.register(textureId, texture);
             resourceLocationMap.put(id, textureId);
-            JsonObject data = new JsonObject();
-            data.addProperty("url", url);
-            data.addProperty("id", id);
-            if (!map.contains(data)) map.add(data);
+            addToMap(id, url);
         }
     }
 
@@ -119,13 +98,10 @@ public class TextureHelper {
 
     @Async.Execute
     public static void registerBanner(String url, String id, TextureManager textureManager, ResourceLocation textureId) {
-        PepelandHelper.log(String.format("REGISTER: %s %s", url, id), Level.DEBUG);
+        PepelandHelper.LOG.log(String.format("REGISTER: %s %s", url, id), Level.DEBUG);
         DynamicTexture texture;
         if (urlsTextures.containsKey(url)) {
-            JsonObject data = new JsonObject();
-            data.addProperty("url", url);
-            data.addProperty("id", id);
-            if (!map.contains(data)) map.add(data);
+            addToMap(id, url);
             texture = urlsTextures.get(url);
         } else {
             NativeImage image;
@@ -133,13 +109,10 @@ public class TextureHelper {
             boolean isFileExists = textureFile.exists();
             try {
                 BufferedImage bufferedImage = isFileExists ? ImageIO.read(getTextureFile(id)) : ImageIO.read(new URL(url));
-//                double scale = (double) bufferedImage.getWidth() / 750;
-//                int height = (int) (bufferedImage.getHeight() / scale);
                 double widthScale = (double) bufferedImage.getWidth() / 750;
                 int threeHundredBucks = (int) (300 * widthScale);
                 double scale = (double) bufferedImage.getHeight() / threeHundredBucks;
                 int height = (int) (bufferedImage.getHeight() / scale);
-//                PepelandHelper.log("height: "+height);
                 if (bufferedImage.getHeight() > height && !isFileExists) {
                     int y = (bufferedImage.getHeight() - height) / 2;
                     bufferedImage = bufferedImage.getSubimage(0, y, bufferedImage.getWidth(), bufferedImage.getHeight()-(y*2));
@@ -156,7 +129,7 @@ public class TextureHelper {
                 urlsTextures.put(url, texture);
                 urlsImages.put(url, image);
             } catch (Exception e) {
-                PepelandHelper.log("Error loading image from URL: " + url + " - " + e.getMessage());
+                PepelandHelper.LOG.log("Error loading image from URL: " + url + " - " + e.getMessage());
                 resourceLocationMap.put(id, PACK_INFO);
                 return;
             }
@@ -164,14 +137,16 @@ public class TextureHelper {
         if (textureManager != null) {
             textureManager.register(textureId, texture);
             resourceLocationMap.put(id, textureId);
-            JsonObject data = new JsonObject();
-            data.addProperty("url", url);
-            data.addProperty("id", id);
-            if (!map.contains(data)) map.add(data);
+            addToMap(id, url);
         }
     }
 
-
+    public static void addToMap(String id, String url){
+        JsonObject data = new JsonObject();
+        data.addProperty("url", url);
+        data.addProperty("id", id);
+        if (!map.contains(data)) map.add(data);
+    }
 
     public static File getTextureFile(String url) {
         return new File("./config/pplhelper/textures/" + url + ".png");
@@ -183,7 +158,7 @@ public class TextureHelper {
             Files.createDirectories(path.getParent());
             Files.writeString(path, map.toString());
         } catch (IOException e) {
-            PepelandHelper.log(e.getLocalizedMessage(), Level.ERROR);
+            PepelandHelper.LOG.log(e.getLocalizedMessage(), Level.ERROR);
         }
     }
 
@@ -194,41 +169,41 @@ public class TextureHelper {
             for (JsonElement json : finalMap) {
                 JsonObject data = json.getAsJsonObject();
                 ResourceLocation l = GuiUtils.getResourceLocation("pplhelper", data.get("id").getAsString());
-                registerTexture(data.get("url").getAsString(), data.get("id").getAsString(), -1, -1, textureManager, l);
+                registerTexture(data.get("url").getAsString(), data.get("id").getAsString(), textureManager, l);
             }
         } catch (Exception e) {
-            PepelandHelper.log("MAP ERROR!", Level.ERROR);
+            PepelandHelper.LOG.log("MAP ERROR!", Level.ERROR);
             e.printStackTrace();
         }
     }
 
     public static void loadMap() {
         File mapFile = new File("./config/pplhelper/textures/map.json");
+        JsonArray finalMap;
         if (mapFile.exists() && mapFile.isFile()) {
             try {
-                map = GsonHelper.parseArray(Files.readString(mapFile.toPath()));
+                finalMap = GsonHelper.parseArray(Files.readString(mapFile.toPath()));
             } catch (Exception e) {
-                map = new JsonArray();
-                PepelandHelper.log(e.getMessage() == null ? e.getClass().getName() : e.getMessage(), Level.ERROR);
+                finalMap = new JsonArray();
+                PepelandHelper.LOG.log(e.getMessage() == null ? e.getClass().getName() : e.getMessage(), Level.ERROR);
             }
-        } else map = new JsonArray();
+        } else finalMap = new JsonArray();
+        JsonArray array = new JsonArray();
+        for(JsonElement element : finalMap){
+            JsonObject jsonObject = element.getAsJsonObject();
+            File file = getTextureFile(jsonObject.get("id").getAsString());
+            try {
+                if (file.exists() && System.currentTimeMillis() - Files.readAttributes(file.toPath(), BasicFileAttributes.class).creationTime().toMillis() >= 259200000)
+                    file.deleteOnExit();
+                else array.add(element);
+            } catch (Exception ex){
+                ex.printStackTrace();
+            }
+        }
+        map = array;
     }
 
     public static String formatUrls(String url) {
         return url.toLowerCase().replaceAll(" ", "-").replaceAll("[^A-Za-z0-9_-]", "_");
-    }
-
-    public static BufferedImage toBufferedImage(Image img) {
-        if (img instanceof BufferedImage) {
-            return (BufferedImage) img;
-        }
-        // Create a buffered image with transparency
-        BufferedImage bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-        // Draw the image on to the buffered image
-        Graphics2D bGr = bimage.createGraphics();
-        bGr.drawImage(img, 0, 0, null);
-        bGr.dispose();
-        // Return the buffered image
-        return bimage;
     }
 }

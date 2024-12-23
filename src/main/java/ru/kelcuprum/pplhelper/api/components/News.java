@@ -13,6 +13,7 @@ public class News {
     public String author;
 
     public String banner;
+    public String icon;
 
     public String content;
     public News(JsonObject info){
@@ -23,11 +24,12 @@ public class News {
         if(info.getAsJsonObject("data").has("author")) author = info.getAsJsonObject("data").get("author").getAsString();
 
         if(info.getAsJsonObject("data").has("banner")) banner = info.getAsJsonObject("data").get("banner").getAsString();
+        if(info.getAsJsonObject("data").has("icon")) icon = info.getAsJsonObject("data").get("icon").getAsString();
 
         try {
             this.content = PepeLandHelperAPI.getNewsContent(this.id);
         } catch (Exception ex){
-            PepelandHelper.log(ex.getMessage(), ERROR);
+            PepelandHelper.LOG.log(ex.getMessage(), ERROR);
         }
     }
 }

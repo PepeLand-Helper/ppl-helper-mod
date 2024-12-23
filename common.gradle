@@ -77,7 +77,7 @@ dependencies {
         modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
         modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
         modImplementation "maven.modrinth:abi:${rootProject.abi}"
-        modImplementation "ru.kelcuprum.alinlib:AlinLib-fabric:${rootProject.alinlib}+mc${project.minecraft_version}"
+        modImplementation "ru.kelcuprum.alinlib:AlinLib-fabric:${rootProject.alinlib}+mc${project.alinlib_minecraft_version == null ? project.minecraft_version : project.alinlib_minecraft_version}"
     }
 
     subprojects.each {

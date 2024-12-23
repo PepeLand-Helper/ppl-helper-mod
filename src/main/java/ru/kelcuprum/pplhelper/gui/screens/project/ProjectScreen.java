@@ -15,13 +15,12 @@ import ru.kelcuprum.alinlib.gui.Colors;
 import ru.kelcuprum.alinlib.gui.components.ConfigureScrolWidget;
 import ru.kelcuprum.alinlib.gui.components.ImageWidget;
 import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
-import ru.kelcuprum.alinlib.gui.components.text.MessageBox;
+import ru.kelcuprum.alinlib.gui.components.builder.text.TextBuilder;
 import ru.kelcuprum.alinlib.gui.components.text.TextBox;
 import ru.kelcuprum.pplhelper.PepelandHelper;
 import ru.kelcuprum.pplhelper.api.components.Project;
 import ru.kelcuprum.pplhelper.gui.TextureHelper;
 import ru.kelcuprum.pplhelper.gui.components.BannerWidget;
-import ru.kelcuprum.pplhelper.gui.components.Blockquote;
 import ru.kelcuprum.pplhelper.gui.components.HorizontalRule;
 import ru.kelcuprum.pplhelper.gui.components.ScaledTextBox;
 
@@ -44,25 +43,24 @@ public class ProjectScreen extends Screen {
 
     @Override
     protected void init() {
-//        initPanel();
         initContent();
     }
 
     protected void initPanel() {
         int x = 10;
         int size = 200;
-        addRenderableWidget(new TextBox(x, 5, size-25, 20, title, true));
+        addRenderableWidget(new TextBuilder(title).setPosition(x, 5).setSize(size-25, 20).build());
         addRenderableWidget(new ButtonBuilder(Component.literal("x"), (s)->onClose()).setPosition( x+size-15, 5).setWidth(20).build()); //, 20, 20,
         int y = 35;
         int iconSize = project.icon != null && !project.icon.isEmpty() ? 41 : 0;
         if(project.icon != null && !project.icon.isEmpty()) addRenderableWidget(new ImageWidget(x, y, 36, 36, TextureHelper.getTexture(project.icon, String.format("project_%s", project.id)), 36, 36, Component.empty()));
-        addRenderableWidget(new TextBox(x + iconSize, y, size - iconSize, 18, Component.literal(project.title), false));
-        addRenderableWidget(new TextBox(x + iconSize, y + 18, size - iconSize, 18, Component.literal(project.creators), false));
+        addRenderableWidget(new TextBuilder(Component.literal(project.title)).setAlign(TextBuilder.ALIGN.LEFT).setPosition(x + iconSize, y).setSize(size - iconSize, 18).build());
+        addRenderableWidget(new TextBuilder(Component.literal(project.creators)).setAlign(TextBuilder.ALIGN.LEFT).setPosition(x + iconSize, y + 18).setSize(size - iconSize, 18).build());
         y += 41;
         if(project.description != null && !project.description.isEmpty()) {
             String desc = project.description;
             if(desc.length() > 93) desc = desc.substring(0, 92)+"...";
-            MessageBox msg = new Blockquote(x, y, size, 20, Component.literal(desc), false);
+            TextBox msg = (TextBox) new TextBuilder(Component.literal(desc)).setType(TextBuilder.TYPE.BLOCKQUOTE).setPosition(x, y).setSize(size, 20).build();
             addRenderableWidget(msg);
             y += (5 + msg.getHeight());
         }
@@ -73,7 +71,7 @@ public class ProjectScreen extends Screen {
             coord.append("\n").append(Component.translatable("pplhelper.project.coordinates.nether")).append(": ").append(project.coordinates$nether);
         if(project.coordinates$end != null && !project.coordinates$end.isEmpty())
             coord.append("\n").append(Component.translatable("pplhelper.project.coordinates.end")).append(": ").append(project.coordinates$end);
-        MessageBox msg = new MessageBox(x, y, size, 20, coord, false);
+        TextBox msg = (TextBox) new TextBuilder(coord).setType(TextBuilder.TYPE.MESSAGE).setPosition(x, y).setSize(size, 20).build();
         addRenderableWidget(msg);
         y += (5 + msg.getHeight());
 
@@ -102,7 +100,7 @@ public class ProjectScreen extends Screen {
         int y = 30;
         addRenderableWidget(new ButtonBuilder(Component.literal("x"), (s)->onClose()).setPosition( x+size-20, 5).setWidth(20).build()); //, 20, 20,
         addRenderableWidget(new ButtonBuilder(Component.translatable("pplhelper.project.web"), (s)->PepelandHelper.confirmLinkNow(this, String.format("https://h.pplmods.ru/projects/%s", project.id))).setSprite(WEB).setPosition( x, 5).setWidth(20).build()); //, 20, 20,
-        addRenderableWidget(new TextBox(x+25, 5, size-50, 20, title, true));
+        addRenderableWidget(new TextBuilder(title).setPosition(x+25, 5).setSize(size-50, 20).build());
         this.scroller = addRenderableWidget(new ConfigureScrolWidget(x+size - 3, y, 4, this.height-y, Component.empty(), scroller -> {
             scroller.innerHeight = 0;
             for(AbstractWidget widget : widgets){
@@ -120,8 +118,8 @@ public class ProjectScreen extends Screen {
             if(lastBanner != PACK_INFO) widgets.add(new BannerWidget(x, -160, size,(int) (160*scale), project.banner, String.format("project_banner_%s", project.id), Component.empty()));
         }
         widgets.add(new ScaledTextBox(x, -40, size, 12, Component.literal(project.title), true, 1.5f));
-        widgets.add(new MessageBox(x, -40, size, 20, Component.literal(project.description), true));
-        widgets.add(new Blockquote(x, -40, size, 20, Component.translatable("pplhelper.project.creators", project.creators), false));
+        widgets.add(new TextBuilder(Component.literal(project.description)).setType(TextBuilder.TYPE.MESSAGE).setAlign(TextBuilder.ALIGN.CENTER).setPosition(x, -40).setSize(size, 20).build());
+        widgets.add(new TextBuilder(Component.translatable("pplhelper.project.creators", project.creators)).setType(TextBuilder.TYPE.BLOCKQUOTE).setPosition(x, -40).setSize(size, 20).build());
         MutableComponent coord = Component.empty().append(Component.translatable("pplhelper.project.coordinates", project.world));
         if(project.coordinates$overworld != null && !project.coordinates$overworld.isEmpty())
             coord.append("\n").append(Component.translatable("pplhelper.project.coordinates.overworld")).append(": ").append(project.coordinates$overworld);
@@ -129,7 +127,7 @@ public class ProjectScreen extends Screen {
             coord.append("\n").append(Component.translatable("pplhelper.project.coordinates.nether")).append(": ").append(project.coordinates$nether);
         if(project.coordinates$end != null && !project.coordinates$end.isEmpty())
             coord.append("\n").append(Component.translatable("pplhelper.project.coordinates.end")).append(": ").append(project.coordinates$end);
-        Blockquote msg = new Blockquote(x, y, size, 20, coord, false);
+        TextBox msg = (TextBox) new TextBuilder(coord).setType(TextBuilder.TYPE.BLOCKQUOTE).setPosition(x, y).setSize(size, 20).build();
         widgets.add(msg);
         if(PepelandHelper.isInstalledABI) {
             widgets.add(new ButtonBuilder(Component.translatable((PepelandHelper.selectedProject == null || PepelandHelper.selectedProject.id != project.id) ? "pplhelper.project.abi" : "pplhelper.project.abi.unfollow"), (s) -> {
@@ -218,7 +216,7 @@ public class ProjectScreen extends Screen {
     @Override
     public void tick(){
         if(scroller != null) scroller.onScroll.accept(scroller);
-        if(project.banner != null && !project.banner.isEmpty() && lastBanner != TextureHelper.getTexture(project.banner, String.format("project_banner_%s", project.id), -1, 600))
+        if(project.banner != null && !project.banner.isEmpty() && lastBanner != TextureHelper.getBanner(project.banner, String.format("project_banner_%s", project.id)))
             rebuildWidgets();
         super.tick();
     }
@@ -235,13 +233,13 @@ public class ProjectScreen extends Screen {
                 if(lastIsPlain){
                     lastIsPlain = false;
                     plain = parse(plain, true);
-                    widgets.add(new MessageBox(x, -40, width-230, 20, Component.literal(plain.substring(0, plain.length()-(plain.endsWith("\n") ? 1 : 0))), false));
+                    widgets.add(new TextBuilder(Component.literal(plain.substring(0, plain.length()-(plain.endsWith("\n") ? 1 : 0)))).setType(TextBuilder.TYPE.MESSAGE).setPosition(x, -40).setSize(width-230, 20).build());
                     plain = "";
                 }
                 if(lastIsBlockQuote){
                     lastIsBlockQuote = false;
                     blockquote = parse(blockquote, true);
-                    widgets.add(new Blockquote(x, -40, width-230, 20, Component.literal(blockquote.substring(0, blockquote.length()-(blockquote.endsWith("\n") ? 1 : 0))), false));
+                    widgets.add(new TextBuilder(Component.literal(blockquote.substring(0, blockquote.length()-(blockquote.endsWith("\n") ? 1 : 0)))).setType(TextBuilder.TYPE.BLOCKQUOTE).setPosition(x, -40).setSize(width-230, 20).build());
                     blockquote = "";
                 }
                 String finalString = string;
@@ -265,13 +263,13 @@ public class ProjectScreen extends Screen {
                 if(lastIsPlain){
                     lastIsPlain = false;
                     plain = parse(plain, true);
-                    widgets.add(new MessageBox(x, -40, width-230, 20, Component.literal(plain.substring(0, plain.length()-(plain.endsWith("\n") ? 1 : 0))), false));
+                    widgets.add(new TextBuilder(Component.literal(plain.substring(0, plain.length()-(plain.endsWith("\n") ? 1 : 0)))).setType(TextBuilder.TYPE.MESSAGE).setPosition(x, -40).setSize(width-230, 20).build());
                     plain = "";
                 }
                 if(lastIsBlockQuote){
                     lastIsBlockQuote = false;
                     blockquote = parse(blockquote, true);
-                    widgets.add(new Blockquote(x, -40, width-230, 20, Component.literal(blockquote.substring(0, blockquote.length()-(blockquote.endsWith("\n") ? 1 : 0))), false));
+                    widgets.add(new TextBuilder(Component.literal(blockquote.substring(0, blockquote.length()-(blockquote.endsWith("\n") ? 1 : 0)))).setType(TextBuilder.TYPE.BLOCKQUOTE).setPosition(x, -40).setSize(width-230, 20).build());
                     blockquote = "";
                 }
                 widgets.add(new HorizontalRule(x, -40, width-230));
@@ -279,13 +277,13 @@ public class ProjectScreen extends Screen {
                 if(lastIsPlain){
                     lastIsPlain = false;
                     plain = parse(plain, true);
-                    widgets.add(new MessageBox(x, -40, width-230, 20, Component.literal(plain.substring(0, plain.length()-(plain.endsWith("\n") ? 1 : 0))), false));
+                    widgets.add(new TextBuilder(Component.literal(plain.substring(0, plain.length()-(plain.endsWith("\n") ? 1 : 0)))).setType(TextBuilder.TYPE.MESSAGE).setPosition(x, -40).setSize(width-230, 20).build());
                     plain = "";
                 }
                 if(lastIsBlockQuote){
                     lastIsBlockQuote = false;
                     blockquote = parse(blockquote, true);
-                    widgets.add(new Blockquote(x, -40, width-230, 20, Component.literal(blockquote.substring(0, blockquote.length()-(blockquote.endsWith("\n") ? 1 : 0))), false));
+                    widgets.add(new TextBuilder(Component.literal(blockquote.substring(0, blockquote.length()-(blockquote.endsWith("\n") ? 1 : 0)))).setType(TextBuilder.TYPE.BLOCKQUOTE).setPosition(x, -40).setSize(width-230, 20).build());
                     blockquote = "";
                 }
                 int j = 0;
@@ -296,7 +294,7 @@ public class ProjectScreen extends Screen {
                 if(lastIsPlain){
                     lastIsPlain = false;
                     plain = parse(plain, true);
-                    widgets.add(new MessageBox(x, -40, width-230, 20, Component.literal(plain.substring(0, plain.length()-(plain.endsWith("\n") ? 1 : 0))), false));
+                    widgets.add(new TextBuilder(Component.literal(plain.substring(0, plain.length()-(plain.endsWith("\n") ? 1 : 0)))).setType(TextBuilder.TYPE.MESSAGE).setPosition(x, -40).setSize(width-230, 20).build());
                     plain = "";
                 }
                 if(!lastIsBlockQuote) lastIsBlockQuote = true;
@@ -306,15 +304,17 @@ public class ProjectScreen extends Screen {
                 if(lastIsBlockQuote){
                     lastIsBlockQuote = false;
                     blockquote = parse(blockquote, true);
-                    widgets.add(new Blockquote(x, -40, width-230, 20, Component.literal(blockquote.substring(0, blockquote.length()-(blockquote.endsWith("\n") ? 1 : 0))), false));
+                    widgets.add(new TextBuilder(Component.literal(blockquote.substring(0, blockquote.length()-(blockquote.endsWith("\n") ? 1 : 0)))).setType(TextBuilder.TYPE.BLOCKQUOTE).setPosition(x, -40).setSize(width-230, 20).build());
                     blockquote = "";
                 }
                 if(!lastIsPlain) lastIsPlain = true;
                 if(!string.isBlank()) plain += string += "\n";
             }
         }
-        if(lastIsPlain) widgets.add(new MessageBox(x, -40, width-230, 20, Component.literal(parse(plain, true).substring(0, parse(plain, true).length()-(parse(plain, true).endsWith("\n") ? 1 : 0))), false));
-        if(lastIsBlockQuote) widgets.add(new Blockquote(x, -40, width-230, 20, Component.literal(parse(blockquote, true).substring(0, parse(blockquote, true).length()-(parse(blockquote, true).endsWith("\n") ? 1 : 0))), false));
+        if(lastIsPlain)
+            widgets.add(new TextBuilder(Component.literal(plain.substring(0, plain.length()-(plain.endsWith("\n") ? 1 : 0)))).setType(TextBuilder.TYPE.MESSAGE).setPosition(x, -40).setSize(width-230, 20).build());
+        if(lastIsBlockQuote)
+            widgets.add(new TextBuilder(Component.literal(blockquote.substring(0, blockquote.length()-(blockquote.endsWith("\n") ? 1 : 0)))).setType(TextBuilder.TYPE.BLOCKQUOTE).setPosition(x, -40).setSize(width-230, 20).build());
         return widgets;
     }
 

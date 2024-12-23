@@ -7,11 +7,12 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.glfw.GLFW;
+import org.w3c.dom.Text;
 import ru.kelcuprum.alinlib.gui.Colors;
 import ru.kelcuprum.alinlib.gui.components.ConfigureScrolWidget;
 import ru.kelcuprum.alinlib.gui.components.ImageWidget;
 import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
-import ru.kelcuprum.alinlib.gui.components.text.MessageBox;
+import ru.kelcuprum.alinlib.gui.components.builder.text.TextBuilder;
 import ru.kelcuprum.alinlib.gui.components.text.TextBox;
 import ru.kelcuprum.pplhelper.PepelandHelper;
 import ru.kelcuprum.pplhelper.api.components.News;
@@ -55,7 +56,7 @@ public class NewsScreen extends Screen {
         int y = 30;
         addRenderableWidget(new ButtonBuilder(Component.literal("x"), (s)->onClose()).setPosition( x+size-20, 5).setWidth(20).build()); //, 20, 20,
         addRenderableWidget(new ButtonBuilder(Component.translatable("pplhelper.project.web"), (s)->PepelandHelper.confirmLinkNow(this, String.format("https://h.pplmods.ru/news/%s", news.id))).setSprite(WEB).setPosition( x, 5).setWidth(20).build()); //, 20, 20,
-        addRenderableWidget(new TextBox(x+25, 5, size-50, 20, title, true));
+        addRenderableWidget(new TextBuilder(title).setPosition(x+25, 5).setSize(size-50, 20).build());
         this.scroller = addRenderableWidget(new ConfigureScrolWidget(x+size - 3, y, 4, this.height-y, Component.empty(), scroller -> {
             scroller.innerHeight = 0;
             for(AbstractWidget widget : widgets){
@@ -73,7 +74,7 @@ public class NewsScreen extends Screen {
             if(lastBanner != PACK_INFO) widgets.add(new BannerWidget(x, -160, size,(int) (160*scale), news.banner, String.format("news_banner_%s", news.id), Component.empty()));
         }
         widgets.add(new ScaledTextBox(x, -40, size, 12, Component.literal(news.title), true, 1.5f));
-        widgets.add(new MessageBox(x, -40, size, 20, Component.literal(news.description), true));
+        widgets.add(new TextBuilder(Component.literal(news.description)).setType(TextBuilder.TYPE.MESSAGE).setAlign(TextBuilder.ALIGN.CENTER).setPosition(x, -40).setSize(size, 20).build());
         widgets.add(new HorizontalRule(x, -4, size));
         widgets.addAll(parseMarkdown(news.content, x, size, String.format("news_%s_",news.id)+"%s", this));
 
@@ -92,8 +93,6 @@ public class NewsScreen extends Screen {
     @Override
     public void render(GuiGraphics guiGraphics, int i, int j, float f) {
         super.render(guiGraphics, i, j, f);
-        int size = Math.min(maxSize, width-10);
-        int x = (width-size) / 2;
         guiGraphics.enableScissor(0, 30, width, this.height);
         if (scroller != null) for (AbstractWidget widget : scroller.widgets) widget.render(guiGraphics, i, j, f);
         guiGraphics.disableScissor();
@@ -147,7 +146,7 @@ public class NewsScreen extends Screen {
     @Override
     public void tick(){
         if(scroller != null) scroller.onScroll.accept(scroller);
-        if(news.banner != null && !news.banner.isEmpty() && lastBanner != TextureHelper.getTexture(news.banner, String.format("news_banner_%s", news.id), -1, 600))
+        if(news.banner != null && !news.banner.isEmpty() && lastBanner != TextureHelper.getBanner(news.banner, String.format("news_banner_%s", news.id)))
             rebuildWidgets();
         super.tick();
     }

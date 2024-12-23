@@ -4,8 +4,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
-import ru.kelcuprum.alinlib.gui.components.text.MessageBox;
-import ru.kelcuprum.alinlib.gui.components.text.TextBox;
+import ru.kelcuprum.alinlib.gui.components.builder.text.TextBuilder;
 import ru.kelcuprum.pplhelper.PepelandHelper;
 
 public class ErrorScreen extends Screen {
@@ -23,9 +22,10 @@ public class ErrorScreen extends Screen {
     @Override
     protected void init() {
         int y = height / 2 + 30;
-        addRenderableWidget(new TextBox(width-15, 5, 10, 10, Component.literal("x"), true, (s) -> onClose()));
-        addRenderableOnly(new TextBox(width/2-125, y, 250, 20, title, true));
-        if(error != null) addRenderableOnly(new MessageBox(width/2-125, y+25, 250, 20, Component.literal(error.getMessage() == null ? error.getClass().getName() : error.getMessage()), true));
+        addRenderableWidget(new TextBuilder(Component.literal("x"), (s) -> onClose()).setPosition(width-15, 5).setSize(10, 10).build());
+        addRenderableOnly(new TextBuilder(title).setPosition(width/2-125, y).setSize(250, 20).build());
+        if(error != null) addRenderableOnly(new TextBuilder(Component.literal(error.getMessage() == null ? error.getClass().getName() : error.getMessage()))
+                .setType(TextBuilder.TYPE.MESSAGE).setAlign(TextBuilder.ALIGN.CENTER).setPosition(width/2-125, y+25).setSize(250, 20).build());
     }
 
     @Override

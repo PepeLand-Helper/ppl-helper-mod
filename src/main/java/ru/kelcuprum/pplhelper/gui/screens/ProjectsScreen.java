@@ -15,7 +15,7 @@ import ru.kelcuprum.alinlib.gui.components.ImageWidget;
 import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.editbox.EditBoxBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.selector.SelectorBuilder;
-import ru.kelcuprum.alinlib.gui.components.text.MessageBox;
+import ru.kelcuprum.alinlib.gui.components.builder.text.TextBuilder;
 import ru.kelcuprum.alinlib.gui.components.text.TextBox;
 import ru.kelcuprum.pplhelper.PepelandHelper;
 import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
@@ -53,7 +53,7 @@ public class ProjectsScreen extends Screen {
             int y = 5;
             addRenderableWidget(new ButtonBuilder(Component.literal("x"), (s) -> onClose()).setPosition(x + size - 20, 5).setWidth(20).build()); //, 20, 20,
             addRenderableWidget(new ButtonBuilder(Component.translatable("pplhelper.project.web"), (s) -> PepelandHelper.confirmLinkNow(this, "https://h.pplmods.ru/projects")).setSprite(WEB).setPosition(x, 5).setWidth(20).build()); //, 20, 20,
-            addRenderableWidget(new TextBox(x + 25, 5, size - 50, 20, title, true));
+            addRenderableWidget(new TextBuilder(title).setPosition(x+25, 5).setSize(size-50, 20).build());
             y += 25;
             int searchSize = (size - 30) / 2;
             addRenderableWidget(new EditBoxBuilder(Component.translatable("pplhelper.news.search"), (s) -> query = s).setValue(query).setPosition(x, y).setWidth(searchSize).build());
@@ -77,7 +77,7 @@ public class ProjectsScreen extends Screen {
             List<Project> projects = lastProjects == null ? PepeLandHelperAPI.getProjects(query, worlds[world]) : lastProjects;
             lastProjects = projects;
             if (projects.isEmpty()) {
-                widgets.add(new MessageBox(x, 55, size, 20, Component.translatable("pplhelper.news.not_found"), true));
+                widgets.add(new TextBuilder(Component.translatable("pplhelper.news.not_found")).setType(TextBuilder.TYPE.MESSAGE).setAlign(TextBuilder.ALIGN.CENTER).setPosition(x, 55).setSize(size, 20).build());
                 widgets.add(new ImageWidget(x, 55, size, 20, GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/ozon.png"), 640, 360, true, Component.empty()));
             } else for (Project project : projects)
                 widgets.add(new ProjectButton(0, -40, DEFAULT_WIDTH(), project, this));

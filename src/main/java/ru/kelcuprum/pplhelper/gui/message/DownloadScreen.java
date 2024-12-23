@@ -9,13 +9,6 @@ import net.minecraft.server.packs.repository.Pack;
 import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.gui.toast.ToastBuilder;
 import ru.kelcuprum.pplhelper.PepelandHelper;
-import ru.kelcuprum.pplhelper.api.PepeLandAPI;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 public class DownloadScreen extends Screen {
     public Screen parent;
@@ -30,28 +23,17 @@ public class DownloadScreen extends Screen {
     boolean inited = false;
     boolean downloaded = false;
     Exception exception;
+    Thread thread;
     long start = 0;
     @Override
     protected void init() {
         if (!inited) {
             start = System.currentTimeMillis();
             inited = true;
-            new Thread(() -> {
-                try {
-                    String originalChecksum = packData.get("checksum").getAsString();
-                    String path = AlinLib.MINECRAFT.getResourcePackDirectory().resolve(String.format("pepeland-%1$s-v%2$s.zip", onlyEmote ? "emotes" : "main", packData.get("version").getAsString())).toString();
-                    File file = new File(path);
-                    if(!file.exists()) PepeLandAPI.downloadFile$queue(packData.get("url").getAsString(), AlinLib.MINECRAFT.getResourcePackDirectory().toString(), String.format("pepeland-%1$s-v%2$s.zip", onlyEmote ? "emotes" : "main", packData.get("version").getAsString()), originalChecksum, 5);
-                    if(file.exists() && originalChecksum.contains(toSHA(path))){
-                        downloaded = true;
-                    } else {
-                        if(file.exists()) file.delete();
-                        throw new RuntimeException(Component.translatable("pplhelper.pack.file_broken").getString());
-                    }
-                } catch (Exception e) {
-                    exception = e;
-                }
-            }).start();
+            thread = PepelandHelper.downloadPack(packData, onlyEmote, (s) -> {
+                if(s) downloaded = true;
+                else exception = new Exception(Component.translatable("pplhelper.pack.file_broken").getString());
+            });
         }
     }
 
@@ -103,28 +85,9 @@ public class DownloadScreen extends Screen {
     }
 
     @Override
-    public void onClose() {}
-
-    public static String toSHA(String filePath) throws NoSuchAlgorithmException, IOException {
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        FileInputStream fis = new FileInputStream(filePath);
-
-        byte[] buffer = new byte[1024];
-        int bytesRead;
-        while ((bytesRead = fis.read(buffer)) != -1) {
-            digest.update(buffer, 0, bytesRead);
-        }
-        fis.close();
-
-        byte[] hashBytes = digest.digest();
-        StringBuilder hexString = new StringBuilder();
-        for (byte hashByte : hashBytes) {
-            String hex = Integer.toHexString(0xff & hashByte);
-            if (hex.length() == 1) {
-                hexString.append('0');
-            }
-            hexString.append(hex);
-        }
-        return hexString.toString();
+    public void onClose() {
+        if(thread != null && !thread.isInterrupted()) thread.interrupt();
+        assert this.minecraft != null;
+        this.minecraft.setScreen(parent);
     }
 }

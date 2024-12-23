@@ -2,7 +2,6 @@ package ru.kelcuprum.pplhelper.api.components;
 
 import com.google.gson.JsonObject;
 import ru.kelcuprum.pplhelper.PepelandHelper;
-import ru.kelcuprum.pplhelper.api.PepeLandAPI;
 import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
 
 import static org.apache.logging.log4j.Level.ERROR;
@@ -42,7 +41,7 @@ public class Project {
         try {
             this.content = PepeLandHelperAPI.getProjectContent(this.id);
         } catch (Exception ex){
-            PepelandHelper.log(ex.getMessage(), ERROR);
+            PepelandHelper.LOG.log(ex.getMessage(), ERROR);
         }
     }
 }

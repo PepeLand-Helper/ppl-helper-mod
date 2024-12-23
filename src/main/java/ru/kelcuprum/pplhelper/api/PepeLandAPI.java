@@ -15,7 +15,8 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
-import static ru.kelcuprum.pplhelper.gui.message.DownloadScreen.toSHA;
+import static ru.kelcuprum.pplhelper.PepelandHelper.toSHA;
+
 
 public class PepeLandAPI {
     public static String API_URL = "https://static-api.pepeland.org/";
@@ -59,15 +60,16 @@ public class PepeLandAPI {
             outputStream.close();
             inputStream.close();
 
-            PepelandHelper.log("Resourcepack downloaded successfully.", Level.DEBUG);
+            PepelandHelper.LOG.log("Resourcepack downloaded successfully.", Level.DEBUG);
         } else {
-            PepelandHelper.log("No file to download. Server replied HTTP code: " + responseCode, Level.ERROR);
+            PepelandHelper.LOG.log("No file to download. Server replied HTTP code: " + responseCode, Level.ERROR);
         }
         httpConn.disconnect();
     }
     public static void downloadFile$queue(String fileURL, String saveDir, String filename, String originalChecksum, int count){
         int position = 0;
-        while (position != count){
+        while (position < count){
+            PepelandHelper.LOG.log("Count: %s", position);
             try {
                 downloadFile(fileURL, saveDir, filename);
                 String path = AlinLib.MINECRAFT.getResourcePackDirectory().resolve(filename).toString();

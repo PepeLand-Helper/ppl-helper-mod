@@ -1,6 +1,7 @@
 package ru.kelcuprum.pplhelper;
 
 import com.google.gson.JsonObject;
+import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.KeyMapping;
@@ -14,6 +15,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 import ru.kelcuprum.alinlib.AlinLib;
+import ru.kelcuprum.alinlib.AlinLogger;
 import ru.kelcuprum.alinlib.api.KeyMappingHelper;
 import ru.kelcuprum.alinlib.api.events.client.ClientLifecycleEvents;
 import ru.kelcuprum.alinlib.api.events.client.ClientTickEvents;
@@ -22,6 +24,7 @@ import ru.kelcuprum.alinlib.config.Config;
 import ru.kelcuprum.alinlib.config.Localization;
 import ru.kelcuprum.alinlib.gui.GuiUtils;
 import ru.kelcuprum.alinlib.gui.screens.ConfirmScreen;
+import ru.kelcuprum.alinlib.gui.styles.SafeStyle;
 import ru.kelcuprum.pplhelper.api.PepeLandAPI;
 import ru.kelcuprum.pplhelper.api.components.Project;
 import ru.kelcuprum.pplhelper.gui.TextureHelper;
@@ -31,24 +34,22 @@ import ru.kelcuprum.pplhelper.gui.message.NewUpdateScreen;
 import ru.kelcuprum.pplhelper.gui.screens.NewsListScreen;
 import ru.kelcuprum.pplhelper.gui.screens.ProjectsScreen;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 public class PepelandHelper implements ClientModInitializer {
-    public static final Logger LOG = LogManager.getLogger("PPL Helper");
+    public static final AlinLogger LOG = new AlinLogger("PPL Helper");
     public static Config config = new Config("config/pplhelper/config.json");
     public static boolean isInstalledABI = FabricLoader.getInstance().isModLoaded("actionbarinfo");
     public static Project selectedProject;
-
-    public static void log(String message) {
-        log(message, Level.INFO);
-    }
-
-    public static void log(String message, Level level) {
-        LOG.log(level, "[" + LOG.getName() + "] " + message);
-    }
-
+    public static SafeStyle safeStyle = new SafeStyle();
 
     @Override
     public void onInitializeClient() {
-        log("Данный проект не является официальной частью сети серверов PepeLand", Level.WARN);
+        LOG.log("Данный проект не является официальной частью сети серверов PepeLand", Level.WARN);
         ClientLifecycleEvents.CLIENT_FULL_STARTED.register((s) -> {
             String packVersion = getInstalledPack();
             if((config.getBoolean("PACK_UPDATES.NOTICE", true) || config.getBoolean("PACK_UPDATES.AUTO_UPDATE", true)) && !packVersion.isEmpty()){
@@ -117,6 +118,51 @@ public class PepelandHelper implements ClientModInitializer {
         ResourceLocation PROJECTS = GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/projects.png");
         ResourceLocation MODS = GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/mods.png");
         ResourceLocation WEB = GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/web.png");
+    }
+
+    public static Thread downloadPack(JsonObject packData, boolean onlyEmote, BooleanConsumer consumer){
+        Thread thread = new Thread(() -> {
+            try {
+                String originalChecksum = packData.get("checksum").getAsString();
+                String path = AlinLib.MINECRAFT.getResourcePackDirectory().resolve(String.format("pepeland-%1$s-v%2$s.zip", onlyEmote ? "emotes" : "main", packData.get("version").getAsString())).toString();
+                File file = new File(path);
+                if(!file.exists()) PepeLandAPI.downloadFile$queue(packData.get("url").getAsString(), AlinLib.MINECRAFT.getResourcePackDirectory().toString(), String.format("pepeland-%1$s-v%2$s.zip", onlyEmote ? "emotes" : "main", packData.get("version").getAsString()), originalChecksum, 5);
+                if(file.exists() && originalChecksum.contains(toSHA(path))){
+                    consumer.accept(true);
+                } else {
+                    if(file.exists()) file.delete();
+                    throw new RuntimeException(Component.translatable("pplhelper.pack.file_broken").getString());
+                }
+            } catch (Exception e) {
+                LOG.error(e.getMessage() == null ? e.getClass().getName() : e.getMessage());
+                consumer.accept(false);
+            }
+        });
+        thread.start();
+        return thread;
+    }
+
+    public static String toSHA(String filePath) throws NoSuchAlgorithmException, IOException {
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        FileInputStream fis = new FileInputStream(filePath);
+
+        byte[] buffer = new byte[1024];
+        int bytesRead;
+        while ((bytesRead = fis.read(buffer)) != -1) {
+            digest.update(buffer, 0, bytesRead);
+        }
+        fis.close();
+
+        byte[] hashBytes = digest.digest();
+        StringBuilder hexString = new StringBuilder();
+        for (byte hashByte : hashBytes) {
+            String hex = Integer.toHexString(0xff & hashByte);
+            if (hex.length() == 1) {
+                hexString.append('0');
+            }
+            hexString.append(hex);
+        }
+        return hexString.toString();
     }
 
     public static void confirmLinkNow(Screen screen, String link) {

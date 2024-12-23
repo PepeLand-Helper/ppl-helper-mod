@@ -28,7 +28,7 @@ public class ProjectButton extends Button {
         if (getY() < guiGraphics.guiHeight() && !(getY() <= -getHeight())) {
             int x = 5;
             if(project.icon != null && !project.icon.isEmpty()) {
-                ResourceLocation icon = TextureHelper.getTexture(project.icon, String.format("project_%s", project.id), 128, 128);
+                ResourceLocation icon = TextureHelper.getTexture(project.icon, String.format("project_%s", project.id));
                 guiGraphics.blit(
                         //#if MC >= 12102
                         RenderType::guiTextured,
@@ -48,10 +48,8 @@ public class ProjectButton extends Button {
     }
 
     protected void renderString(GuiGraphics guiGraphics, String text, int x, int y) {
-        if (getWidth() - 50 < AlinLib.MINECRAFT.font.width(text)) {
+        if (getWidth() - (project.icon != null && !project.icon.isEmpty() ? 50 : 10) < AlinLib.MINECRAFT.font.width(text))
             renderScrollingString(guiGraphics, AlinLib.MINECRAFT.font, Component.literal(text), 5, y - 1, -1);
-        } else {
-            guiGraphics.drawString(AlinLib.MINECRAFT.font, text, x, y, -1);
-        }
+        else guiGraphics.drawString(AlinLib.MINECRAFT.font, text, x, y, -1);
     }
 }

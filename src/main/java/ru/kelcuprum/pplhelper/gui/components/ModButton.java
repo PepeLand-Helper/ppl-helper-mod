@@ -30,7 +30,7 @@ public class ModButton extends Button {
     @Override
     public void renderText(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (getY() < guiGraphics.guiHeight() && !(getY() <= -getHeight())) {
-            ResourceLocation icon = TextureHelper.getTexture(track.icon, track.modid, 128, 128);
+            ResourceLocation icon = TextureHelper.getTexture(track.icon, track.modid);
             guiGraphics.blit(
                     //#if MC >= 12102
                     RenderType::guiTextured,

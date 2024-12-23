@@ -13,10 +13,8 @@ plugins {
 }
 
 preprocess {
-    def mc1211_fabric = createNode('1.21.1-fabric', 1_21_01, '')
     def mc1212_fabric = createNode('1.21.2-fabric', 1_21_02, '')
 
-    mc1211_fabric.link(mc1212_fabric, null)
     mc1212_fabric.link(mc1212_fabric, null)
 }
 

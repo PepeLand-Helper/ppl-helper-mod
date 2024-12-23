@@ -6,7 +6,6 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.glfw.GLFW;
 import ru.kelcuprum.alinlib.gui.Colors;
 import ru.kelcuprum.alinlib.gui.GuiUtils;
@@ -14,25 +13,18 @@ import ru.kelcuprum.alinlib.gui.components.ConfigureScrolWidget;
 import ru.kelcuprum.alinlib.gui.components.ImageWidget;
 import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.editbox.EditBoxBuilder;
-import ru.kelcuprum.alinlib.gui.components.text.MessageBox;
-import ru.kelcuprum.alinlib.gui.components.text.TextBox;
+import ru.kelcuprum.alinlib.gui.components.builder.text.TextBuilder;
 import ru.kelcuprum.pplhelper.PepelandHelper;
 import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
 import ru.kelcuprum.pplhelper.api.components.News;
-import ru.kelcuprum.pplhelper.gui.TextureHelper;
-import ru.kelcuprum.pplhelper.gui.components.HorizontalRule;
 import ru.kelcuprum.pplhelper.gui.components.NewsButton;
-import ru.kelcuprum.pplhelper.gui.components.ScaledTextBox;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
 import static ru.kelcuprum.alinlib.gui.GuiUtils.DEFAULT_WIDTH;
 import static ru.kelcuprum.alinlib.gui.Icons.SEARCH;
-import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.PACK_INFO;
 import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.WEB;
-import static ru.kelcuprum.pplhelper.gui.screens.project.ProjectScreen.parseMarkdown;
 
 public class NewsListScreen extends Screen {
     public final Screen parent;
@@ -54,7 +46,7 @@ public class NewsListScreen extends Screen {
         int y = 5;
         addRenderableWidget(new ButtonBuilder(Component.literal("x"), (s)->onClose()).setPosition( x+size-20, 5).setWidth(20).build()); //, 20, 20,
         addRenderableWidget(new ButtonBuilder(Component.translatable("pplhelper.project.web"), (s)->PepelandHelper.confirmLinkNow(this, "https://h.pplmods.ru/news")).setSprite(WEB).setPosition( x, 5).setWidth(20).build()); //, 20, 20,
-        addRenderableWidget(new TextBox(x+25, 5, size-50, 20, title, true));
+        addRenderableWidget(new TextBuilder(title).setPosition(x+25, 5).setSize(size-50, 20).build());
         y+=25;
         addRenderableWidget(new EditBoxBuilder(Component.translatable("pplhelper.news.search"), (s) -> query = s).setValue(query).setPosition(x, y).setWidth(size-25).build());
         addRenderableWidget(new ButtonBuilder(Component.translatable("pplhelper.news.find"), (s) -> search()).setSprite(SEARCH).setPosition(x+size-20, y).setWidth(20).build());
@@ -75,7 +67,7 @@ public class NewsListScreen extends Screen {
         List<News> projects = lastNews == null ? PepeLandHelperAPI.getNews(query) : lastNews;
         lastNews = projects;
         if(projects.isEmpty()) {
-            widgets.add(new MessageBox(x, 55, size, 20, Component.translatable("pplhelper.news.not_found"), true));
+            widgets.add(new TextBuilder(Component.translatable("pplhelper.news.not_found")).setType(TextBuilder.TYPE.MESSAGE).setAlign(TextBuilder.ALIGN.CENTER).setPosition(x, 55).setSize(size, 20).build());
             widgets.add(new ImageWidget(x, 55, size, 20, GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/ozon.png"), 640,360, true, Component.empty()));
         } else for(News project : projects)
             widgets.add(new NewsButton(0, -40, DEFAULT_WIDTH(), project, this));

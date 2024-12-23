@@ -8,17 +8,16 @@ import net.minecraft.network.chat.Component;
 import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.config.Localization;
 import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
+import ru.kelcuprum.alinlib.gui.components.builder.text.TextBuilder;
 import ru.kelcuprum.alinlib.gui.components.text.CategoryBox;
-import ru.kelcuprum.alinlib.gui.components.text.MessageBox;
 import ru.kelcuprum.alinlib.gui.components.text.TextBox;
-import ru.kelcuprum.alinlib.gui.screens.ConfigScreenBuilder;
 import ru.kelcuprum.alinlib.gui.toast.ToastBuilder;
 import ru.kelcuprum.pplhelper.PepelandHelper;
 import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
-import ru.kelcuprum.pplhelper.gui.components.Blockquote;
 import ru.kelcuprum.pplhelper.gui.configs.ConfigScreen;
 import ru.kelcuprum.pplhelper.gui.configs.UpdaterScreen;
 import ru.kelcuprum.pplhelper.gui.message.ErrorScreen;
+import ru.kelcuprum.pplhelper.gui.screens.builder.ScreenBuilder;
 
 import static ru.kelcuprum.alinlib.gui.Icons.*;
 import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.MODS;
@@ -28,32 +27,31 @@ public class CommandsScreen {
     public Screen parent;
     public Screen build(Screen parent){
         this.parent = parent;
-        ConfigScreenBuilder builder = new ConfigScreenBuilder(parent, Component.translatable("pplhelper"))
-                .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.news")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new NewsListScreen(parent))).setIcon(WIKI))
-                .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.projects")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ProjectsScreen(parent))).setIcon(PROJECTS))
-                .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.commands")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new CommandsScreen().build(parent))).setIcon(LIST))
-                .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.mods")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ModsScreen().build(parent))).setIcon(MODS))
+        ScreenBuilder builder = new ScreenBuilder(parent, Component.translatable("pplhelper.commands"))
+                .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.news")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new NewsListScreen(build(parent)))).setSprite(WIKI).setSize(20, 20))
+                .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.projects")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ProjectsScreen(build(parent)))).setSprite(PROJECTS).setSize(20, 20))
+                .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.commands")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new CommandsScreen().build(parent))).setSprite(LIST).setSize(20, 20))
+                .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.mods")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ModsScreen().build(parent))).setSprite(MODS).setSize(20, 20))
 
-                .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.pack")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new UpdaterScreen().build(parent))).setIcon(PepelandHelper.Icons.PACK_INFO))
-                .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.configs")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ConfigScreen().build(parent))).setIcon(OPTIONS))
+                .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.pack")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new UpdaterScreen().build(parent))).setSprite(PepelandHelper.Icons.PACK_INFO).setSize(20, 20))
+                .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.configs")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ConfigScreen().build(parent))).setSprite(OPTIONS).setSize(20, 20))
 
-                .addWidget(new TextBox(Component.translatable("pplhelper.commands")))
-                .addWidget(new MessageBox(Component.translatable("pplhelper.commands.description")));
+                .addWidget(new TextBuilder(Component.translatable("pplhelper.commands.description")).setType(TextBuilder.TYPE.MESSAGE));
         try {
             JsonArray mods = PepeLandHelperAPI.getCommands();
             for(JsonElement element : mods){
                 JsonObject data = element.getAsJsonObject();
                 CategoryBox cat = new CategoryBox(Component.literal(Localization.fixFormatCodes("&l"+data.get("title").getAsString()+"&r")));
-                if(data.has("description")) cat.addValue(new MessageBox(Component.literal(data.get("description").getAsString()), false));
+                if(data.has("description")) cat.addValue(new TextBuilder(Component.literal(data.get("description").getAsString())).setType(TextBuilder.TYPE.MESSAGE));
                 for(JsonElement element1 : data.getAsJsonArray("commands")){
                     JsonObject cmd = element1.getAsJsonObject();
-                    Blockquote box = new Blockquote(Component.literal(Localization.fixFormatCodes("&l/"+cmd.get("cmd").getAsString()+"&r - " + cmd.get("description").getAsString())), false, (s) -> {
+                    TextBox box = new TextBuilder(Component.literal(Localization.fixFormatCodes("&l/"+cmd.get("cmd").getAsString()+"&r - " + cmd.get("description").getAsString())), (s) -> {
                                 AlinLib.MINECRAFT.keyboardHandler.setClipboard("/" + cmd.get("cmd").getAsString());
                                 new ToastBuilder().setTitle(Component.translatable("pplhelper"))
                                         .setIcon(PepelandHelper.Icons.WHITE_PEPE)
                                         .setMessage(Component.translatable("pplhelper.commands.notice.description")).buildAndShow();
                             }
-                    );
+                    ).setType(TextBuilder.TYPE.BLOCKQUOTE).build();
                     cat.addValue(box);
                 }
                 cat.changeState(false);
