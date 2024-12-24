@@ -109,11 +109,7 @@ public class AbstractPPLScreen extends Screen {
 
         // --- Panel
         guiGraphics.fill(getPanelX()-5, 5, getPanelX()+getPanelWidth()+5, 35, Colors.BLACK_ALPHA);
-        guiGraphics.blit(
-                //#if MC >= 12102
-                RenderType::guiTextured,
-                //#endif
-                WHITE_PEPE, getPanelX(), 10, 0f, 0f, 20, 20, 20, 20);
+        guiGraphics.blit(RenderType::guiTextured, WHITE_PEPE, getPanelX(), 10, 0f, 0f, 20, 20, 20, 20);
         guiGraphics.fill(getPanelX()-5, 40, getPanelX()+getPanelWidth()+5, maxPanelY, Colors.BLACK_ALPHA);
     }
 
