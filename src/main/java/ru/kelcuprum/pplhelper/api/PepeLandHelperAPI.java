@@ -45,7 +45,6 @@ public class PepeLandHelperAPI {
             for(int i = 1; i<array.size()+1;i++) worlds[i] = array.get(i-1).getAsString();
             return worlds;
         } catch (Exception ex){
-            ex.printStackTrace();
             return new String[0];
         }
     }

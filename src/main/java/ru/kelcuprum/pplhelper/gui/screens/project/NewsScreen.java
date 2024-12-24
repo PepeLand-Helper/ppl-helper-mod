@@ -7,13 +7,11 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.glfw.GLFW;
-import org.w3c.dom.Text;
 import ru.kelcuprum.alinlib.gui.Colors;
 import ru.kelcuprum.alinlib.gui.components.ConfigureScrolWidget;
 import ru.kelcuprum.alinlib.gui.components.ImageWidget;
 import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.text.TextBuilder;
-import ru.kelcuprum.alinlib.gui.components.text.TextBox;
 import ru.kelcuprum.pplhelper.PepelandHelper;
 import ru.kelcuprum.pplhelper.api.components.News;
 import ru.kelcuprum.pplhelper.gui.TextureHelper;
@@ -85,9 +83,9 @@ public class NewsScreen extends Screen {
         for (AbstractWidget widget : widgets) addWidgetsToScroller(widget);
     }
 
-    public AbstractWidget addWidgetsToScroller(AbstractWidget widget) {
+    public void addWidgetsToScroller(AbstractWidget widget) {
         this.scroller.addWidget(widget);
-        return this.addWidget(widget);
+        this.addWidget(widget);
     }
 
     @Override

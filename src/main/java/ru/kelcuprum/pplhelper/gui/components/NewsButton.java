@@ -29,11 +29,7 @@ public class NewsButton extends Button {
             int x = 5;
             if(news.icon != null && !news.icon.isEmpty()) {
                 ResourceLocation icon = TextureHelper.getTexture(news.icon, String.format("news_%s", news.id));
-                guiGraphics.blit(
-                        //#if MC >= 12102
-                        RenderType::guiTextured,
-                        //#endif
-                        icon, getX() + 2, getY() + 2, 0.0F, 0.0F, 36, 36, 36, 36);
+                guiGraphics.blit(RenderType::guiTextured, icon, getX() + 2, getY() + 2, 0.0F, 0.0F, 36, 36, 36, 36);
                 x+=40;
             }
             renderString(guiGraphics, news.title, getX() + x, getY() + 8);

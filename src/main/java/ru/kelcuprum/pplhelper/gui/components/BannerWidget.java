@@ -7,12 +7,8 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import ru.kelcuprum.alinlib.gui.components.Description;
-import ru.kelcuprum.alinlib.gui.components.ImageWidget;
 import ru.kelcuprum.pplhelper.gui.TextureHelper;
 
-import static ru.kelcuprum.alinlib.gui.GuiUtils.DEFAULT_HEIGHT;
-import static ru.kelcuprum.alinlib.gui.GuiUtils.DEFAULT_WIDTH;
 import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.PACK_INFO;
 
 public class BannerWidget extends AbstractWidget {
@@ -40,11 +36,7 @@ public class BannerWidget extends AbstractWidget {
         ResourceLocation image = TextureHelper.getBanner(url, id);
         if(image == PACK_INFO) return;
         nativeImage = TextureHelper.urlsImages.get(url);
-        guiGraphics.blit(
-                //#if MC >= 12102
-                RenderType::guiTextured,
-                //#endif
-                image, getX(), getY(), 0.0F, 0.0F, getWidth(), getHeight(), getWidth(), getHeight());
+        guiGraphics.blit(RenderType::guiTextured, image, getX(), getY(), 0.0F, 0.0F, getWidth(), getHeight(), getWidth(), getHeight());
     }
 
     @Override

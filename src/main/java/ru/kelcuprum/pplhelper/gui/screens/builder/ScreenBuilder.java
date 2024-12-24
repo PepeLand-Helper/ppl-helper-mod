@@ -7,7 +7,6 @@ import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.gui.GuiUtils;
 import ru.kelcuprum.alinlib.gui.components.builder.AbstractBuilder;
 import ru.kelcuprum.alinlib.gui.components.text.CategoryBox;
-import ru.kelcuprum.alinlib.gui.screens.AbstractConfigScreen;
 import ru.kelcuprum.alinlib.gui.styles.AbstractStyle;
 
 import java.util.ArrayList;

@@ -173,7 +173,6 @@ public class TextureHelper {
             }
         } catch (Exception e) {
             PepelandHelper.LOG.log("MAP ERROR!", Level.ERROR);
-            e.printStackTrace();
         }
     }
 
@@ -196,9 +195,7 @@ public class TextureHelper {
                 if (file.exists() && System.currentTimeMillis() - Files.readAttributes(file.toPath(), BasicFileAttributes.class).creationTime().toMillis() >= 259200000)
                     file.deleteOnExit();
                 else array.add(element);
-            } catch (Exception ex){
-                ex.printStackTrace();
-            }
+            } catch (Exception ignored){}
         }
         map = array;
     }

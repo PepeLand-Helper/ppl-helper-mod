@@ -7,7 +7,6 @@ import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBooleanBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.editbox.EditBoxBuilder;
 import ru.kelcuprum.alinlib.gui.components.text.CategoryBox;
-import ru.kelcuprum.alinlib.gui.components.text.TextBox;
 import ru.kelcuprum.pplhelper.PepelandHelper;
 import ru.kelcuprum.pplhelper.gui.screens.*;
 import ru.kelcuprum.pplhelper.gui.screens.builder.ScreenBuilder;

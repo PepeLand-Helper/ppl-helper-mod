@@ -11,8 +11,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.repository.Pack;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.AlinLogger;
@@ -24,7 +22,6 @@ import ru.kelcuprum.alinlib.config.Config;
 import ru.kelcuprum.alinlib.config.Localization;
 import ru.kelcuprum.alinlib.gui.GuiUtils;
 import ru.kelcuprum.alinlib.gui.screens.ConfirmScreen;
-import ru.kelcuprum.alinlib.gui.styles.SafeStyle;
 import ru.kelcuprum.pplhelper.api.PepeLandAPI;
 import ru.kelcuprum.pplhelper.api.components.Project;
 import ru.kelcuprum.pplhelper.gui.TextureHelper;
@@ -45,7 +42,6 @@ public class PepelandHelper implements ClientModInitializer {
     public static Config config = new Config("config/pplhelper/config.json");
     public static boolean isInstalledABI = FabricLoader.getInstance().isModLoaded("actionbarinfo");
     public static Project selectedProject;
-    public static SafeStyle safeStyle = new SafeStyle();
 
     @Override
     public void onInitializeClient() {
@@ -130,7 +126,7 @@ public class PepelandHelper implements ClientModInitializer {
                 if(file.exists() && originalChecksum.contains(toSHA(path))){
                     consumer.accept(true);
                 } else {
-                    if(file.exists()) file.delete();
+                    if(file.exists()) file.deleteOnExit();
                     throw new RuntimeException(Component.translatable("pplhelper.pack.file_broken").getString());
                 }
             } catch (Exception e) {

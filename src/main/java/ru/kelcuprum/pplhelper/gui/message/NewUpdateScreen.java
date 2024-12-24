@@ -23,7 +23,6 @@ public class NewUpdateScreen extends Screen {
     TextBox msg;
     @Override
     protected void init() {
-        int y = height / 2 - 20;
         addRenderableOnly(new TextBuilder(title).setPosition(width/2-125, 10).setSize(250, 20).build());
         msg = (TextBox) addRenderableOnly(new TextBuilder( Component.translatable("pplhelper.pack.update.avalible.description", oldVer, pack.get("version").getAsString()))
                 .setType(TextBuilder.TYPE.MESSAGE).setAlign(TextBuilder.ALIGN.CENTER).setPosition(width/2-125, 40).setSize(250, 40).build());

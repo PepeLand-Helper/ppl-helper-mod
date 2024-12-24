@@ -44,7 +44,6 @@ public class ScaledTextBox extends TextBox {
 
     public ScaledTextBox(int x, int y, int width, int height, Component label, boolean isCenter, float scale, OnPress onPress) {
         super(new TextBuilder(label, onPress).setAlign(isCenter ? TextBuilder.ALIGN.CENTER : TextBuilder.ALIGN.LEFT).setPosition(x, y).setSize(width, height));
-        //        super(x, y, width, height, label, isCenter, onPress);
         this.scale = scale;
         this.isCentered = isCenter;
         this.setHeight((int) (height*scale));
@@ -55,9 +54,8 @@ public class ScaledTextBox extends TextBox {
         guiGraphics.pose().scale(scale, scale, scale);
         guiGraphics.enableScissor((int) (getX()-(3*scale)), (int) (getY()-(3*scale)), (int) (getRight()+(3*scale)), (int) (getBottom()+(3*scale)));
         if(isDoesNotFit()){
-//            renderScrollingString(guiGraphics, AlinLib.MINECRAFT.font, 2, -1);
-            if(isCentered) guiGraphics.drawCenteredString(AlinLib.MINECRAFT.font, AlinLib.MINECRAFT.font.plainSubstrByWidth(this.getMessage().getString(), (int) ((width-30)/scale))+"...", (int) ((this.getX() + (float) this.getWidth() / 2) / scale), (int) ((this.getY() + (float) ((this.getHeight()/scale) - 8) / 2)/scale), 16777215);
-            else guiGraphics.drawString(AlinLib.MINECRAFT.font, AlinLib.MINECRAFT.font.plainSubstrByWidth(this.getMessage().getString(), (int) ((width-30)/scale))+"...", (int) ((this.getX() + (float) ((this.getHeight()/scale) - 8) / 2)/scale), (int) ((this.getY() + (float) ((this.getHeight()/scale) - 8) / 2)/scale), 16777215);
+            if(isCentered) guiGraphics.drawCenteredString(AlinLib.MINECRAFT.font, AlinLib.MINECRAFT.font.plainSubstrByWidth(this.getMessage().getString(), (int) ((width-30)/scale))+"...", (int) ((this.getX() + (float) this.getWidth() / 2) / scale), (int) ((this.getY() + ((this.getHeight()/scale) - 8) / 2)/scale), 16777215);
+            else guiGraphics.drawString(AlinLib.MINECRAFT.font, AlinLib.MINECRAFT.font.plainSubstrByWidth(this.getMessage().getString(), (int) ((width-30)/scale))+"...", (int) ((this.getX() + ((this.getHeight()/scale) - 8) / 2)/scale), (int) ((this.getY() + ((this.getHeight()/scale) - 8) / 2)/scale), 16777215);
             if(isHovered) {
                 guiGraphics.pose().popPose();
                 guiGraphics.disableScissor();
@@ -66,11 +64,8 @@ public class ScaledTextBox extends TextBox {
                 guiGraphics.pose().scale(scale, scale, scale);
                 guiGraphics.enableScissor((int) (getX()-(3*scale)), (int) (getY()-(3*scale)), (int) (getRight()+(3*scale)), (int) (getBottom()+(3*scale)));
             }
-        } else if (this.isCentered) {
-            guiGraphics.drawCenteredString(AlinLib.MINECRAFT.font, this.getMessage(), (int) ((this.getX() + (float) this.getWidth() / 2) / scale), (int) ((this.getY() + (float) ((this.getHeight()/scale) - 8) / 2)/scale), 16777215);
-        } else {
-            guiGraphics.drawString(AlinLib.MINECRAFT.font, this.getMessage(), (int) ((this.getX() + (float) ((this.getHeight()/scale) - 8) / 2)/scale), (int) ((this.getY() + (float) ((this.getHeight()/scale) - 8) / 2)/scale), 16777215);
-        }
+        } else if (this.isCentered) guiGraphics.drawCenteredString(AlinLib.MINECRAFT.font, this.getMessage(), (int) ((this.getX() + (float) this.getWidth() / 2) / scale), (int) ((this.getY() + ((this.getHeight()/scale) - 8) / 2)/scale), 16777215);
+        else guiGraphics.drawString(AlinLib.MINECRAFT.font, this.getMessage(), (int) ((this.getX() + ((this.getHeight()/scale) - 8) / 2)/scale), (int) ((this.getY() + ((this.getHeight()/scale) - 8) / 2)/scale), 16777215);
         guiGraphics.disableScissor();
         guiGraphics.pose().popPose();
     }

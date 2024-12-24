@@ -145,9 +145,9 @@ public class ProjectScreen extends Screen {
         for (AbstractWidget widget : widgets) addWidgetsToScroller(widget);
     }
 
-    public AbstractWidget addWidgetsToScroller(AbstractWidget widget) {
+    public void addWidgetsToScroller(AbstractWidget widget) {
         this.scroller.addWidget(widget);
-        return this.addWidget(widget);
+        this.addWidget(widget);
     }
 
     protected void addRenderableWidgets(@NotNull List<AbstractWidget> widgets) {

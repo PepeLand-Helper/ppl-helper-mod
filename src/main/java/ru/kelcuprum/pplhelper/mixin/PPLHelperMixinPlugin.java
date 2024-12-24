@@ -1,17 +1,16 @@
 package ru.kelcuprum.pplhelper.mixin;
 
 import net.fabricmc.loader.api.FabricLoader;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
+import ru.kelcuprum.alinlib.AlinLogger;
 
 import java.util.List;
 import java.util.Set;
 
 public class PPLHelperMixinPlugin implements IMixinConfigPlugin {
-    public static final Logger LOG = LogManager.getLogger("PPL Helper > Mixin");
+    public static final AlinLogger LOG = new AlinLogger("PPL Helper > Mixin");
     public static boolean isInstalledABI = FabricLoader.getInstance().isModLoaded("actionbarinfo");
     @Override
     public void onLoad(String mixinPackage) {
@@ -25,11 +24,10 @@ public class PPLHelperMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        if(!mixinClassName.startsWith("ru.kelcuprum.pplhelper.mixin.")){
+        if(!mixinClassName.startsWith("ru.kelcuprum.pplhelper.mixin."))
             return false;
-        }
         if(mixinClassName.startsWith("ru.kelcuprum.pplhelper.mixin.ABIMixin")){
-            if(isInstalledABI) LOG.warn(String.format("Mixin %s for %s loaded, %s", mixinClassName, targetClassName, "Action Bar Info installed"));
+            if(isInstalledABI) LOG.warn("Mixin %s for %s loaded, %s", mixinClassName, targetClassName, "Action Bar Info installed");
             return isInstalledABI;
         }
         return true;

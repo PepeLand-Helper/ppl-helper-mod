@@ -16,7 +16,6 @@ import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.editbox.EditBoxBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.selector.SelectorBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.text.TextBuilder;
-import ru.kelcuprum.alinlib.gui.components.text.TextBox;
 import ru.kelcuprum.pplhelper.PepelandHelper;
 import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
 import ru.kelcuprum.pplhelper.api.components.Project;
@@ -43,7 +42,7 @@ public class ProjectsScreen extends Screen {
     private String query = "";
     private int world = 0;
     private List<Project> lastProjects;
-    private static String[] worlds = PepeLandHelperAPI.getWorlds();
+
     @Override
     protected void init() {
         try {
@@ -57,7 +56,7 @@ public class ProjectsScreen extends Screen {
             y += 25;
             int searchSize = (size - 30) / 2;
             addRenderableWidget(new EditBoxBuilder(Component.translatable("pplhelper.news.search"), (s) -> query = s).setValue(query).setPosition(x, y).setWidth(searchSize).build());
-            worlds = PepeLandHelperAPI.getWorlds();
+            String[] worlds = PepeLandHelperAPI.getWorlds();
             addRenderableWidget(new SelectorBuilder(Component.translatable("pplhelper.project.world"), (s) -> world = s.getPosition()).setList(worlds).setValue(world).setPosition(x + 5 + searchSize, y).setWidth(searchSize).build());
             addRenderableWidget(new ButtonBuilder(Component.translatable("pplhelper.news.find"), (s) -> search()).setSprite(SEARCH).setPosition(x + size - 20, y).setWidth(20).build());
             y += 25;
@@ -96,9 +95,9 @@ public class ProjectsScreen extends Screen {
         for (AbstractWidget widget : widgets) addWidgetsToScroller(widget);
     }
 
-    public AbstractWidget addWidgetsToScroller(AbstractWidget widget) {
+    public void addWidgetsToScroller(AbstractWidget widget) {
         this.scroller.addWidget(widget);
-        return this.addWidget(widget);
+        this.addWidget(widget);
     }
 
     @Override

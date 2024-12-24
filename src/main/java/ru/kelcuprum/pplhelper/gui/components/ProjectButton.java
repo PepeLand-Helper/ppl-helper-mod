@@ -29,11 +29,7 @@ public class ProjectButton extends Button {
             int x = 5;
             if(project.icon != null && !project.icon.isEmpty()) {
                 ResourceLocation icon = TextureHelper.getTexture(project.icon, String.format("project_%s", project.id));
-                guiGraphics.blit(
-                        //#if MC >= 12102
-                        RenderType::guiTextured,
-                        //#endif
-                        icon, getX() + 2, getY() + 2, 0.0F, 0.0F, 36, 36, 36, 36);
+                guiGraphics.blit(RenderType::guiTextured, icon, getX() + 2, getY() + 2, 0.0F, 0.0F, 36, 36, 36, 36);
                 x+=40;
             }
             renderString(guiGraphics, project.title, getX() + x, getY() + 8);
@@ -41,15 +37,15 @@ public class ProjectButton extends Button {
         }
     }
 
-    protected void renderScrollingString(GuiGraphics guiGraphics, Font font, Component message, int x, int y, int color) {
-        int k = this.getX() + x + (project.icon != null && !project.icon.isEmpty() ? 40 : 0);
-        int l = this.getX() + this.getWidth() - x;
-        renderScrollingString(guiGraphics, font, message, k, y, l, y + font.lineHeight, color);
+    protected void renderScrollingString(GuiGraphics guiGraphics, Font font, Component message, int y) {
+        int k = this.getX() + 5 + (project.icon != null && !project.icon.isEmpty() ? 40 : 0);
+        int l = this.getX() + this.getWidth() - 5;
+        renderScrollingString(guiGraphics, font, message, k, y, l, y + font.lineHeight, -1);
     }
 
     protected void renderString(GuiGraphics guiGraphics, String text, int x, int y) {
         if (getWidth() - (project.icon != null && !project.icon.isEmpty() ? 50 : 10) < AlinLib.MINECRAFT.font.width(text))
-            renderScrollingString(guiGraphics, AlinLib.MINECRAFT.font, Component.literal(text), 5, y - 1, -1);
+            renderScrollingString(guiGraphics, AlinLib.MINECRAFT.font, Component.literal(text), y - 1);
         else guiGraphics.drawString(AlinLib.MINECRAFT.font, text, x, y, -1);
     }
 }
