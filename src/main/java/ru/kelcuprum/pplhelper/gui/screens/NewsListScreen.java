@@ -53,7 +53,7 @@ public class NewsListScreen extends Screen {
         y+=25;
 
         int finalY = y;
-        this.scroller = addRenderableWidget(new ConfigureScrolWidget(x+size - 3, y, 4, this.height-y, Component.empty(), scroller -> {
+        this.scroller = addRenderableWidget(new ConfigureScrolWidget(x+size+1, y, 4, this.height-y, Component.empty(), scroller -> {
             scroller.innerHeight = 0;
             for(AbstractWidget widget : widgets){
                 if(widget.visible){

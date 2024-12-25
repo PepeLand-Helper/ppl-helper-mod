@@ -101,7 +101,7 @@ public class ProjectScreen extends Screen {
         addRenderableWidget(new ButtonBuilder(Component.literal("x"), (s)->onClose()).setPosition( x+size-20, 5).setWidth(20).build()); //, 20, 20,
         addRenderableWidget(new ButtonBuilder(Component.translatable("pplhelper.project.web"), (s)->PepelandHelper.confirmLinkNow(this, String.format("https://h.pplmods.ru/projects/%s", project.id))).setSprite(WEB).setPosition( x, 5).setWidth(20).build()); //, 20, 20,
         addRenderableWidget(new TextBuilder(title).setPosition(x+25, 5).setSize(size-50, 20).build());
-        this.scroller = addRenderableWidget(new ConfigureScrolWidget(x+size - 3, y, 4, this.height-y, Component.empty(), scroller -> {
+        this.scroller = addRenderableWidget(new ConfigureScrolWidget(x+size + 1, y, 4, this.height-y, Component.empty(), scroller -> {
             scroller.innerHeight = 0;
             for(AbstractWidget widget : widgets){
                 if(widget.visible){

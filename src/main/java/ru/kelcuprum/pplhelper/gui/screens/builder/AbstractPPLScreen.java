@@ -49,7 +49,7 @@ public class AbstractPPLScreen extends Screen {
             heigthScroller+=(widget.getHeight()+5);
             y+=(widget.getHeight()+5);
         }
-        this.scroller_panel = addRenderableWidget(new ConfigureScrolWidget(x+getPanelWidth()-3, panelY, 4, Math.min(y-panelY, height-5-panelY), Component.empty(), scroller -> {
+        this.scroller_panel = addRenderableWidget(new ConfigureScrolWidget(x+getPanelWidth()+1, panelY, 4, Math.min(y-panelY, height-5-panelY), Component.empty(), scroller -> {
             scroller.innerHeight = 0;
             for (AbstractWidget widget : builder.panelWidgets) {
                 if (widget.visible) {
@@ -74,7 +74,7 @@ public class AbstractPPLScreen extends Screen {
             widget.setPosition(x, y);
             y+=(widget.getHeight()+5);
         }
-        this.scroller = addRenderableWidget(new ConfigureScrolWidget(getX()+getFactWidth()-3, contentY, 4, Math.min(y-contentY, height-5-contentY), Component.empty(), scroller -> {
+        this.scroller = addRenderableWidget(new ConfigureScrolWidget(getX()+getFactWidth()+1, contentY, 4, Math.min(y-contentY, height-5-contentY), Component.empty(), scroller -> {
             scroller.innerHeight = 0;
             CategoryBox lastCategory = null;
             for (AbstractWidget widget : builder.widgets) {
