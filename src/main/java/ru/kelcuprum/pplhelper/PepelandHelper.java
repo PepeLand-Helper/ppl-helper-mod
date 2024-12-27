@@ -30,7 +30,6 @@ import ru.kelcuprum.pplhelper.api.components.Project;
 import ru.kelcuprum.pplhelper.gui.TextureHelper;
 import ru.kelcuprum.pplhelper.gui.configs.ConfigScreen;
 import ru.kelcuprum.pplhelper.gui.configs.UpdaterScreen;
-import ru.kelcuprum.pplhelper.gui.message.DownloadScreen;
 import ru.kelcuprum.pplhelper.gui.message.NewUpdateScreen;
 import ru.kelcuprum.pplhelper.gui.screens.CommandsScreen;
 import ru.kelcuprum.pplhelper.gui.screens.ModsScreen;
