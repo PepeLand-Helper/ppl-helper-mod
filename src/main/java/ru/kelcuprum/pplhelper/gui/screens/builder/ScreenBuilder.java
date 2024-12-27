@@ -3,6 +3,7 @@ package ru.kelcuprum.pplhelper.gui.screens.builder;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import org.lwjgl.system.windows.WINDOWPLACEMENT;
 import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.gui.GuiUtils;
 import ru.kelcuprum.alinlib.gui.components.builder.AbstractBuilder;
@@ -66,6 +67,14 @@ public class ScreenBuilder {
         this.panelWidgets.add(widget);
         return this;
     }
+    public ScreenBuilder addPanelWidgets(AbstractBuilder... widgets){
+        for(AbstractBuilder widget : widgets) addPanelWidget(widget);
+        return this;
+    }
+    public ScreenBuilder addPanelWidgets(AbstractWidget... widgets){
+        for(AbstractWidget widget : widgets) addPanelWidget(widget);
+        return this;
+    }
 
     public ScreenBuilder addWidget(AbstractBuilder builder){
         return addWidget(builder.build());
@@ -95,6 +104,14 @@ public class ScreenBuilder {
             widget.setPosition(yC, getX());
             yC+=widget.getHeight()+5;
         }
+        return this;
+    }
+    public ScreenBuilder addWidgets(AbstractBuilder... widgets){
+        for(AbstractBuilder widget : widgets) addWidget(widget);
+        return this;
+    }
+    public ScreenBuilder addWidgets(AbstractWidget... widgets){
+        for(AbstractWidget widget : widgets) addWidget(widget);
         return this;
     }
     //

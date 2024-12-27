@@ -1,6 +1,7 @@
 package ru.kelcuprum.pplhelper.gui.configs;
 
 import com.google.gson.JsonObject;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import ru.kelcuprum.alinlib.AlinLib;
@@ -35,25 +36,21 @@ public class UpdaterScreen {
                         AlinLib.MINECRAFT.setScreen(build(parent));
                     }
                 })
-                .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.news")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new NewsListScreen(parent))).setSprite(WIKI).setSize(20, 20))
-                .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.projects")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ProjectsScreen(build(parent)))).setSprite(PROJECTS).setSize(20, 20))
-                .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.commands")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new CommandsScreen().build(parent))).setSprite(LIST).setSize(20, 20))
-                .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.mods")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ModsScreen().build(parent))).setSprite(MODS).setSize(20, 20))
-                .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.pack")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new UpdaterScreen().build(parent))).setSprite(PepelandHelper.Icons.PACK_INFO).setSize(20, 20))
-                .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.configs")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ConfigScreen().build(parent))).setSprite(OPTIONS).setSize(20, 20))
+                .addPanelWidgets(PepelandHelper.getPanelWidgets(parent, parent))
 
                 .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.pack_updates.notice"), true).setConfig(PepelandHelper.config, "PACK_UPDATES.NOTICE"))
-                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.pack_updates.auto_update"), true).setConfig(PepelandHelper.config, "PACK_UPDATES.AUTO_UPDATE"))
-                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.pack_updates.only_emote"), false).setConfig(PepelandHelper.config, "PACK_UPDATES.ONLY_EMOTE"));
+                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.pack_updates.auto_update"), true).setConfig(PepelandHelper.config, "PACK_UPDATES.AUTO_UPDATE"));
+                if(FabricLoader.getInstance().isModLoaded("citresewn")) builder.addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.pack_updates.only_emote"), false).setConfig(PepelandHelper.config, "PACK_UPDATES.ONLY_EMOTE"));
+                else builder.addWidget(new TextBuilder(Component.translatable("pplhelper.configs.pack_updates.only_emote.citresewn_not_installed")).setType(TextBuilder.TYPE.BLOCKQUOTE));
 
         try {
-            JsonObject pack = PepeLandAPI.getPackInfo(PepelandHelper.config.getBoolean("PACK_UPDATES.ONLY_EMOTE", false));
+            JsonObject pack = PepeLandAPI.getPackInfo(PepelandHelper.onlyEmotesCheck());
             if (packVersion.isBlank()) {
                 if (PepelandHelper.getAvailablePack().isEmpty()) {
                     builder.addWidget(new TextBuilder(Component.translatable("pplhelper.pack.not_installed")));
                     builder.addWidget(new ButtonBuilder(Component.translatable("pplhelper.pack.download"), Component.literal("v" + pack.get("version").getAsString()))
                             .setOnPress((s) ->
-                                    AlinLib.MINECRAFT.setScreen(new DownloadScreen(build(parent), pack, PepelandHelper.config.getBoolean("PACK_UPDATES.ONLY_EMOTE", false)))
+                                    AlinLib.MINECRAFT.setScreen(new DownloadScreen(build(parent), pack, PepelandHelper.onlyEmotesCheck()))
                             ).build());
                 } else {
                     builder.addWidget(new ButtonBuilder(Component.translatable("pplhelper.pack.not_selected")).setOnPress((s) -> {
@@ -66,7 +63,7 @@ public class UpdaterScreen {
                 if (!pack.get("version").getAsString().contains(packVersion))
                     builder.addWidget(new ButtonBuilder(Component.translatable("pplhelper.pack.download_update"), Component.literal("v" + pack.get("version").getAsString()))
                             .setOnPress((s) ->
-                                    AlinLib.MINECRAFT.setScreen(new DownloadScreen(build(parent), pack, PepelandHelper.config.getBoolean("PACK_UPDATES.ONLY_EMOTE", false)))
+                                    AlinLib.MINECRAFT.setScreen(new DownloadScreen(build(parent), pack, PepelandHelper.onlyEmotesCheck()))
                             ).build());
                 builder.addWidget(new ButtonBuilder(Component.translatable("pplhelper.pack.installed"), Component.literal("v" + packVersion)).setActive(false));
             }

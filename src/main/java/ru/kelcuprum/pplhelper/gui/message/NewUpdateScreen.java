@@ -27,7 +27,7 @@ public class NewUpdateScreen extends Screen {
         msg = (TextBox) addRenderableOnly(new TextBuilder( Component.translatable("pplhelper.pack.update.avalible.description", oldVer, pack.get("version").getAsString()))
                 .setType(TextBuilder.TYPE.MESSAGE).setAlign(TextBuilder.ALIGN.CENTER).setPosition(width/2-125, 40).setSize(250, 40).build());
         addRenderableWidget(new ButtonBuilder(Component.translatable("pplhelper.pack.update.avalible.accept"))
-                .setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new DownloadScreen(parent, pack, PepelandHelper.config.getBoolean("PACK_UPDATES.ONLY_EMOTE", false))))
+                .setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new DownloadScreen(parent, pack, PepelandHelper.onlyEmotesCheck())))
                 .setPosition(width/2-150, height-50).setWidth(148).build());
         addRenderableWidget(new ButtonBuilder(Component.translatable("pplhelper.pack.update.avalible.auto"))
                 .setOnPress((s) -> {

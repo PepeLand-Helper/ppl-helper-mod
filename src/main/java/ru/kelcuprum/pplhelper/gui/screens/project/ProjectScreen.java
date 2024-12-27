@@ -46,48 +46,6 @@ public class ProjectScreen extends Screen {
         initContent();
     }
 
-    protected void initPanel() {
-        int x = 10;
-        int size = 200;
-        addRenderableWidget(new TextBuilder(title).setPosition(x, 5).setSize(size-25, 20).build());
-        addRenderableWidget(new ButtonBuilder(Component.literal("x"), (s)->onClose()).setPosition( x+size-15, 5).setWidth(20).build()); //, 20, 20,
-        int y = 35;
-        int iconSize = project.icon != null && !project.icon.isEmpty() ? 41 : 0;
-        if(project.icon != null && !project.icon.isEmpty()) addRenderableWidget(new ImageWidget(x, y, 36, 36, TextureHelper.getTexture(project.icon, String.format("project_%s", project.id)), 36, 36, Component.empty()));
-        addRenderableWidget(new TextBuilder(Component.literal(project.title)).setAlign(TextBuilder.ALIGN.LEFT).setPosition(x + iconSize, y).setSize(size - iconSize, 18).build());
-        addRenderableWidget(new TextBuilder(Component.literal(project.creators)).setAlign(TextBuilder.ALIGN.LEFT).setPosition(x + iconSize, y + 18).setSize(size - iconSize, 18).build());
-        y += 41;
-        if(project.description != null && !project.description.isEmpty()) {
-            String desc = project.description;
-            if(desc.length() > 93) desc = desc.substring(0, 92)+"...";
-            TextBox msg = (TextBox) new TextBuilder(Component.literal(desc)).setType(TextBuilder.TYPE.BLOCKQUOTE).setPosition(x, y).setSize(size, 20).build();
-            addRenderableWidget(msg);
-            y += (5 + msg.getHeight());
-        }
-        MutableComponent coord = Component.empty().append(Component.translatable("pplhelper.project.coordinates", project.world));
-        if(project.coordinates$overworld != null && !project.coordinates$overworld.isEmpty())
-            coord.append("\n").append(Component.translatable("pplhelper.project.coordinates.overworld")).append(": ").append(project.coordinates$overworld);
-        if(project.coordinates$nether != null && !project.coordinates$nether.isEmpty())
-            coord.append("\n").append(Component.translatable("pplhelper.project.coordinates.nether")).append(": ").append(project.coordinates$nether);
-        if(project.coordinates$end != null && !project.coordinates$end.isEmpty())
-            coord.append("\n").append(Component.translatable("pplhelper.project.coordinates.end")).append(": ").append(project.coordinates$end);
-        TextBox msg = (TextBox) new TextBuilder(coord).setType(TextBuilder.TYPE.MESSAGE).setPosition(x, y).setSize(size, 20).build();
-        addRenderableWidget(msg);
-        y += (5 + msg.getHeight());
-
-        addRenderableWidget(new ButtonBuilder(Component.translatable("pplhelper.project.web"), (s) -> PepelandHelper.confirmLinkNow(this, String.format("https://h.pplmods.ru/projects/%s", project.id))).setPosition(x, y).setWidth(size).build());
-        y+=25;
-        if(PepelandHelper.isInstalledABI) {
-            addRenderableWidget(new ButtonBuilder(Component.translatable((PepelandHelper.selectedProject == null || PepelandHelper.selectedProject.id != project.id) ? "pplhelper.project.abi" : "pplhelper.project.abi.unfollow"), (s) -> {
-                PepelandHelper.selectedProject = (PepelandHelper.selectedProject == null || PepelandHelper.selectedProject.id != project.id) ? project : null;
-                s.builder.setTitle(Component.translatable(PepelandHelper.selectedProject == null ? "pplhelper.project.abi" : "pplhelper.project.abi.unfollow"));
-            }).setPosition(x, y).setWidth(size).build());
-            y += 25;
-        }
-
-        maxY = y;
-    }
-
     private ConfigureScrolWidget scroller;
     private List<AbstractWidget> widgets = new ArrayList<>();
     private final int maxSize = 400;

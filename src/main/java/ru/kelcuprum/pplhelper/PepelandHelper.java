@@ -21,13 +21,18 @@ import ru.kelcuprum.alinlib.api.events.client.TextureManagerEvent;
 import ru.kelcuprum.alinlib.config.Config;
 import ru.kelcuprum.alinlib.config.Localization;
 import ru.kelcuprum.alinlib.gui.GuiUtils;
+import ru.kelcuprum.alinlib.gui.components.builder.AbstractBuilder;
+import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
 import ru.kelcuprum.alinlib.gui.screens.ConfirmScreen;
 import ru.kelcuprum.pplhelper.api.PepeLandAPI;
 import ru.kelcuprum.pplhelper.api.components.Project;
 import ru.kelcuprum.pplhelper.gui.TextureHelper;
 import ru.kelcuprum.pplhelper.gui.configs.ConfigScreen;
+import ru.kelcuprum.pplhelper.gui.configs.UpdaterScreen;
 import ru.kelcuprum.pplhelper.gui.message.DownloadScreen;
 import ru.kelcuprum.pplhelper.gui.message.NewUpdateScreen;
+import ru.kelcuprum.pplhelper.gui.screens.CommandsScreen;
+import ru.kelcuprum.pplhelper.gui.screens.ModsScreen;
 import ru.kelcuprum.pplhelper.gui.screens.NewsListScreen;
 import ru.kelcuprum.pplhelper.gui.screens.ProjectsScreen;
 
@@ -37,11 +42,26 @@ import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import static ru.kelcuprum.alinlib.gui.Icons.*;
+import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.PROJECTS;
+
 public class PepelandHelper implements ClientModInitializer {
     public static final AlinLogger LOG = new AlinLogger("PPL Helper");
     public static Config config = new Config("config/pplhelper/config.json");
     public static boolean isInstalledABI = FabricLoader.getInstance().isModLoaded("actionbarinfo");
     public static Project selectedProject;
+
+    public static AbstractBuilder[] getPanelWidgets(Screen parent, Screen current){
+        return new AbstractBuilder[]{
+                new ButtonBuilder(Component.translatable("pplhelper.configs")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ConfigScreen().build(parent))).setSprite(OPTIONS).setSize(20, 20),
+                new ButtonBuilder(Component.translatable("pplhelper.news")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new NewsListScreen(current))).setSprite(WIKI).setSize(20, 20),
+                new ButtonBuilder(Component.translatable("pplhelper.projects")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ProjectsScreen(current))).setSprite(PROJECTS).setSize(20, 20),
+                new ButtonBuilder(Component.translatable("pplhelper.commands")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new CommandsScreen().build(parent))).setSprite(LIST).setSize(20, 20),
+                new ButtonBuilder(Component.translatable("pplhelper.mods")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ModsScreen().build(parent))).setSprite(Icons.MODS).setSize(20, 20),
+
+                new ButtonBuilder(Component.translatable("pplhelper.pack")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new UpdaterScreen().build(parent))).setSprite(Icons.PACK_INFO).setSize(20, 20)
+        };
+    }
 
     @Override
     public void onInitializeClient() {
@@ -54,7 +74,7 @@ public class PepelandHelper implements ClientModInitializer {
                     if(!packInfo.get("version").getAsString().contains(packVersion))
                         AlinLib.MINECRAFT.setScreen(new NewUpdateScreen(s.screen, packVersion, packInfo));
                 } else if(config.getBoolean("PACK_UPDATES.AUTO_UPDATE", false)) {
-                    if(!packInfo.get("version").getAsString().contains(packVersion)) AlinLib.MINECRAFT.setScreen(new DownloadScreen(s.screen, packInfo, PepelandHelper.config.getBoolean("PACK_UPDATES.ONLY_EMOTE", false)));
+                    if(!packInfo.get("version").getAsString().contains(packVersion)) AlinLib.MINECRAFT.setScreen(new DownloadScreen(s.screen, packInfo, onlyEmotesCheck()));
                 }
             }
         });
@@ -86,6 +106,10 @@ public class PepelandHelper implements ClientModInitializer {
         });
         ClientLifecycleEvents.CLIENT_STOPPING.register((s) -> TextureHelper.saveMap());
         TextureManagerEvent.INIT.register(TextureHelper::loadTextures);
+    }
+
+    public static boolean onlyEmotesCheck(){
+        return !FabricLoader.getInstance().isModLoaded("citresewn") || config.getBoolean("PACK_UPDATES.ONLY_EMOTE", false);
     }
 
     public static String getInstalledPack(){

@@ -1,6 +1,7 @@
 package ru.kelcuprum.pplhelper.gui.message;
 
 import com.google.gson.JsonObject;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.RenderType;

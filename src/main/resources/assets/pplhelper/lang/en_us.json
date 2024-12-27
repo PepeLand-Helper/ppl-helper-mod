@@ -11,9 +11,10 @@
   "pplhelper.configs.enable_toast": "Включить уведомления",
   "pplhelper.configs.api": "PepeLand Helper API",
   "pplhelper.configs.api_url": "Адрес API",
-  "pplhelper.configs.pack_updates.notice": "Включить оповещения о новой версии пака",
+  "pplhelper.configs.pack_updates.notice": "Оповещения о новой версии пака",
   "pplhelper.configs.pack_updates.auto_update": "Автообновление",
   "pplhelper.configs.pack_updates.only_emote": "Только эмоуты",
+  "pplhelper.configs.pack_updates.only_emote.citresewn_not_installed": "У вас не установлен CIT Resewn, поэтому мод будет загружать только эмоуты",
 
   "pplhelper.pack": "Ресурс пак",
   "pplhelper.pack.not_installed": "У вас не установлен официальный пак!",
@@ -22,16 +23,16 @@
   "pplhelper.pack.installed": "Установленная версия пака:",
 
   "pplhelper.pack.download_screen": "Идет загрузка пака",
-  "pplhelper.pack.download_screen.wait": "Пожалуйста подождите",
+  "pplhelper.pack.download_screen.wait": "Пожалуйста, подождите",
   "pplhelper.pack.downloaded": "Ресурс пак загружен!",
-  "pplhelper.pack.not_selected": "Поставить установленный пак",
+  "pplhelper.pack.not_selected": "Включить установленный пак",
   "pplhelper.pack.file_broken": "Не удалось получить пак (файл повреждён)",
   "pplhelper.pack.update.avalible": "Доступно обновление пака!",
   "pplhelper.pack.update.avalible.details": "Новая версия: %1$s",
   "pplhelper.pack.update.avalible.description": "У вас старая версия v%1$s!\nВы можете обновиться на v%2$s или же отказаться от обновления и жить в кайф",
 
   "pplhelper.pack.update.avalible.accept": "Установить",
-  "pplhelper.pack.update.avalible.later": "Потом установлю...",
+  "pplhelper.pack.update.avalible.later": "Потом установлю…",
   "pplhelper.pack.update.avalible.auto": "Устанавливать автомат.",
   "pplhelper.pack.update.avalible.unfollow": "Не отслеживать",
 
@@ -58,7 +59,7 @@
   "pplhelper.news.page": "Новости > %s",
 
   "pplhelper.commands": "Команды",
-  "pplhelper.commands.description": "Список команд. Чтобы скопировать команду, нажмите на кнопку",
+  "pplhelper.commands.description": "Список доступных на сервере команд. Чтобы скопировать команду, нажмите на неё.",
   "pplhelper.commands.notice.description": "Команда скопирована!",
   "pplhelper.mods": "Моды",
   "pplhelper.mods.installed": "(Установлен)",
