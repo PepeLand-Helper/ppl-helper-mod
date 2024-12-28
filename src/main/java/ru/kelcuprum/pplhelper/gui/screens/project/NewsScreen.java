@@ -35,8 +35,6 @@ public class NewsScreen extends Screen {
         this.parent = screen;
     }
 
-    public int maxY = 35;
-
     @Override
     protected void init() {
         initContent();

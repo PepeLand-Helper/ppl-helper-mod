@@ -14,26 +14,23 @@ import ru.kelcuprum.alinlib.gui.components.builder.text.TextBuilder;
 import ru.kelcuprum.alinlib.gui.components.text.CategoryBox;
 import ru.kelcuprum.pplhelper.PepelandHelper;
 import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
-import ru.kelcuprum.pplhelper.api.components.News;
 import ru.kelcuprum.pplhelper.api.components.Project;
-import ru.kelcuprum.pplhelper.gui.components.NewsButton;
 import ru.kelcuprum.pplhelper.gui.components.ProjectButton;
 import ru.kelcuprum.pplhelper.gui.screens.builder.AbstractPPLScreen;
 import ru.kelcuprum.pplhelper.gui.screens.builder.ScreenBuilder;
 
 import java.util.List;
 
-import static ru.kelcuprum.alinlib.gui.GuiUtils.DEFAULT_WIDTH;
 import static ru.kelcuprum.alinlib.gui.Icons.SEARCH;
 
 public class ProjectsScreen extends AbstractPPLScreen {
     public ProjectsScreen(Screen screen) {
         super(new ScreenBuilder(screen, Component.translatable("pplhelper.projects")).addPanelWidgets(PepelandHelper.getPanelWidgets(screen, screen)));
+        contentY = 60;
     }
-    private String query = "";
-    private int world = 0;
-    private List<Project> lastProjects;
-    public int contentY = 60;
+    private static String query = "";
+    private static int world = 0;
+    private static List<Project> lastProjects;
     @Override
     public void initContent() {
         int x = getX();
@@ -90,14 +87,5 @@ public class ProjectsScreen extends AbstractPPLScreen {
     private void search(){
         lastProjects = null;
         rebuildWidgets();
-    }
-
-    @Override
-    public void render(GuiGraphics guiGraphics, int i, int j, float f) {
-        super.render(guiGraphics, i, j, f);
-        guiGraphics.enableScissor(0, contentY, width, this.height);
-        if (scroller != null) for (AbstractWidget widget : scroller.widgets)
-            widget.render(guiGraphics, i, j, f);
-        guiGraphics.disableScissor();
     }
 }

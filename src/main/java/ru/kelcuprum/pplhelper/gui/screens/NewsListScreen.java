@@ -32,10 +32,10 @@ import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.WEB;
 public class NewsListScreen extends AbstractPPLScreen {
     public NewsListScreen(Screen screen) {
         super(new ScreenBuilder(screen, Component.translatable("pplhelper.news")).addPanelWidgets(PepelandHelper.getPanelWidgets(screen, screen)));
+        contentY = 60;
     }
-    private String query = "";
-    private List<News> lastNews;
-    public int contentY = 60;
+    private static String query = "";
+    private static List<News> lastNews;
     @Override
     public void initContent() {
         int x = getX();
@@ -89,14 +89,5 @@ public class NewsListScreen extends AbstractPPLScreen {
     private void search(){
         lastNews = null;
         rebuildWidgets();
-    }
-
-    @Override
-    public void render(GuiGraphics guiGraphics, int i, int j, float f) {
-        super.render(guiGraphics, i, j, f);
-        guiGraphics.enableScissor(0, contentY, width, this.height);
-        if (scroller != null) for (AbstractWidget widget : scroller.widgets)
-            widget.render(guiGraphics, i, j, f);
-        guiGraphics.disableScissor();
     }
 }
