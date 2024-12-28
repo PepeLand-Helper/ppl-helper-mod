@@ -46,6 +46,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import static ru.kelcuprum.alinlib.gui.Icons.*;
+import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.COMMANDS;
 import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.PROJECTS;
 
 public class PepelandHelper implements ClientModInitializer {
@@ -59,54 +60,11 @@ public class PepelandHelper implements ClientModInitializer {
                 new ButtonBuilder(Component.translatable("pplhelper.configs")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ConfigScreen().build(parent))).setSprite(OPTIONS).setSize(20, 20),
                 new ButtonBuilder(Component.translatable("pplhelper.news")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new NewsListScreen(current))).setSprite(WIKI).setSize(20, 20),
                 new ButtonBuilder(Component.translatable("pplhelper.projects")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ProjectsScreen(current))).setSprite(PROJECTS).setSize(20, 20),
-                new ButtonBuilder(Component.translatable("pplhelper.commands")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new CommandsScreen().build(parent))).setSprite(LIST).setSize(20, 20),
+                new ButtonBuilder(Component.translatable("pplhelper.commands")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new CommandsScreen().build(parent))).setSprite(COMMANDS).setSize(20, 20),
                 new ButtonBuilder(Component.translatable("pplhelper.mods")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ModsScreen().build(parent))).setSprite(Icons.MODS).setSize(20, 20),
 
                 new ButtonBuilder(Component.translatable("pplhelper.pack")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new UpdaterScreen().build(parent))).setSprite(Icons.PACK_INFO).setSize(20, 20)
         };
-    }
-
-    public static Worlds getWorld(){
-        if((AlinLib.MINECRAFT.getCurrentServer() == null || !AlinLib.MINECRAFT.getCurrentServer().ip.contains("pepeland.net")) || AlinLib.MINECRAFT.gui.getTabList().header == null) return null;
-        String[] args = AlinLib.MINECRAFT.gui.getTabList().header.getString().split("\n");
-        StringBuilder world = new StringBuilder();
-        for(String arg : args){
-            if(arg.contains("Мир:")){
-                String[] parsed = arg.replace("Мир:", "").replaceAll("[^A-Za-zА-Яа-я #0-9]", "").split(" ");
-                boolean first = true;
-                for(String parsed_arg : parsed) {
-                    if(!parsed_arg.isBlank()) {
-                        world.append(first ? "" : " ").append(parsed_arg);
-                        if(first) first = false;
-                    }
-                }
-            }
-        }
-        return switch (world.toString()){
-            case "Лобби" -> Worlds.LOBBY;
-            case "Постройки #1" -> Worlds.CONSTRUCTIONS_1;
-            case "Постройки #2" -> Worlds.CONSTRUCTIONS_2;
-            case "Ресурсы" -> Worlds.RESOURCE;
-            case "Фермы" -> Worlds.FARM;
-            case "Торговля" -> Worlds.TRADE;
-            default -> null;
-        };
-    }
-
-    public enum Worlds {
-        LOBBY(Component.translatable("pplhelper.world.lobby"), "Лобби"),
-        RESOURCE(Component.translatable("pplhelper.world.resource"), "МР"),
-        CONSTRUCTIONS_1(Component.translatable("pplhelper.world.constructions.1"), "МП1"),
-        CONSTRUCTIONS_2(Component.translatable("pplhelper.world.constructions.2"), "МП2"),
-        FARM(Component.translatable("pplhelper.world.farm"), "МФ"),
-        TRADE(Component.translatable("pplhelper.world.trade"), "ТЦ"),
-        END(Component.translatable("pplhelper.world.end"), "Энд");
-        Component title;
-        String shortName;
-        Worlds(Component title, String shortName){
-            this.title = title;
-            this.shortName = shortName;
-        }
     }
 
     public static void executeCommand(LocalPlayer player, String command) {
@@ -184,12 +142,14 @@ public class PepelandHelper implements ClientModInitializer {
         ClientLifecycleEvents.CLIENT_STOPPING.register((s) -> TextureHelper.saveMap());
         TextureManagerEvent.INIT.register(TextureHelper::loadTextures);
         LocalizationEvents.DEFAULT_PARSER_INIT.register(starScript -> starScript.ss.set("pplhelper.world", () -> {
-            Worlds world = getWorld();
+            TabHelper.Worlds world = TabHelper.getWorld();
             return Value.string(world == null ? "" : world.title.getString());
         }).set("pplhelper.world_short", () -> {
-            Worlds world = getWorld();
+            TabHelper.Worlds world = TabHelper.getWorld();
             return Value.string(world == null ? "" : world.shortName);
-        }));
+        }).set("pplhelper.tps", () -> Value.number(TabHelper.getTPS()))
+                .set("pplhelper.online", () -> Value.number(TabHelper.getOnline()))
+                .set("pplhelper.max_online", () -> Value.number(TabHelper.getMaxOnline())));
     }
 
     public static boolean onlyEmotesCheck(){
@@ -218,8 +178,10 @@ public class PepelandHelper implements ClientModInitializer {
     }
     public interface Icons {
         ResourceLocation WHITE_PEPE = GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/white_pepe.png");
+        ResourceLocation LOBBY_BUTTON = GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/lobby_button.png");
         ResourceLocation PACK_INFO = GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/pack_info.png");
         ResourceLocation PROJECTS = GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/projects.png");
+        ResourceLocation COMMANDS = GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/commands.png");
         ResourceLocation MODS = GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/mods.png");
         ResourceLocation WEB = GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/web.png");
     }

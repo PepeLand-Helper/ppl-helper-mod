@@ -35,10 +35,10 @@ public class AbstractPPLScreen extends Screen {
         initContent();
     }
 
-    int panelY = 45;
-    int maxPanelY = panelY;
-    int contentY = 35;
-    int maxContentY = contentY;
+    public int panelY = 45;
+    public int maxPanelY = panelY;
+    public int contentY = 35;
+    public int maxContentY = contentY;
 
     public void initPanel(){
         int heigthScroller = 45;
@@ -69,6 +69,7 @@ public class AbstractPPLScreen extends Screen {
         ButtonBuilder exit = new ButtonBuilder(Component.literal("x")).setOnPress((s) -> onClose()).setPosition(x+getFactWidth()-20, y).setWidth(20);
         addRenderableWidget(exit.build());
         y+=25;
+        contentY = y;
         for (AbstractWidget widget : builder.widgets) {
             widget.setWidth(getFactWidth());
             widget.setPosition(x, y);

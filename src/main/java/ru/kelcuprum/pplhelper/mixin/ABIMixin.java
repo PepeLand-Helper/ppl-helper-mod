@@ -13,6 +13,7 @@ import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.config.Localization;
 import ru.kelcuprum.alinlib.info.World;
 import ru.kelcuprum.pplhelper.PepelandHelper;
+import ru.kelcuprum.pplhelper.TabHelper;
 
 import static java.lang.Integer.parseInt;
 
@@ -20,13 +21,13 @@ import static java.lang.Integer.parseInt;
 public class ABIMixin {
     @Inject(method = "getMessage", at=@At("RETURN"), remap = false, cancellable = true)
     private static void getMessage(CallbackInfoReturnable<String> cir){
-        if(PepelandHelper.selectedProject == null) return;
+        if(PepelandHelper.selectedProject == null || TabHelper.getWorld() == null) return;
         String huy = "\\n";
         String parsedCoordinates = getString();
         if(parsedCoordinates.isEmpty()) return;
         huy += String.format("&6%s:&r %s", PepelandHelper.selectedProject.world, parsedCoordinates);
         LocalPlayer p = AlinLib.MINECRAFT.player;
-        if(p != null) {
+        if(p != null && PepelandHelper.selectedProject.world.equalsIgnoreCase(TabHelper.getWorld().shortName)) {
             String[] args = parsedCoordinates.split(" ");
             int near = (int) dist(parseInt(args[0]), parseInt(args[args.length-1]),p.getBlockX(), p.getBlockZ());
             huy+= String.format(" &6(%s блоков от вас)&r", near);
