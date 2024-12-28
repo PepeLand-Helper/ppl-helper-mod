@@ -50,11 +50,8 @@ public class PauseScreenMixin extends Screen {
                         vanillaButtonsY = widget.getY();
                     }
                 }
-                buttons.add(new ButtonBuilder(Component.translatable("pplhelper.lobby"))
-                        .setOnPress((s) -> {
-                            PepelandHelper.executeCommand(AlinLib.MINECRAFT.player, "/lobby");
-                            new ToastBuilder().setTitle(Component.translatable("pplhelper")).setMessage(Component.translatable("pplhelper.lobby.toast")).setIcon(WHITE_PEPE).buildAndShow();
-                        })
+                buttons.add(new ButtonBuilder(Component.translatable("pplhelper.world.lobby"))
+                        .setOnPress((s) -> PepelandHelper.executeCommand(AlinLib.MINECRAFT.player, "/lobby"))
                         .setSprite(Icons.CLOWNFISH)
                         .setPosition(this.width / 2 - 4 - 100 - 2 - 20, vanillaButtonsY)
                         .setSize(20, 20)
