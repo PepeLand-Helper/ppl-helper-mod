@@ -86,6 +86,23 @@ public class NewsListScreen extends AbstractPPLScreen {
         addRenderableWidgets$scroller(scroller, builder.widgets);
     }
 
+    @Override
+    public boolean keyPressed(int i, int j, int k) {
+        if (i == GLFW.GLFW_KEY_ESCAPE) {
+            if (getFocused() != null && getFocused().isFocused()) {
+                getFocused().setFocused(false);
+                return true;
+            }
+        }
+        if(i == GLFW.GLFW_KEY_ENTER){
+            if (getFocused() != null && getFocused().isFocused() && getFocused() instanceof EditBox) {
+                search();
+                return true;
+            }
+        }
+        return super.keyPressed(i, j, k);
+    }
+
     private void search(){
         lastNews = null;
         rebuildWidgets();

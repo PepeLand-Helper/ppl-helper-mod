@@ -2,8 +2,10 @@ package ru.kelcuprum.pplhelper.gui.screens;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import org.lwjgl.glfw.GLFW;
 import ru.kelcuprum.alinlib.gui.GuiUtils;
 import ru.kelcuprum.alinlib.gui.components.ConfigureScrolWidget;
 import ru.kelcuprum.alinlib.gui.components.ImageWidget;
@@ -82,6 +84,23 @@ public class ProjectsScreen extends AbstractPPLScreen {
             scroller.innerHeight -= 8;
         }));
         addRenderableWidgets$scroller(scroller, builder.widgets);
+    }
+
+    @Override
+    public boolean keyPressed(int i, int j, int k) {
+        if (i == GLFW.GLFW_KEY_ESCAPE) {
+            if (getFocused() != null && getFocused().isFocused()) {
+                getFocused().setFocused(false);
+                return true;
+            }
+        }
+        if(i == GLFW.GLFW_KEY_ENTER){
+            if (getFocused() != null && getFocused().isFocused() && getFocused() instanceof EditBox) {
+                search();
+                return true;
+            }
+        }
+        return super.keyPressed(i, j, k);
     }
 
     private void search(){
