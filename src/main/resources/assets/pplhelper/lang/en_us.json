@@ -55,6 +55,14 @@
   "pplhelper.project.abi.unfollow": "Убрать из ABI",
   "pplhelper.project.web": "Открыть страницу сайта",
 
+  "pplhelper.world.lobby": "Лобби",
+  "pplhelper.world.resource": "Мир Ресурсов",
+  "pplhelper.world.constructions.1": "Мир Построек #1",
+  "pplhelper.world.constructions.2": "Мир Построек #2",
+  "pplhelper.world.farm": "Мир Ферм",
+  "pplhelper.world.trade": "Торговая зона",
+  "pplhelper.world.end": "Мир Энда",
+
 
   "pplhelper.news.page": "Новости > %s",
 

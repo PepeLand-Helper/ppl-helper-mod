@@ -5,7 +5,9 @@
   "plugin": "ru.kelcuprum.pplhelper.mixin.PPLHelperMixinPlugin",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "ABIMixin"
+    "ABIMixin",
+    "AccessorGridLayout",
+    "PauseScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

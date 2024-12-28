@@ -1,1 +1,2 @@
 accessWidener	v1	named
+accessible field net/minecraft/client/gui/components/PlayerTabOverlay header Lnet/minecraft/network/chat/Component;
