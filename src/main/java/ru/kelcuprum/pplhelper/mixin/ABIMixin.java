@@ -44,7 +44,7 @@ public class ABIMixin {
             coordinates = PepelandHelper.selectedProject.coordinates$nether;
         else if(World.getCodeName().equals("minecraft:the_end") && PepelandHelper.selectedProject.coordinates$end != null && !PepelandHelper.selectedProject.coordinates$end.isEmpty())
             coordinates = PepelandHelper.selectedProject.coordinates$end;
-        return coordinates.replaceAll("[^0-9 ]", "");
+        return coordinates.replaceAll("[^0-9 \\-.]", "");
     }
 
     @Unique
