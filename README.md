@@ -1,6 +1,6 @@
 <img src="/src/main/resources/assets/pplhelper/icon.png" width="90pt" align="right">
 
-## PepeLand Helper
+# PepeLand Helper
 Проект направленный на помощь игроку в ориентировании на сервере.
 
 ## Авто-обновление
