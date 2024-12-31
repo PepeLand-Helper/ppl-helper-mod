@@ -60,7 +60,7 @@ public class TextureHelper {
             try {
                 BufferedImage bufferedImage = isFileExists ? ImageIO.read(getTextureFile(id)) : ImageIO.read(new URL(url));
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                ImageIO.write(bufferedImage, "png", byteArrayOutputStream);
+                ImageIO.write(bufferedImage, url.contains(".webp") ? "webp" : "png", byteArrayOutputStream);
                 InputStream is = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
                 image = NativeImage.read(is);
                 if (!isFileExists) {

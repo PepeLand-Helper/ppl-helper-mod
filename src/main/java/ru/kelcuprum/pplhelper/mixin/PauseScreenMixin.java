@@ -39,7 +39,7 @@ public class PauseScreenMixin extends Screen {
                 }
                 buttons.add(new ButtonBuilder(Component.translatable("pplhelper.world.lobby"))
                         .setOnPress((s) -> PepelandHelper.executeCommand(AlinLib.MINECRAFT.player, "/lobby"))
-                        .setSprite(PepelandHelper.Icons.LOBBY_BUTTON)
+                        .setSprite(PepelandHelper.Icons.PEPE)
                         .setPosition(this.width / 2 - 4 - 100 - 2 - 20, vanillaButtonsY)
                         .setSize(20, 20)
                         .build());

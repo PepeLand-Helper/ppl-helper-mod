@@ -7,22 +7,36 @@ import static java.lang.Double.parseDouble;
 import static java.lang.Integer.parseInt;
 
 public class TabHelper {
+    public static String[] worlds = new String[]{
+            "Лобби",
+            "Постройки #1",
+            "Постройки #2",
+            "Ресурсы",
+            "Фермы",
+            "Торговля",
+            "Энд"
+    };
     public static Worlds getWorld(){
-        if((AlinLib.MINECRAFT.getCurrentServer() == null || !AlinLib.MINECRAFT.getCurrentServer().ip.contains("pepeland.net")) || AlinLib.MINECRAFT.gui.getTabList().header == null) return null;
-        String[] args = AlinLib.MINECRAFT.gui.getTabList().header.getString().split("\n");
+        if(!PepelandHelper.playerInPPL()) return null;
         StringBuilder world = new StringBuilder();
-        for(String arg : args){
-            if(arg.contains("Мир:")){
-                String[] parsed = arg.replace("Мир:", "").replaceAll("[^A-Za-zА-Яа-я #0-9]", "").split(" ");
-                boolean first = true;
-                for(String parsed_arg : parsed) {
-                    if(!parsed_arg.isBlank()) {
-                        world.append(first ? "" : " ").append(parsed_arg);
-                        if(first) first = false;
+        if(AlinLib.MINECRAFT.gui.getTabList().header == null){
+            if(PepelandHelper.config.getBoolean("IM_A_TEST_SUBJECT", false) && PepelandHelper.config.getBoolean("IM_A_TEST_SUBJECT.ENABLE_WORLD", false)) world = new StringBuilder(PepelandHelper.config.getString("IM_A_TEST_SUBJECT.WORLD", worlds[0]));
+        } else {
+            String[] args = AlinLib.MINECRAFT.gui.getTabList().header.getString().split("\n");
+            for (String arg : args) {
+                if (arg.contains("Мир:")) {
+                    String[] parsed = arg.replace("Мир:", "").replaceAll("[^A-Za-zА-Яа-я #0-9]", "").split(" ");
+                    boolean first = true;
+                    for (String parsed_arg : parsed) {
+                        if (!parsed_arg.isBlank()) {
+                            world.append(first ? "" : " ").append(parsed_arg);
+                            if (first) first = false;
+                        }
                     }
                 }
             }
         }
+
         return switch (world.toString()){
             case "Лобби" -> Worlds.LOBBY;
             case "Постройки #1" -> Worlds.CONSTRUCTIONS_1;
@@ -30,12 +44,13 @@ public class TabHelper {
             case "Ресурсы" -> Worlds.RESOURCE;
             case "Фермы" -> Worlds.FARM;
             case "Торговля" -> Worlds.TRADE;
+            case "Энд" -> Worlds.END;
             default -> null;
         };
     }
     public static double getTPS(){
         double tps = 0;
-        if((AlinLib.MINECRAFT.getCurrentServer() == null || !AlinLib.MINECRAFT.getCurrentServer().ip.contains("pepeland.net")) || AlinLib.MINECRAFT.gui.getTabList().footer == null) return tps;
+        if(!PepelandHelper.playerInPPL() || AlinLib.MINECRAFT.gui.getTabList().footer == null) return tps;
         String[] args = AlinLib.MINECRAFT.gui.getTabList().footer.getString().split("\n");
         for(String arg : args){
             if(arg.contains("TPS:")){
@@ -47,7 +62,7 @@ public class TabHelper {
     }
     public static int getOnline(){
         int tps = 0;
-        if((AlinLib.MINECRAFT.getCurrentServer() == null || !AlinLib.MINECRAFT.getCurrentServer().ip.contains("pepeland.net")) || AlinLib.MINECRAFT.gui.getTabList().footer == null) return tps;
+        if(!PepelandHelper.playerInPPL() || AlinLib.MINECRAFT.gui.getTabList().footer == null) return tps;
         String[] args = AlinLib.MINECRAFT.gui.getTabList().footer.getString().split("\n");
         for(String arg : args){
             if(arg.contains("Онлайн:")){

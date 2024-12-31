@@ -7,6 +7,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.gui.GuiUtils;
 import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
@@ -16,20 +17,26 @@ import ru.kelcuprum.pplhelper.api.components.Mod;
 import ru.kelcuprum.pplhelper.gui.TextureHelper;
 import ru.kelcuprum.pplhelper.gui.screens.ModsScreen;
 
+import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.PEPE;
+
 public class ModButton extends Button {
     protected Mod track;
 
     public ModButton(int x, int y, int width, Mod track, Screen screen) {
         super(new ButtonBuilder().setOnPress((s) -> PepelandHelper.confirmLinkNow(new ModsScreen().build(screen), track.url)).setTitle(Component.empty()).setStyle(GuiUtils.getSelected()).setSize(width, 40).setPosition(x, y));
-        boolean isInstalled = FabricLoader.getInstance().isModLoaded(track.modid);
         this.track = track;
-        setMessage(Component.empty().append(track.title).append(" ").append(isInstalled ? Component.translatable("pplhelper.mods.installed") : Component.empty()));
+    }
+
+    @Override
+    public @NotNull Component getMessage(){
+        boolean isInstalled = FabricLoader.getInstance().isModLoaded(track.modid);
+        return Component.empty().append(track.title).append(" ").append(isInstalled ? Component.translatable("pplhelper.mods.installed") : Component.empty());
     }
 
     @Override
     public void renderText(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (getY() < guiGraphics.guiHeight() && !(getY() <= -getHeight())) {
-            ResourceLocation icon = TextureHelper.getTexture(track.icon, track.modid);
+            ResourceLocation icon = track.icon.isBlank() ? PEPE : TextureHelper.getTexture(track.icon, track.modid);
             guiGraphics.blit(RenderType::guiTextured, icon, getX() + 2, getY() + 2, 0.0F, 0.0F, 36, 36, 36, 36);
             renderString(guiGraphics, getMessage().getString(), getX() + 45, getY() + 8);
             renderString(guiGraphics, track.description, getX() + 45, getY() + height - 8 - AlinLib.MINECRAFT.font.lineHeight);

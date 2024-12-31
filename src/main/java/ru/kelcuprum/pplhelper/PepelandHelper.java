@@ -1,5 +1,6 @@
 package ru.kelcuprum.pplhelper;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import net.fabricmc.api.ClientModInitializer;
@@ -29,9 +30,11 @@ import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
 import ru.kelcuprum.alinlib.gui.screens.ConfirmScreen;
 import ru.kelcuprum.alinlib.gui.toast.ToastBuilder;
 import ru.kelcuprum.pplhelper.api.PepeLandAPI;
+import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
 import ru.kelcuprum.pplhelper.api.components.Project;
 import ru.kelcuprum.pplhelper.gui.TextureHelper;
 import ru.kelcuprum.pplhelper.gui.configs.ConfigScreen;
+import ru.kelcuprum.pplhelper.gui.configs.TestConfigScreen;
 import ru.kelcuprum.pplhelper.gui.configs.UpdaterScreen;
 import ru.kelcuprum.pplhelper.gui.message.NewUpdateScreen;
 import ru.kelcuprum.pplhelper.gui.screens.CommandsScreen;
@@ -53,10 +56,22 @@ public class PepelandHelper implements ClientModInitializer {
     public static final AlinLogger LOG = new AlinLogger("PPL Helper");
     public static Config config = new Config("config/pplhelper/config.json");
     public static boolean isInstalledABI = FabricLoader.getInstance().isModLoaded("actionbarinfo");
+    public static String[] worlds = new String[0];
+    public static JsonArray commands = new JsonArray();
+    public static JsonArray mods = new JsonArray();
     public static Project selectedProject;
 
     public static AbstractBuilder[] getPanelWidgets(Screen parent, Screen current){
-        return new AbstractBuilder[]{
+        return config.getBoolean("IM_A_TEST_SUBJECT", false) ? new AbstractBuilder[]{
+                new ButtonBuilder(Component.translatable("pplhelper.configs")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ConfigScreen().build(parent))).setSprite(OPTIONS).setSize(20, 20),
+                new ButtonBuilder(Component.translatable("pplhelper.news")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new NewsListScreen(current))).setSprite(WIKI).setSize(20, 20),
+                new ButtonBuilder(Component.translatable("pplhelper.projects")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ProjectsScreen(current))).setSprite(PROJECTS).setSize(20, 20),
+                new ButtonBuilder(Component.translatable("pplhelper.commands")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new CommandsScreen().build(parent))).setSprite(COMMANDS).setSize(20, 20),
+                new ButtonBuilder(Component.translatable("pplhelper.mods")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ModsScreen().build(parent))).setSprite(Icons.MODS).setSize(20, 20),
+
+                new ButtonBuilder(Component.translatable("pplhelper.pack")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new UpdaterScreen().build(parent))).setSprite(Icons.PACK_INFO).setSize(20, 20),
+                new ButtonBuilder(Component.translatable("pplhelper.test"), (s) ->AlinLib.MINECRAFT.setScreen(new TestConfigScreen().build(parent))).setSprite(CLOWNFISH).setSize(20, 20)
+        } : new AbstractBuilder[]{
                 new ButtonBuilder(Component.translatable("pplhelper.configs")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ConfigScreen().build(parent))).setSprite(OPTIONS).setSize(20, 20),
                 new ButtonBuilder(Component.translatable("pplhelper.news")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new NewsListScreen(current))).setSprite(WIKI).setSize(20, 20),
                 new ButtonBuilder(Component.translatable("pplhelper.projects")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ProjectsScreen(current))).setSprite(PROJECTS).setSize(20, 20),
@@ -80,6 +95,9 @@ public class PepelandHelper implements ClientModInitializer {
     public void onInitializeClient() {
         LOG.log("Данный проект не является официальной частью сети серверов PepeLand", Level.WARN);
         ClientLifecycleEvents.CLIENT_FULL_STARTED.register((s) -> {
+            worlds = PepeLandHelperAPI.getWorlds();
+            commands = PepeLandHelperAPI.getCommands();
+            mods = PepeLandHelperAPI.getRecommendMods();
             String packVersion = getInstalledPack();
             if((config.getBoolean("PACK_UPDATES.NOTICE", true) || config.getBoolean("PACK_UPDATES.AUTO_UPDATE", true)) && !packVersion.isEmpty()){
                 JsonObject packInfo = PepeLandAPI.getPackInfo(onlyEmotesCheck());
@@ -88,7 +106,6 @@ public class PepelandHelper implements ClientModInitializer {
                         AlinLib.MINECRAFT.setScreen(new NewUpdateScreen(s.screen, packVersion, packInfo));
                 } else if(config.getBoolean("PACK_UPDATES.AUTO_UPDATE", false)) {
                     if(!packInfo.get("version").getAsString().contains(packVersion)) {
-//                        AlinLib.MINECRAFT.setScreen(new DownloadScreen(s.screen, packInfo, onlyEmotesCheck()));
                         PepelandHelper.downloadPack(packInfo, onlyEmotesCheck(), (ss) -> {
                             if(ss) {
                                 String fileName = String.format("pepeland-%1$s-v%2$s.zip", onlyEmotesCheck() ? "emotes" : "main", packInfo.get("version").getAsString());
@@ -176,9 +193,12 @@ public class PepelandHelper implements ClientModInitializer {
         }
         return packId;
     }
+    public static boolean playerInPPL(){
+        return config.getBoolean("IM_A_TEST_SUBJECT", false) || (AlinLib.MINECRAFT.getCurrentServer() != null && AlinLib.MINECRAFT.getCurrentServer().ip.contains("pepeland.net"));
+    }
     public interface Icons {
         ResourceLocation WHITE_PEPE = GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/white_pepe.png");
-        ResourceLocation LOBBY_BUTTON = GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/lobby_button.png");
+        ResourceLocation PEPE = GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/pepe.png");
         ResourceLocation PACK_INFO = GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/pack_info.png");
         ResourceLocation PROJECTS = GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/projects.png");
         ResourceLocation COMMANDS = GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/commands.png");

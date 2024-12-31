@@ -201,7 +201,7 @@ public class ProjectScreen extends Screen {
                 String finalString = string;
                 int iWidth = width-230;
                 int iHeight = 20;
-                if(TextureHelper.urlsTextures.containsKey(unparse(string.replaceAll("!\\[(.+?)]\\((.+?)\\)", "$2")))){
+                if(TextureHelper.urlsTextures.containsKey(unparse(string.replaceAll("!\\[(.+?)]\\((.+?)\\)", "$2")))) {
                     NativeImage i = TextureHelper.urlsTextures.get(unparse(string.replaceAll("!\\[(.+?)]\\((.+?)\\)", "$2"))).getPixels();
                     if(i != null) {
                         iWidth = i.getWidth();
@@ -212,9 +212,7 @@ public class ProjectScreen extends Screen {
                 if(image == PACK_INFO) widgets.add(new ButtonBuilder(Component.literal(string.replaceAll("!\\[(.+?)]\\((.+?)\\)", "$1")),
                         Component.literal(unparse(string.replaceAll("!\\[(.+?)]\\((.+?)\\)", "$2"))),
                         (s) -> PepelandHelper.confirmLinkNow(screen, unparse(finalString.replaceAll("!\\[(.+?)]\\((.+?)\\)", "$2")) )).setPosition(x, -40).setWidth(width-230).build());
-                else {
-                    widgets.add(new ImageWidget(x, -Integer.MAX_VALUE, iWidth, iHeight, image, iWidth, iHeight, true, Component.empty()));
-                }
+                else widgets.add(new ImageWidget(x, -Integer.MAX_VALUE, iWidth, iHeight, image, iWidth, iHeight, true, Component.empty()));
             } else if(string.startsWith("<hr") && string.endsWith(">")) {
                 if(lastIsPlain){
                     lastIsPlain = false;
@@ -303,6 +301,8 @@ public class ProjectScreen extends Screen {
                 getFocused().setFocused(false);
                 return true;
             }
+        } else if(i == GLFW.GLFW_KEY_F5){
+            rebuildWidgets();
         }
         return super.keyPressed(i, j, k);
     }

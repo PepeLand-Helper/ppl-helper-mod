@@ -11,12 +11,14 @@
   "pplhelper.configs.enable_toast": "Включить уведомления",
   "pplhelper.configs.api": "PepeLand Helper API",
   "pplhelper.configs.api_url": "Адрес API",
+  "pplhelper.configs.urls": "Адреса",
+  "pplhelper.configs.modrinth_url": "Modrinth",
   "pplhelper.configs.pack_updates.notice": "Оповещения о новой версии пака",
   "pplhelper.configs.pack_updates.auto_update": "Автообновление",
   "pplhelper.configs.pack_updates.only_emote": "Только эмоуты",
   "pplhelper.configs.pack_updates.only_emote.citresewn_not_installed": "У вас не установлен CIT Resewn, поэтому мод будет загружать только эмоуты",
 
-  "pplhelper.pack": "Ресурс пак",
+  "pplhelper.pack": "Ресурс-пак",
   "pplhelper.pack.not_installed": "У вас не установлен официальный пак!",
   "pplhelper.pack.download": "Скачать?",
   "pplhelper.pack.download_update": "Установить обновление?",
@@ -24,7 +26,7 @@
 
   "pplhelper.pack.download_screen": "Идет загрузка пака",
   "pplhelper.pack.download_screen.wait": "Пожалуйста, подождите",
-  "pplhelper.pack.downloaded": "Ресурс пак загружен!",
+  "pplhelper.pack.downloaded": "Ресурс-пак загружен!",
   "pplhelper.pack.not_selected": "Включить установленный пак",
   "pplhelper.pack.file_broken": "Не удалось получить пак (файл повреждён)",
   "pplhelper.pack.update.avalible": "Доступно обновление пака!",
@@ -63,13 +65,16 @@
   "pplhelper.world.trade": "Торговая зона",
   "pplhelper.world.end": "Мир Энда",
 
+  "pplhelper.chat.global": "Глобальный чат: %s",
+  "pplhelper.chat.global.on": "⚠⚠ Включен режим глобального чата ⚠⚠",
+
 
   "pplhelper.news.page": "Новости > %s",
 
   "pplhelper.commands": "Команды",
   "pplhelper.commands.description": "Список доступных на сервере команд. Чтобы скопировать команду, нажмите на неё.",
   "pplhelper.commands.notice.description": "Команда скопирована!",
-  "pplhelper.mods": "Моды",
+  "pplhelper.mods": "Моды и ресурс-паки",
   "pplhelper.mods.installed": "(Установлен)",
   "pplhelper.mods.description": "Список модов, которые могут улучшить игру на сервере"
 }

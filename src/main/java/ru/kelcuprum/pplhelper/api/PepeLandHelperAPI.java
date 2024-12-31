@@ -51,7 +51,7 @@ public class PepeLandHelperAPI {
 
     public static List<Project> getProjects(String query, String world){
         try {
-            JsonObject projects = WebAPI.getJsonObject(getURI("projects?query"+uriEncode(query)+"&world="+uriEncode(world.equals(Component.translatable("pplhelper.project.world.all").getString()) ? "" : world), false));
+            JsonObject projects = WebAPI.getJsonObject(getURI("projects?query"+uriEncode(query)+(world.equalsIgnoreCase(Component.translatable("pplhelper.project.world.all").getString()) ? "" : "&world="+uriEncode(world)), false));
             List<Project> list = new ArrayList<>();
             for(JsonElement element : projects.getAsJsonArray("items")) list.add(new Project(element.getAsJsonObject()));
             return list;
@@ -59,6 +59,15 @@ public class PepeLandHelperAPI {
             throw new RuntimeException(ex);
         }
     }
+
+    public static JsonObject getProject(int id){
+        try {
+            return WebAPI.getJsonObject(getURI(String.format("projects/%s", id), false));
+        } catch (Exception ex){
+            throw new RuntimeException(ex);
+        }
+    }
+
     public static String getProjectContent(int id){
         try {
             return WebAPI.getString(getURI(String.format("projects/%s/content", id), false));

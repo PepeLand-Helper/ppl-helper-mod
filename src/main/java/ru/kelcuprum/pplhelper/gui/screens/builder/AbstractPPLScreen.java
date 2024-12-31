@@ -16,6 +16,8 @@ import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.text.TextBuilder;
 import ru.kelcuprum.alinlib.gui.components.text.CategoryBox;
 import ru.kelcuprum.alinlib.gui.screens.ThanksScreen;
+import ru.kelcuprum.pplhelper.PepelandHelper;
+import ru.kelcuprum.pplhelper.gui.configs.TestConfigScreen;
 
 import java.util.List;
 
@@ -213,8 +215,15 @@ public class AbstractPPLScreen extends Screen {
                 return true;
             }
         }
-        if(keyCode == GLFW.GLFW_KEY_D && (modifiers & GLFW.GLFW_MOD_SHIFT) != 0 && !(getFocused() instanceof EditBox))
+        if(keyCode == GLFW.GLFW_KEY_D && (modifiers & GLFW.GLFW_MOD_SHIFT) != 0 && !(getFocused() instanceof EditBox)) {
             AlinLib.MINECRAFT.setScreen(new ThanksScreen(this));
+            return true;
+        }
+        if(keyCode == GLFW.GLFW_KEY_T && (modifiers & GLFW.GLFW_MOD_CONTROL) != 0){
+            PepelandHelper.config.setBoolean("IM_A_TEST_SUBJECT", !PepelandHelper.config.getBoolean("IM_A_TEST_SUBJECT", false));
+            if(PepelandHelper.config.getBoolean("IM_A_TEST_SUBJECT", false)) AlinLib.MINECRAFT.setScreen(new TestConfigScreen().build(builder.parent));
+            return true;
+        }
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
@@ -238,15 +247,15 @@ public class AbstractPPLScreen extends Screen {
         return Math.min(400, width-10);
     }
     public int getFactWidth(){
-        return getWidth() - (width > 450 ? 0 : 40);
+        return getWidth() - 45;
     }
     public int getX(){
-        return ((width-getWidth()) / 2) + (width > 500 ? 0 : 35);
+        return getPanelX()+35;
     }
     public int getPanelWidth(){
         return 20;
     }
     public int getPanelX(){
-        return Math.max(0, getX() - getPanelWidth() - 15);
+        return (width / 2) - (getWidth() / 2)+5;
     }
 }

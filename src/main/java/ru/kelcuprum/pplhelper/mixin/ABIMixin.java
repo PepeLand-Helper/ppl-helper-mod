@@ -30,7 +30,10 @@ public class ABIMixin {
         if(p != null && PepelandHelper.selectedProject.world.equalsIgnoreCase(TabHelper.getWorld().shortName)) {
             String[] args = parsedCoordinates.split(" ");
             int near = (int) dist(parseInt(args[0]), parseInt(args[args.length-1]),p.getBlockX(), p.getBlockZ());
-            huy+= String.format(" &6(%s блоков от вас)&r", near);
+            if(near <= PepelandHelper.config.getNumber("SELECTED_PROJECT.AUTO_HIDE", 15).intValue()){
+                PepelandHelper.selectedProject = null;
+                return;
+            } else huy+= String.format(" &6(%s блоков от вас)&r", near);
         }
         cir.setReturnValue(cir.getReturnValue()+Localization.fixFormatCodes(huy));
     }

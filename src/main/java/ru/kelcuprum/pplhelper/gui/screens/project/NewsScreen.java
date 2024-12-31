@@ -114,11 +114,8 @@ public class NewsScreen extends Screen {
                 break;
             }
         }
-
         this.setFocused(selected);
-        if (i == 0)
-            this.setDragging(true);
-
+        if (i == 0) this.setDragging(true);
         return st;
     }
 
@@ -154,6 +151,8 @@ public class NewsScreen extends Screen {
                 getFocused().setFocused(false);
                 return true;
             }
+        } else if(i == GLFW.GLFW_KEY_F5){
+            rebuildWidgets();
         }
         return super.keyPressed(i, j, k);
     }

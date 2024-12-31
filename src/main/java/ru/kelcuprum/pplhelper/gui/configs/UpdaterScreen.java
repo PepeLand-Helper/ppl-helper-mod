@@ -12,11 +12,9 @@ import ru.kelcuprum.pplhelper.PepelandHelper;
 import ru.kelcuprum.pplhelper.api.PepeLandAPI;
 import ru.kelcuprum.pplhelper.gui.message.DownloadScreen;
 import ru.kelcuprum.pplhelper.gui.message.ErrorScreen;
-import ru.kelcuprum.pplhelper.gui.screens.*;
 import ru.kelcuprum.pplhelper.gui.screens.builder.ScreenBuilder;
 
-import static ru.kelcuprum.alinlib.gui.Icons.*;
-import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.*;
+import static ru.kelcuprum.alinlib.gui.Colors.GROUPIE;
 
 public class UpdaterScreen {
     public Screen parent;
@@ -40,8 +38,9 @@ public class UpdaterScreen {
 
                 .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.pack_updates.notice"), true).setConfig(PepelandHelper.config, "PACK_UPDATES.NOTICE"))
                 .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.pack_updates.auto_update"), true).setConfig(PepelandHelper.config, "PACK_UPDATES.AUTO_UPDATE"));
-                if(FabricLoader.getInstance().isModLoaded("citresewn")) builder.addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.pack_updates.only_emote"), false).setConfig(PepelandHelper.config, "PACK_UPDATES.ONLY_EMOTE"));
-                else builder.addWidget(new TextBuilder(Component.translatable("pplhelper.configs.pack_updates.only_emote.citresewn_not_installed")).setType(TextBuilder.TYPE.BLOCKQUOTE));
+                if(!FabricLoader.getInstance().isModLoaded("citresewn"))
+                    builder.addWidget(new TextBuilder(Component.translatable("pplhelper.configs.pack_updates.only_emote.citresewn_not_installed")).setType(TextBuilder.TYPE.BLOCKQUOTE).setColor(GROUPIE));
+                builder.addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.pack_updates.only_emote"), false).setConfig(PepelandHelper.config, "PACK_UPDATES.ONLY_EMOTE").setActive(FabricLoader.getInstance().isModLoaded("citresewn")));
 
         try {
             JsonObject pack = PepeLandAPI.getPackInfo(PepelandHelper.onlyEmotesCheck());
