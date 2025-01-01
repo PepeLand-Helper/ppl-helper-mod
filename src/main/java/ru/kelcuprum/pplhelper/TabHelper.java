@@ -13,7 +13,7 @@ public class TabHelper {
             "Постройки #2",
             "Ресурсы",
             "Фермы",
-            "Торговля",
+            "Торговая Зона",
             "Энд"
     };
     public static Worlds getWorld(){
@@ -43,7 +43,7 @@ public class TabHelper {
             case "Постройки #2" -> Worlds.CONSTRUCTIONS_2;
             case "Ресурсы" -> Worlds.RESOURCE;
             case "Фермы" -> Worlds.FARM;
-            case "Торговля" -> Worlds.TRADE;
+            case "Торговая Зона" -> Worlds.TRADE;
             case "Энд" -> Worlds.END;
             default -> null;
         };
@@ -91,7 +91,7 @@ public class TabHelper {
         CONSTRUCTIONS_1(Component.translatable("pplhelper.world.constructions.1"), "МП1"),
         CONSTRUCTIONS_2(Component.translatable("pplhelper.world.constructions.2"), "МП2"),
         FARM(Component.translatable("pplhelper.world.farm"), "МФ"),
-        TRADE(Component.translatable("pplhelper.world.trade"), "ТЦ"),
+        TRADE(Component.translatable("pplhelper.world.trade"), "ТЗ"),
         END(Component.translatable("pplhelper.world.end"), "Энд");
         public Component title;
         public String shortName;
