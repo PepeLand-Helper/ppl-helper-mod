@@ -11,12 +11,22 @@
   "pplhelper.configs.enable_toast": "Включить уведомления",
   "pplhelper.configs.api": "PepeLand Helper API",
   "pplhelper.configs.api_url": "Адрес API",
+  "pplhelper.configs.chat": "Чат",
+  "pplhelper.configs.chat.global": "Режим глоб. чата",
+  "pplhelper.configs.chat.global.toggle": "Переключение глоб. чата",
   "pplhelper.configs.urls": "Адреса",
   "pplhelper.configs.modrinth_url": "Modrinth",
   "pplhelper.configs.pack_updates.notice": "Оповещения о новой версии пака",
   "pplhelper.configs.pack_updates.auto_update": "Автообновление",
   "pplhelper.configs.pack_updates.only_emote": "Только эмоуты",
   "pplhelper.configs.pack_updates.only_emote.citresewn_not_installed": "У вас не установлен CIT Resewn, поэтому мод будет загружать только эмоуты",
+
+  "pplhelper.test": "Тестовый объект",
+  "pplhelper.test.im_a_test_subject": "Я подопытный",
+  "pplhelper.test.im_a_test_subject.enable_world": "Замена мира",
+  "pplhelper.test.im_a_test_subject.world": "Мир",
+  "pplhelper.test.im_a_test_subject.project": "Тестовый проект",
+
 
   "pplhelper.pack": "Ресурс-пак",
   "pplhelper.pack.not_installed": "У вас не установлен официальный пак!",
@@ -43,7 +53,6 @@
   "pplhelper.news.find": "Найти",
   "pplhelper.news.not_found": "По вашему запросу был найден только этот чувак",
   "pplhelper.projects": "Проекты",
-  "pplhelper.projects.description": "Здесь вы встретите проекты, которые могут быть вам по душе",
 
   "pplhelper.project": "Проекты > %s",
   "pplhelper.project.world": "Мир",
@@ -68,7 +77,6 @@
   "pplhelper.chat.global": "Глобальный чат: %s",
   "pplhelper.chat.global.on": "⚠⚠ Включен режим глобального чата ⚠⚠",
 
-
   "pplhelper.news.page": "Новости > %s",
 
   "pplhelper.commands": "Команды",
@@ -76,5 +84,5 @@
   "pplhelper.commands.notice.description": "Команда скопирована!",
   "pplhelper.mods": "Моды и ресурс-паки",
   "pplhelper.mods.installed": "(Установлен)",
-  "pplhelper.mods.description": "Список модов, которые могут улучшить игру на сервере"
+  "pplhelper.mods.description": "Список модов, которые могут улучшить игру на сервере."
 }

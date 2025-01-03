@@ -3,9 +3,9 @@ package ru.kelcuprum.pplhelper.gui.screens.builder;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import org.lwjgl.system.windows.WINDOWPLACEMENT;
 import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.gui.GuiUtils;
+import ru.kelcuprum.alinlib.gui.components.Resetable;
 import ru.kelcuprum.alinlib.gui.components.builder.AbstractBuilder;
 import ru.kelcuprum.alinlib.gui.components.text.CategoryBox;
 import ru.kelcuprum.alinlib.gui.styles.AbstractStyle;
@@ -19,11 +19,14 @@ public class ScreenBuilder {
     public AbstractStyle style;
     public List<AbstractWidget> panelWidgets = new ArrayList<>();
     public List<AbstractWidget> widgets = new ArrayList<>();
+    public boolean isResetable = false;
     public OnTick onTick;
     public OnTickScreen onTickScreen;
+    public int panelSize = AlinLib.bariumConfig.getBoolean("CONFIG_SCREEN.SMALL_PANEL_SIZE", false) ?  130 : 190;
     public Screen parent;
-    public int yL = 45;
-    public int yC = 45;
+    public int yL = 35;
+    public int yC = 5;
+    public int contentY = 35;
 
     public ScreenBuilder(Screen parent) {
         this(parent, Component.literal("Change me please"));
@@ -57,6 +60,14 @@ public class ScreenBuilder {
         return this.style;
     }
     //
+    public ScreenBuilder setPanelSize(int panelSize) {
+        this.panelSize = panelSize;
+        return this;
+    }
+    public int getPanelSize() {
+        return this.panelSize;
+    }
+    //
     public ScreenBuilder addPanelWidget(AbstractBuilder builder){
         return addPanelWidget(builder.build());
     }
@@ -87,6 +98,7 @@ public class ScreenBuilder {
             widget.setPosition(getX(), yC);
             yC+=widget.getHeight()+5;
             for(AbstractWidget cW : ((CategoryBox) widget).getValues()){
+                if(!isResetable && (cW instanceof Resetable)) isResetable = true;
                 this.widgets.add(cW);
                 cW.setX(getX());
                 cW.setY(yC);
@@ -104,6 +116,7 @@ public class ScreenBuilder {
             widget.setPosition(yC, getX());
             yC+=widget.getHeight()+5;
         }
+        if(!isResetable && (widget instanceof Resetable)) isResetable = true;
         return this;
     }
     public ScreenBuilder addWidgets(AbstractBuilder... widgets){
@@ -113,6 +126,14 @@ public class ScreenBuilder {
     public ScreenBuilder addWidgets(AbstractWidget... widgets){
         for(AbstractWidget widget : widgets) addWidget(widget);
         return this;
+    }
+    //
+    public ScreenBuilder setResetable(boolean isResetable){
+        this.isResetable = isResetable;
+        return this;
+    }
+    public boolean getResetable(){
+        return this.isResetable;
     }
     //
     public ScreenBuilder setOnTick(OnTick onTick){
@@ -156,9 +177,9 @@ public class ScreenBuilder {
     }
     public int getPanelWidth(){
 //        return Math.min(Math.max(20, ((width-getWidth()) / 2)-25), 120);
-        return 20;
+        return this.panelSize-(AlinLib.bariumConfig.getBoolean("MODERN", true) ? 20 : 10);
     }
     public int getPanelX(){
-        return Math.max(0, getX() - getPanelWidth() - 15);
+        return AlinLib.bariumConfig.getBoolean("MODERN", true) ? 10 : 5;
     }
 }

@@ -1,4 +1,4 @@
-package ru.kelcuprum.pplhelper.gui.configs;
+package ru.kelcuprum.pplhelper.gui.screens;
 
 import com.google.gson.JsonObject;
 import net.fabricmc.loader.api.FabricLoader;
@@ -10,8 +10,8 @@ import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.text.TextBuilder;
 import ru.kelcuprum.pplhelper.PepelandHelper;
 import ru.kelcuprum.pplhelper.api.PepeLandAPI;
-import ru.kelcuprum.pplhelper.gui.message.DownloadScreen;
-import ru.kelcuprum.pplhelper.gui.message.ErrorScreen;
+import ru.kelcuprum.pplhelper.gui.screens.message.DownloadScreen;
+import ru.kelcuprum.pplhelper.gui.screens.message.ErrorScreen;
 import ru.kelcuprum.pplhelper.gui.screens.builder.ScreenBuilder;
 
 import static ru.kelcuprum.alinlib.gui.Colors.GROUPIE;

@@ -7,21 +7,14 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.config.Localization;
-import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.text.TextBuilder;
 import ru.kelcuprum.alinlib.gui.components.text.CategoryBox;
 import ru.kelcuprum.alinlib.gui.components.text.TextBox;
 import ru.kelcuprum.alinlib.gui.toast.ToastBuilder;
 import ru.kelcuprum.pplhelper.PepelandHelper;
 import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
-import ru.kelcuprum.pplhelper.gui.configs.ConfigScreen;
-import ru.kelcuprum.pplhelper.gui.configs.UpdaterScreen;
-import ru.kelcuprum.pplhelper.gui.message.ErrorScreen;
+import ru.kelcuprum.pplhelper.gui.screens.message.ErrorScreen;
 import ru.kelcuprum.pplhelper.gui.screens.builder.ScreenBuilder;
-
-import static ru.kelcuprum.alinlib.gui.Icons.*;
-import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.MODS;
-import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.PROJECTS;
 
 public class CommandsScreen {
     public Screen parent;
@@ -32,6 +25,7 @@ public class CommandsScreen {
                 .addWidget(new TextBuilder(Component.translatable("pplhelper.commands.description")).setType(TextBuilder.TYPE.MESSAGE));
         try {
             JsonArray mods = PepeLandHelperAPI.getCommands();
+            if(PepeLandHelperAPI.isError(mods)) throw PepeLandHelperAPI.getError(mods);
             for(JsonElement element : mods){
                 JsonObject data = element.getAsJsonObject();
                 CategoryBox cat = new CategoryBox(Component.literal(Localization.fixFormatCodes("&l"+data.get("title").getAsString()+"&r")));

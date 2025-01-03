@@ -1,4 +1,4 @@
-package ru.kelcuprum.pplhelper.gui.configs.test;
+package ru.kelcuprum.pplhelper.gui.screens.configs.test;
 
 import com.google.gson.JsonObject;
 import net.minecraft.util.GsonHelper;

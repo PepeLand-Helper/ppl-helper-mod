@@ -33,10 +33,9 @@ import ru.kelcuprum.pplhelper.api.PepeLandAPI;
 import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
 import ru.kelcuprum.pplhelper.api.components.Project;
 import ru.kelcuprum.pplhelper.gui.TextureHelper;
-import ru.kelcuprum.pplhelper.gui.configs.ConfigScreen;
-import ru.kelcuprum.pplhelper.gui.configs.TestConfigScreen;
-import ru.kelcuprum.pplhelper.gui.configs.UpdaterScreen;
-import ru.kelcuprum.pplhelper.gui.message.NewUpdateScreen;
+import ru.kelcuprum.pplhelper.gui.screens.configs.ConfigScreen;
+import ru.kelcuprum.pplhelper.gui.screens.UpdaterScreen;
+import ru.kelcuprum.pplhelper.gui.screens.message.NewUpdateScreen;
 import ru.kelcuprum.pplhelper.gui.screens.CommandsScreen;
 import ru.kelcuprum.pplhelper.gui.screens.ModsScreen;
 import ru.kelcuprum.pplhelper.gui.screens.NewsListScreen;
@@ -62,23 +61,12 @@ public class PepelandHelper implements ClientModInitializer {
     public static Project selectedProject;
 
     public static AbstractBuilder[] getPanelWidgets(Screen parent, Screen current){
-        return config.getBoolean("IM_A_TEST_SUBJECT", false) ? new AbstractBuilder[]{
-                new ButtonBuilder(Component.translatable("pplhelper.configs")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ConfigScreen().build(parent))).setSprite(OPTIONS).setSize(20, 20),
-                new ButtonBuilder(Component.translatable("pplhelper.news")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new NewsListScreen(current))).setSprite(WIKI).setSize(20, 20),
-                new ButtonBuilder(Component.translatable("pplhelper.projects")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ProjectsScreen(current))).setSprite(PROJECTS).setSize(20, 20),
-                new ButtonBuilder(Component.translatable("pplhelper.commands")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new CommandsScreen().build(parent))).setSprite(COMMANDS).setSize(20, 20),
-                new ButtonBuilder(Component.translatable("pplhelper.mods")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ModsScreen().build(parent))).setSprite(Icons.MODS).setSize(20, 20),
-
-                new ButtonBuilder(Component.translatable("pplhelper.pack")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new UpdaterScreen().build(parent))).setSprite(Icons.PACK_INFO).setSize(20, 20),
-                new ButtonBuilder(Component.translatable("pplhelper.test"), (s) ->AlinLib.MINECRAFT.setScreen(new TestConfigScreen().build(parent))).setSprite(CLOWNFISH).setSize(20, 20)
-        } : new AbstractBuilder[]{
-                new ButtonBuilder(Component.translatable("pplhelper.configs")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ConfigScreen().build(parent))).setSprite(OPTIONS).setSize(20, 20),
-                new ButtonBuilder(Component.translatable("pplhelper.news")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new NewsListScreen(current))).setSprite(WIKI).setSize(20, 20),
-                new ButtonBuilder(Component.translatable("pplhelper.projects")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ProjectsScreen(current))).setSprite(PROJECTS).setSize(20, 20),
-                new ButtonBuilder(Component.translatable("pplhelper.commands")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new CommandsScreen().build(parent))).setSprite(COMMANDS).setSize(20, 20),
-                new ButtonBuilder(Component.translatable("pplhelper.mods")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ModsScreen().build(parent))).setSprite(Icons.MODS).setSize(20, 20),
-
-                new ButtonBuilder(Component.translatable("pplhelper.pack")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new UpdaterScreen().build(parent))).setSprite(Icons.PACK_INFO).setSize(20, 20)
+        return new AbstractBuilder[]{
+                new ButtonBuilder(Component.translatable("pplhelper.news")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new NewsListScreen(current))).setIcon(WIKI).setCentered(false).setSize(20, 20),
+                new ButtonBuilder(Component.translatable("pplhelper.projects")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ProjectsScreen(current))).setIcon(PROJECTS).setCentered(false).setSize(20, 20),
+                new ButtonBuilder(Component.translatable("pplhelper.commands")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new CommandsScreen().build(parent))).setIcon(COMMANDS).setCentered(false).setSize(20, 20),
+                new ButtonBuilder(Component.translatable("pplhelper.mods")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ModsScreen().build(parent))).setIcon(Icons.MODS).setCentered(false).setSize(20, 20),
+                new ButtonBuilder(Component.translatable("pplhelper.pack")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new UpdaterScreen().build(parent))).setIcon(Icons.PACK_INFO).setCentered(false).setSize(20, 20),
         };
     }
 
@@ -95,9 +83,13 @@ public class PepelandHelper implements ClientModInitializer {
     public void onInitializeClient() {
         LOG.log("Данный проект не является официальной частью сети серверов PepeLand", Level.WARN);
         ClientLifecycleEvents.CLIENT_FULL_STARTED.register((s) -> {
-            worlds = PepeLandHelperAPI.getWorlds();
-            commands = PepeLandHelperAPI.getCommands();
-            mods = PepeLandHelperAPI.getRecommendMods();
+            try {
+                worlds = PepeLandHelperAPI.getWorlds();
+                commands = PepeLandHelperAPI.getCommands();
+                mods = PepeLandHelperAPI.getRecommendMods();
+            } catch (Exception ex){
+                ex.printStackTrace();
+            }
             String packVersion = getInstalledPack();
             if((config.getBoolean("PACK_UPDATES.NOTICE", true) || config.getBoolean("PACK_UPDATES.AUTO_UPDATE", true)) && !packVersion.isEmpty()){
                 JsonObject packInfo = PepeLandAPI.getPackInfo(onlyEmotesCheck());

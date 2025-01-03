@@ -23,7 +23,7 @@ import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.WHITE_PEPE;
 @Mixin(ChatScreen.class)
 public abstract class ChatScreenMixin extends Screen {
     @Unique
-    public boolean isGlobalChat = PepelandHelper.playerInPPL() && PepelandHelper.config.getBoolean("CHAT.GLOBAL", false);
+    public boolean isGlobalChat = PepelandHelper.playerInPPL() && PepelandHelper.config.getBoolean("CHAT.GLOBAL", false) && PepelandHelper.config.getBoolean("CHAT.GLOBAL.TOGGLE", true);
     @Shadow public abstract String normalizeChatMessage(String message);
     @Shadow protected EditBox input;
 
@@ -53,7 +53,7 @@ public abstract class ChatScreenMixin extends Screen {
 
     @Inject(method="handleChatInput", at=@At("HEAD"), cancellable = true)
     public void handleChatInput(String string, boolean bl, CallbackInfo ci){
-        if(!PepelandHelper.playerInPPL() && !isGlobalChat) return;
+        if(!PepelandHelper.playerInPPL() && !isGlobalChat && PepelandHelper.config.getBoolean("CHAT.GLOBAL.TOGGLE", true)) return;
         string = this.normalizeChatMessage(string);
         if(!string.startsWith("/") && isGlobalChat) string = "/g "+string;
         if (!string.isEmpty()) {

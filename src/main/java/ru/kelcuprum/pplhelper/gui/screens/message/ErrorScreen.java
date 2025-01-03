@@ -1,4 +1,4 @@
-package ru.kelcuprum.pplhelper.gui.message;
+package ru.kelcuprum.pplhelper.gui.screens.message;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;

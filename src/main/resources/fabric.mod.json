@@ -40,7 +40,7 @@
   "custom": {
     "modmenu": {
       "links": {
-        "modmenu.modrinth": "https://modrinth.com/mod/pplhelper",
+        "modmenu.modrinth": "https://modrinth.com/mod/ppl-helper",
         "modmenu.donate": "https://kelcu.ru/don"
       }
     }

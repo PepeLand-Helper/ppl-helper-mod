@@ -28,78 +28,47 @@ import static ru.kelcuprum.alinlib.gui.Icons.SEARCH;
 public class ProjectsScreen extends AbstractPPLScreen {
     public ProjectsScreen(Screen screen) {
         super(new ScreenBuilder(screen, Component.translatable("pplhelper.projects")).addPanelWidgets(PepelandHelper.getPanelWidgets(screen, screen)));
-        contentY = 60;
+        builder.contentY = 60;
     }
     private static String query = "";
     private static int world = 0;
     private static List<Project> lastProjects;
     @Override
-    public void initContent() {
-        int x = getX();
-        final int[] y = {contentY - 50};
-        addRenderableWidget(new TextBuilder(builder.title).setPosition(x, y[0]).setSize(getFactWidth()-25, 20).build());
-        ButtonBuilder exit = new ButtonBuilder(Component.literal("x")).setOnPress((s) -> onClose()).setPosition(x+getFactWidth()-20, y[0]).setWidth(20);
-        addRenderableWidget(exit.build());
-        y[0] +=25;
-        int searchSize = (getFactWidth() - 30) / 2;
-        addRenderableWidget(new EditBoxBuilder(Component.translatable("pplhelper.news.search"), (s) -> query = s).setValue(query).setPosition(x, y[0]).setWidth(searchSize).build());
+    public void initCategory() {
+        builder.widgets.clear();
+        super.initCategory();
+        final int[] y = {builder.contentY - 25};
+        int searchSize = (getContentWidth() - 30) / 2;
+        addRenderableWidget(new EditBoxBuilder(Component.translatable("pplhelper.news.search"), (s) -> query = s).setValue(query).setPosition(getX(), y[0]).setWidth(searchSize).build());
 
         addRenderableWidget(new SelectorBuilder(Component.translatable("pplhelper.project.world"), (s) -> {
             world = s.getPosition();
             search();
-        }).setList(PepelandHelper.worlds).setValue(world).setPosition(x + 5 + searchSize, y[0]).setWidth(searchSize).build());
-        addRenderableWidget(new ButtonBuilder(Component.translatable("pplhelper.news.find"), (s) -> search()).setSprite(SEARCH).setPosition(x + getFactWidth() - 20, y[0]).setWidth(20).build());
+        }).setList(PepelandHelper.worlds).setValue(world).setPosition(getX() + 5 + searchSize, y[0]).setWidth(searchSize).build());
+        addRenderableWidget(new ButtonBuilder(Component.translatable("pplhelper.news.find"), (s) -> search()).setSprite(SEARCH).setPosition(getX() + getContentWidth() - 20, y[0]).setWidth(20).build());
         y[0] +=25;
-
         new Thread(() -> {
             List<Project> projects = lastProjects == null ? PepeLandHelperAPI.getProjects(query, PepelandHelper.worlds[world]) : lastProjects;
             lastProjects = projects;
-            builder.widgets.clear();
             if (projects.isEmpty()) {
-                builder.widgets.add(new TextBuilder(Component.translatable("pplhelper.news.not_found")).setType(TextBuilder.TYPE.MESSAGE).setAlign(TextBuilder.ALIGN.CENTER).setPosition(x, 55).setSize(getFactWidth(), 20).build());
-                builder.widgets.add(new ImageWidget(x, 55, getFactWidth(), 20, GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/ozon.png"), 640, 360, true, Component.empty()));
+                builder.addWidget(new TextBuilder(Component.translatable("pplhelper.news.not_found")).setType(TextBuilder.TYPE.MESSAGE).setAlign(TextBuilder.ALIGN.CENTER).setPosition(getX(), 55).setSize(getContentWidth(), 20).build());
+                builder.addWidget(new ImageWidget(getX(), 55, getContentWidth(), 20, GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/ozon.png"), 640,360, true, Component.empty()));
             } else for (Project project : projects)
-                builder.widgets.add(new ProjectButton(x, -40, getFactWidth(), project, this));
+                builder.addWidget(new ProjectButton(getX(), -40, getContentWidth(), project, this));
+            int heigthScroller = builder.contentY;
             for (AbstractWidget widget : builder.widgets) {
-                widget.setWidth(getFactWidth());
-                widget.setPosition(x, y[0]);
+                heigthScroller+=(widget.getHeight()+5);
+                widget.setWidth(getContentWidth());
+                widget.setPosition(getX(), y[0]);
                 y[0] +=(widget.getHeight()+5);
             }
+            yc = Math.min(height-5, heigthScroller);
             addRenderableWidgets$scroller(scroller, builder.widgets);
         }).start();
-        this.scroller = addRenderableWidget(new ConfigureScrolWidget(getX()+getFactWidth()+1, contentY, 4, Math.min(y[0] -contentY, height-5-contentY), Component.empty(), scroller -> {
-            scroller.innerHeight = 0;
-            CategoryBox lastCategory = null;
-            for (AbstractWidget widget : builder.widgets) {
-                if (widget.visible) {
-                    if (widget instanceof CategoryBox) {
-                        if (lastCategory != widget && ((CategoryBox) widget).getState())
-                            lastCategory = (CategoryBox) widget;
-                    }
-                    if (lastCategory != null && !(widget instanceof CategoryBox)) {
-                        if (!lastCategory.values.contains(widget)) {
-                            scroller.innerHeight += 6;
-                            lastCategory.setRenderLine(true);
-                            lastCategory = null;
-                        }
-                    }
-                    widget.setY(contentY+(int) (scroller.innerHeight - scroller.scrollAmount()));
-                    scroller.innerHeight += (widget.getHeight() + 5);
-                } else widget.setY(-widget.getHeight());
-            }
-            maxContentY = Math.min(scroller.innerHeight+contentY, height-5);
-            scroller.innerHeight -= 8;
-        }));
     }
 
     @Override
     public boolean keyPressed(int i, int j, int k) {
-        if (i == GLFW.GLFW_KEY_ESCAPE) {
-            if (getFocused() != null && getFocused().isFocused()) {
-                getFocused().setFocused(false);
-                return true;
-            }
-        }
         if(i == GLFW.GLFW_KEY_ENTER){
             if (getFocused() != null && getFocused().isFocused() && getFocused() instanceof EditBox) {
                 search();

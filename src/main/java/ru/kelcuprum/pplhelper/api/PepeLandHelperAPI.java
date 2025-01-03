@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.network.chat.Component;
 import ru.kelcuprum.alinlib.WebAPI;
 import ru.kelcuprum.pplhelper.PepelandHelper;
+import ru.kelcuprum.pplhelper.TabHelper;
 import ru.kelcuprum.pplhelper.api.components.News;
 import ru.kelcuprum.pplhelper.api.components.Project;
 
@@ -51,12 +52,13 @@ public class PepeLandHelperAPI {
 
     public static List<Project> getProjects(String query, String world){
         try {
-            JsonObject projects = WebAPI.getJsonObject(getURI("projects?query"+uriEncode(query)+(world.equalsIgnoreCase(Component.translatable("pplhelper.project.world.all").getString()) ? "" : "&world="+uriEncode(world)), false));
+            JsonObject projects = WebAPI.getJsonObject(getURI("projects?query="+uriEncode(query)+(world.equalsIgnoreCase(Component.translatable("pplhelper.project.world.all").getString()) ? "" : "&world="+uriEncode(world)), false));
             List<Project> list = new ArrayList<>();
             for(JsonElement element : projects.getAsJsonArray("items")) list.add(new Project(element.getAsJsonObject()));
             return list;
         } catch (Exception ex){
-            throw new RuntimeException(ex);
+            PepelandHelper.LOG.error(ex.getMessage() == null ? ex.getClass().getName() : ex.getMessage());
+            return new ArrayList<>();
         }
     }
 
@@ -83,7 +85,8 @@ public class PepeLandHelperAPI {
             for(JsonElement element : projects.getAsJsonArray("items")) list.add(new News(element.getAsJsonObject()));
             return list;
         } catch (Exception ex){
-            throw new RuntimeException(ex);
+            PepelandHelper.LOG.error(ex.getMessage() == null ? ex.getClass().getName() : ex.getMessage());
+            return new ArrayList<>();
         }
     }
     public static String getNewsContent(int id){
@@ -92,5 +95,14 @@ public class PepeLandHelperAPI {
         } catch (Exception ex){
             throw new RuntimeException(ex);
         }
+    }
+
+    public static boolean isError(JsonElement json){
+        return json.isJsonObject() && json.getAsJsonObject().has("error");
+    }
+
+    public static Exception getError(JsonElement json){
+        JsonObject jsonObject = json.getAsJsonObject().getAsJsonObject("error");
+        return new Exception(jsonObject.has("message") && !jsonObject.get("message").getAsString().isBlank() ? jsonObject.get("message").getAsString() : jsonObject.get("codename").getAsNumber().intValue() + " "+ jsonObject.get("codename").getAsString());
     }
 }
