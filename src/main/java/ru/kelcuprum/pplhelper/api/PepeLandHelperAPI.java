@@ -30,6 +30,12 @@ public class PepeLandHelperAPI {
         } catch (Exception ex){
             throw new RuntimeException(ex);
         }
+    }public static JsonArray getRecommendPacks(){
+        try {
+            return WebAPI.getJsonArray(getURI("resourcepacks"));
+        } catch (Exception ex){
+            throw new RuntimeException(ex);
+        }
     }
     public static JsonArray getCommands(){
         try {

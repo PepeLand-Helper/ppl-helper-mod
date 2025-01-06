@@ -34,15 +34,19 @@ public abstract class ChatScreenMixin extends Screen {
     @Inject(method = "keyPressed", at = @At("HEAD"), cancellable = true)
     public void keyPressed(int i, int j, int k, CallbackInfoReturnable<Boolean> cir){
         if(i == GLFW.GLFW_KEY_G && k == GLFW.GLFW_MOD_CONTROL && PepelandHelper.playerInPPL()){
-            if(PepelandHelper.playerInPPL()) {
-                isGlobalChat = !isGlobalChat;
-                new ToastBuilder().setTitle(Component.translatable("pplhelper")).setMessage(Component.translatable("pplhelper.chat.global", isGlobalChat ? CommonComponents.OPTION_ON : CommonComponents.OPTION_OFF)).setIcon(WHITE_PEPE).buildAndShow();
-                PepelandHelper.config.setBoolean("CHAT.GLOBAL", isGlobalChat);
-            }
+            if(PepelandHelper.playerInPPL()) changeGlobalChat();
             cir.setReturnValue(true);
         }
     }
 
+    @Unique
+    private void changeGlobalChat(){
+        if(PepelandHelper.playerInPPL()) {
+            isGlobalChat = !isGlobalChat;
+            new ToastBuilder().setTitle(Component.translatable("pplhelper")).setMessage(Component.translatable("pplhelper.chat.global", isGlobalChat ? CommonComponents.OPTION_ON : CommonComponents.OPTION_OFF)).setIcon(WHITE_PEPE).buildAndShow();
+            PepelandHelper.config.setBoolean("CHAT.GLOBAL", isGlobalChat);
+        }
+    }
     @Inject(method = "render", at=@At("RETURN"))
     public void render(GuiGraphics guiGraphics, int i, int j, float f, CallbackInfo ci){
         if(isGlobalChat && PepelandHelper.playerInPPL()) {
@@ -62,5 +66,10 @@ public abstract class ChatScreenMixin extends Screen {
             else this.minecraft.player.connection.sendChat(string);
         }
         ci.cancel();
+    }
+
+    @Inject(method = "init", at = @At("RETURN"))
+    public void init(CallbackInfo ci){
+
     }
 }

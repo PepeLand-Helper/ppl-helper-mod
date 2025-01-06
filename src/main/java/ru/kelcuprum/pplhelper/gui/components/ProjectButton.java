@@ -12,9 +12,8 @@ import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
 import ru.kelcuprum.alinlib.gui.components.buttons.Button;
 import ru.kelcuprum.pplhelper.api.components.Project;
 import ru.kelcuprum.pplhelper.gui.TextureHelper;
-import ru.kelcuprum.pplhelper.gui.screens.project.ProjectScreen;
+import ru.kelcuprum.pplhelper.gui.screens.pages.ProjectScreen;
 
-import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.PEPE;
 import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.WHITE_PEPE;
 
 public class ProjectButton extends Button {

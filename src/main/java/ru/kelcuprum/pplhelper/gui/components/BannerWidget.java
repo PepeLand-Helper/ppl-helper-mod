@@ -7,9 +7,11 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import ru.kelcuprum.alinlib.gui.Colors;
 import ru.kelcuprum.pplhelper.gui.TextureHelper;
 
 import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.PACK_INFO;
+import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.WHITE_PEPE;
 
 public class BannerWidget extends AbstractWidget {
     public final String url;
@@ -23,9 +25,10 @@ public class BannerWidget extends AbstractWidget {
     }
 
     private NativeImage nativeImage;
-
+    private boolean loadFailed = false;
     @Override
     public int getHeight() {
+        if(loadFailed) return 1;
         if(nativeImage == null) return super.getHeight();
         double scale = (double) nativeImage.getWidth() / width;
         return (int) (nativeImage.getHeight()/scale);
@@ -34,9 +37,13 @@ public class BannerWidget extends AbstractWidget {
     @Override
     protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         ResourceLocation image = TextureHelper.getBanner(url, id);
-        if(image == PACK_INFO) return;
-        nativeImage = TextureHelper.urlsImages.get(url);
-        guiGraphics.blit(RenderType::guiTextured, image, getX(), getY(), 0.0F, 0.0F, getWidth(), getHeight(), getWidth(), getHeight());
+        if(image == PACK_INFO && !loadFailed) {
+            loadFailed = true;
+            return;
+        }
+        if(image != WHITE_PEPE) nativeImage = TextureHelper.urlsImages.get(url);
+        if(nativeImage == null) guiGraphics.fill(getX(), getY(), getRight(), getBottom(), Colors.BLACK_ALPHA);
+        else guiGraphics.blit(RenderType::guiTextured, image, getX(), getY(), 0.0F, 0.0F, getWidth(), getHeight(), getWidth(), getHeight());
     }
 
     @Override

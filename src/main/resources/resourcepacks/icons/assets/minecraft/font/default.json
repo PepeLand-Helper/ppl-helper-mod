@@ -1,0 +1,22 @@
+{
+   "providers": [
+      {
+         "type": "bitmap",
+         "file": "pplhelper:gui/sprites/white_pepe.png",
+         "ascent": 10,
+         "height": 12,
+         "chars": [
+            "\uE699"
+         ]
+      },
+      {
+         "type": "bitmap",
+         "file": "pplhelper:gui/sprites/pepe.png",
+         "ascent": 10,
+         "height": 12,
+         "chars": [
+            "\uE700"
+         ]
+      }
+   ]
+}

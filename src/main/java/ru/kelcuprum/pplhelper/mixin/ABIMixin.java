@@ -16,14 +16,17 @@ import ru.kelcuprum.pplhelper.PepelandHelper;
 import ru.kelcuprum.pplhelper.TabHelper;
 
 import static java.lang.Integer.parseInt;
+import static ru.kelcuprum.pplhelper.PepelandHelper.dist;
+import static ru.kelcuprum.pplhelper.PepelandHelper.getStringSelectedProjectCoordinates;
 
 @Mixin(ActionBarInfo.class)
 public class ABIMixin {
     @Inject(method = "getMessage", at=@At("RETURN"), remap = false, cancellable = true)
     private static void getMessage(CallbackInfoReturnable<String> cir){
         if(PepelandHelper.selectedProject == null || TabHelper.getWorld() == null) return;
+        if(!PepelandHelper.config.getBoolean("SPROJECT.ABI", true)) return;
         String huy = "\\n";
-        String parsedCoordinates = getString();
+        String parsedCoordinates = getStringSelectedProjectCoordinates();
         if(parsedCoordinates.isEmpty()) return;
         huy += String.format("&6%s:&r %s", PepelandHelper.selectedProject.world, parsedCoordinates);
         LocalPlayer p = AlinLib.MINECRAFT.player;
@@ -36,24 +39,5 @@ public class ABIMixin {
             } else huy+= String.format(" &6(%s блоков от вас)&r", near);
         }
         cir.setReturnValue(cir.getReturnValue()+Localization.fixFormatCodes(huy));
-    }
-
-    @Unique
-    private static @NotNull String getString() {
-        String coordinates = "";
-        if(World.getCodeName().equals("minecraft:overworld") && PepelandHelper.selectedProject.coordinates$overworld != null && !PepelandHelper.selectedProject.coordinates$overworld.isEmpty())
-            coordinates = PepelandHelper.selectedProject.coordinates$overworld;
-        else if(World.getCodeName().equals("minecraft:the_nether") && PepelandHelper.selectedProject.coordinates$nether != null && !PepelandHelper.selectedProject.coordinates$nether.isEmpty())
-            coordinates = PepelandHelper.selectedProject.coordinates$nether;
-        else if(World.getCodeName().equals("minecraft:the_end") && PepelandHelper.selectedProject.coordinates$end != null && !PepelandHelper.selectedProject.coordinates$end.isEmpty())
-            coordinates = PepelandHelper.selectedProject.coordinates$end;
-        return coordinates.replaceAll("[^0-9 \\-.]", "");
-    }
-
-    @Unique
-    private static float dist(int i, int j, int k, int l) {
-        int m = k - i;
-        int n = l - j;
-        return Mth.sqrt((float)(m * m + n * n));
     }
 }

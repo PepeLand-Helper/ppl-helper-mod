@@ -24,11 +24,17 @@ public class ConfigScreen {
             builder.addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.test"), (s) ->AlinLib.MINECRAFT.setScreen(new TestConfigScreen().build(parent))).setIcon(CLOWNFISH));
 
         builder.addWidget(new TextBuilder(Component.translatable("pplhelper.configs")))
-                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.enable_toast"), true).setConfig(PepelandHelper.config,"ENABLE.TOAST"))
+                // Пока-что как заглушка
+                // .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.enable_toast"), true).setConfig(PepelandHelper.config,"ENABLE.TOAST"))
                 .addWidget(new SliderBuilder(Component.translatable("pplhelper.configs.selected_project.auto_hide")).setDefaultValue(15).setMin(1).setMax(32).setConfig(PepelandHelper.config, "SELECTED_PROJECT.AUTO_HIDE"))
+                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.sproject.abi"), true).setConfig(PepelandHelper.config,"SPROJECT.ABI"))
                 .addWidget(new HorizontalRuleBuilder(Component.translatable("pplhelper.configs.chat")))
                 .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.chat.global"), false).setConfig(PepelandHelper.config,"CHAT.GLOBAL"))
-                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.chat.global.toggle"), false).setConfig(PepelandHelper.config,"CHAT.GLOBAL.TOGGLE"))
+                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.chat.global.toggle"), true).setConfig(PepelandHelper.config,"CHAT.GLOBAL.TOGGLE"))
+                .addWidget(new TextBuilder(Component.translatable("pplhelper.configs.chat.global.description")).setType(TextBuilder.TYPE.BLOCKQUOTE))
+                .addWidget(new HorizontalRuleBuilder(Component.translatable("pplhelper.configs.timer")))
+                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.timer.restart"), true).setConfig(PepelandHelper.config,"TIMER.RESTART"))
+                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.timer.join"), true).setConfig(PepelandHelper.config,"TIMER.JOIN"))
                 .addWidget(new HorizontalRuleBuilder(Component.translatable("pplhelper.configs.api")))
                 .addWidget(new EditBoxBuilder(Component.translatable("pplhelper.configs.api_url")).setValue("https://api-h.pplmods.ru/").setConfig(PepelandHelper.config, "API_URL"))
                 .addWidget(new HorizontalRuleBuilder(Component.translatable("pplhelper.configs.urls")))

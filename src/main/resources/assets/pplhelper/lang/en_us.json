@@ -4,7 +4,6 @@
   "pplhelper.configs": "Конфиги",
 
   "pplhelper.key.open.projects": "Открыть проекты",
-  "pplhelper.key.open.news": "Открыть новости",
   "pplhelper.key.open.config": "Открыть настройки",
   "pplhelper.key.unfollow_project": "Открепить проект",
 
@@ -14,6 +13,7 @@
   "pplhelper.configs.chat": "Чат",
   "pplhelper.configs.chat.global": "Режим глоб. чата",
   "pplhelper.configs.chat.global.toggle": "Переключение глоб. чата",
+  "pplhelper.configs.chat.global.toggle.description": "Чтобы переключить режим чата, нужно нажать сочетание клавиш CTRL + G",
   "pplhelper.configs.urls": "Адреса",
   "pplhelper.configs.modrinth_url": "Modrinth",
   "pplhelper.configs.pack_updates.notice": "Оповещения о новой версии пака",
@@ -62,8 +62,8 @@
   "pplhelper.project.coordinates.nether": "Ад",
   "pplhelper.project.coordinates.end": "Энд",
   "pplhelper.project.creators": "§lСтроители:§r %s",
-  "pplhelper.project.abi": "Показать в ABI",
-  "pplhelper.project.abi.unfollow": "Убрать из ABI",
+  "pplhelper.project.follow": "Закрепить координаты",
+  "pplhelper.project.unfollow": "Открепить координаты",
   "pplhelper.project.web": "Открыть страницу сайта",
 
   "pplhelper.world.lobby": "Лобби",
@@ -71,11 +71,15 @@
   "pplhelper.world.constructions.1": "Мир Построек #1",
   "pplhelper.world.constructions.2": "Мир Построек #2",
   "pplhelper.world.farm": "Мир Ферм",
-  "pplhelper.world.trade": "Торговая зона",
+  "pplhelper.world.trade": "Торговая Зона",
   "pplhelper.world.end": "Мир Энда",
 
   "pplhelper.chat.global": "Глобальный чат: %s",
   "pplhelper.chat.global.on": "⚠⚠ Включен режим глобального чата ⚠⚠",
+
+  "pplhelper.restart": "Рестарт через %s",
+  "pplhelper.join": "Вы cможете зайти через %s",
+  "pplhelper.selected_project": "%1$s » %2$s%3$s",
 
   "pplhelper.news.page": "Новости > %s",
 
@@ -84,5 +88,9 @@
   "pplhelper.commands.notice.description": "Команда скопирована!",
   "pplhelper.mods": "Моды и ресурс-паки",
   "pplhelper.mods.installed": "(Установлен)",
-  "pplhelper.mods.description": "Список модов, которые могут улучшить игру на сервере."
+  "pplhelper.mods.description": "Список модов и ресурс-паков, которые могут улучшить игру на сервере.",
+  "pplhelper.mods.packs": "Ресурс-паки",
+
+  "resourcePack.pplhelper.icons": "Иконки PPL Helper",
+  "resourcePack.pplhelper.icons.description": "Иконки для игрового интерфейса\nТаймер, ABI и т.д."
 }

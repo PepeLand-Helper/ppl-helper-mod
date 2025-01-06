@@ -12,7 +12,7 @@ import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
 import ru.kelcuprum.alinlib.gui.components.buttons.Button;
 import ru.kelcuprum.pplhelper.api.components.News;
 import ru.kelcuprum.pplhelper.gui.TextureHelper;
-import ru.kelcuprum.pplhelper.gui.screens.project.NewsScreen;
+import ru.kelcuprum.pplhelper.gui.screens.pages.NewsScreen;
 
 import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.WHITE_PEPE;
 

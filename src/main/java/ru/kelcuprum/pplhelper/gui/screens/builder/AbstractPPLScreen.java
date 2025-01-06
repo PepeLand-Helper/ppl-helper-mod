@@ -103,7 +103,7 @@ public class AbstractPPLScreen extends Screen {
             scroller.innerHeight-=8;
         }));
         yo = Math.min(heigthScroller, height-30);
-        options = addRenderableWidget(new ButtonBuilder(Component.translatable("alinlib.component.reset")).setOnPress((OnPress) -> {
+        options = addRenderableWidget(new ButtonBuilder(Component.translatable("pplhelper.configs")).setOnPress((OnPress) -> {
             this.minecraft.setScreen(new ConfigScreen().build(this));
         }).setSprite(OPTIONS).setSize(20, 20).setPosition(5, yo+5).build());
 

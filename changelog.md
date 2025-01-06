@@ -2,3 +2,17 @@
 - Исправлена ссылка Modrinth
 - Переделан главный интерфейс
 - Код-рефактор
+- Удалена функция кэша
+- Переработан показ баннера и изображений в Markdown
+- Добавлены таймеры до рестарта / ограничения на вход
+- Добавлены новые ключи локализации:
+  - pplhelper.selected_project.name
+  - pplhelper.selected_project.description
+  - pplhelper.selected_project.creators
+  - pplhelper.selected_project.id
+  - pplhelper.selected_project.coordinates
+- Добавлен внутренний ресурс-пак для таймеров
+- Удален бинд на открытие проектов
+- Добавлена заглушка команды PPL Helper
+- Добавлен вывод координат проекта, не зависимо от Action Bar Info
+- Добавлены рекомендуемые ресурс-паки в категории "Моды и ресурс-паки"

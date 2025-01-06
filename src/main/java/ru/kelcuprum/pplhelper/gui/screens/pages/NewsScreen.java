@@ -1,30 +1,27 @@
-package ru.kelcuprum.pplhelper.gui.screens.project;
+package ru.kelcuprum.pplhelper.gui.screens.pages;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.glfw.GLFW;
 import ru.kelcuprum.alinlib.gui.Colors;
 import ru.kelcuprum.alinlib.gui.components.ConfigureScrolWidget;
 import ru.kelcuprum.alinlib.gui.components.ImageWidget;
 import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
+import ru.kelcuprum.alinlib.gui.components.builder.text.HorizontalRuleBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.text.TextBuilder;
 import ru.kelcuprum.pplhelper.PepelandHelper;
 import ru.kelcuprum.pplhelper.api.components.News;
-import ru.kelcuprum.pplhelper.gui.TextureHelper;
 import ru.kelcuprum.pplhelper.gui.components.BannerWidget;
-import ru.kelcuprum.pplhelper.gui.components.HorizontalRule;
 import ru.kelcuprum.pplhelper.gui.components.ScaledTextBox;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.PACK_INFO;
 import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.WEB;
-import static ru.kelcuprum.pplhelper.gui.screens.project.ProjectScreen.parseMarkdown;
+import static ru.kelcuprum.pplhelper.gui.screens.pages.ProjectScreen.parseMarkdown;
 
 public class NewsScreen extends Screen {
     public final News news;
@@ -43,7 +40,6 @@ public class NewsScreen extends Screen {
     private ConfigureScrolWidget scroller;
     private List<AbstractWidget> widgets = new ArrayList<>();
     private final int maxSize = 400;
-    public ResourceLocation lastBanner;
     public void initContent(){
         widgets = new ArrayList<>();
         int size = Math.min(maxSize, width-10);
@@ -65,13 +61,11 @@ public class NewsScreen extends Screen {
             }
             scroller.innerHeight-=8;
         }));
-        if(news.banner != null && !news.banner.isEmpty()){
-            lastBanner = TextureHelper.getBanner(news.banner, String.format("news_banner_%s", news.id));
-            if(lastBanner != PACK_INFO) widgets.add(new BannerWidget(x, -160, size,(int) (160*scale), news.banner, String.format("news_banner_%s", news.id), Component.empty()));
-        }
-        widgets.add(new ScaledTextBox(x, -40, size, 12, Component.literal(news.title), true, 1.5f));
-        widgets.add(new TextBuilder(Component.literal(news.description)).setType(TextBuilder.TYPE.MESSAGE).setAlign(TextBuilder.ALIGN.CENTER).setPosition(x, -40).setSize(size, 20).build());
-        widgets.add(new HorizontalRule(x, -4, size));
+        if(news.banner != null && !news.banner.isEmpty())
+            widgets.add(new BannerWidget(x, y, size,(int) (160*scale), news.banner, String.format("news_banner_%s", news.id), Component.empty()));
+        widgets.add(new ScaledTextBox(x, y, size, 12, Component.literal(news.title), true, 1.5f));
+        widgets.add(new TextBuilder(Component.literal(news.description)).setType(TextBuilder.TYPE.MESSAGE).setAlign(TextBuilder.ALIGN.CENTER).setPosition(x, y).setSize(size, 20).build());
+        widgets.add(new HorizontalRuleBuilder().setPosition(x, y).build());
         widgets.addAll(parseMarkdown(news.content, x, size, String.format("news_%s_",news.id)+"%s", this));
 
         addWidgetsToScroller(widgets);
@@ -81,7 +75,10 @@ public class NewsScreen extends Screen {
         for (AbstractWidget widget : widgets) addWidgetsToScroller(widget);
     }
 
+    int yC = 30;
     public void addWidgetsToScroller(AbstractWidget widget) {
+        widget.setY(yC);
+        yC+=5+widget.getHeight();
         this.scroller.addWidget(widget);
         this.addWidget(widget);
     }
@@ -139,8 +136,6 @@ public class NewsScreen extends Screen {
     @Override
     public void tick(){
         if(scroller != null) scroller.onScroll.accept(scroller);
-        if(news.banner != null && !news.banner.isEmpty() && lastBanner != TextureHelper.getBanner(news.banner, String.format("news_banner_%s", news.id)))
-            rebuildWidgets();
         super.tick();
     }
 
