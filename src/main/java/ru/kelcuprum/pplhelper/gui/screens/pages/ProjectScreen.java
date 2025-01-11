@@ -88,7 +88,7 @@ public class ProjectScreen extends Screen {
             s.builder.setTitle(Component.translatable(PepelandHelper.selectedProject == null ? "pplhelper.project.follow" : "pplhelper.project.unfollow"));
         }).setPosition(x, y).setWidth(size).build());
         widgets.add(new HorizontalRuleBuilder().setPosition(x, y).build());
-        widgets.addAll(parseMarkdown(project.content, x, size, String.format("project_%s_", project.id) + "%s", this));
+        widgets.addAll(parseMarkdown(project.getContent(), x, size, String.format("project_%s_", project.id) + "%s", this));
 
         addWidgetsToScroller(widgets);
     }

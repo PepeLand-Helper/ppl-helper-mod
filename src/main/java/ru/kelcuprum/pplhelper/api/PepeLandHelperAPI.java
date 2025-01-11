@@ -82,7 +82,8 @@ public class PepeLandHelperAPI {
         try {
             return WebAPI.getString(getURI(String.format("projects/%s/content", id), false));
         } catch (Exception ex){
-            throw new RuntimeException(ex);
+            ex.printStackTrace();
+            return "";
         }
     }
 

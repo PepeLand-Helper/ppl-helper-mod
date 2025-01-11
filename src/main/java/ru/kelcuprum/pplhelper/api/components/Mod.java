@@ -10,18 +10,18 @@ public class Mod {
     public String modid;
     public String id;
     public Service service;
-    public String title = "";
-    public String description = "";
-    public String url = "";
-    public String icon = "";
+    public String title;
+    public String description;
+    public String url;
+    public String icon;
     public Mod(JsonObject info){
-        modid = info.get("modid").getAsString();
-        id = info.get("id").getAsString();
-        service = Service.getServiceByID(info.get("service").getAsString());
-        if(info.has("icon")) icon = info.get("icon").getAsString();
-        if(info.has("title")) title = info.get("title").getAsString();
-        if(info.has("description")) description = info.get("description").getAsString();
-        if(info.has("url")) url = info.get("url").getAsString();
+        modid = Project.getStringInJSON("modid", info);
+        id = Project.getStringInJSON("id", info);
+        service = Service.getServiceByID(Project.getStringInJSON("service", info, ""));
+        icon = Project.getStringInJSON("icon", info, "");
+        title = Project.getStringInJSON("title", info, "");
+        description = Project.getStringInJSON("description", info, "");
+        if(Project.hasJSONElement("url", info)) url = Project.getStringInJSON("url", info, "");
         else this.url = Service.getServiceURL(service, id);
         new Thread(() -> {
             switch (service){
@@ -36,8 +36,8 @@ public class Mod {
         try{
             String url = String.format("https://api.github.com/repos/%s", id);
             JsonObject jsonObject = cache.containsKey(url) ? cache.get(url) : WebAPI.getJsonObject(url);
-            if(this.title.isEmpty()) this.title = jsonObject.get("name").getAsString();
-            if(this.description.isEmpty()) this.description = jsonObject.get("description").getAsString();
+            if(this.title.isBlank()) this.title = Project.getStringInJSON("name", jsonObject, "");
+            if(this.description.isBlank()) this.description = Project.getStringInJSON("description", jsonObject, "");
             cache.put(url, jsonObject);
         } catch(Exception ex){
             ex.printStackTrace();
@@ -47,9 +47,9 @@ public class Mod {
         try{
             String url = String.format("https://api.modrinth.com/v2/project/%s", id);
             JsonObject jsonObject = cache.containsKey(url) ? cache.get(url) : WebAPI.getJsonObject(url);
-            if(this.title.isEmpty()) this.title = jsonObject.get("title").getAsString();
-            if(this.description.isEmpty()) this.description = jsonObject.get("description").getAsString();
-            if(this.icon.isEmpty()) this.icon = jsonObject.get("icon_url").getAsString();
+            if(this.title.isBlank()) this.title = Project.getStringInJSON("title", jsonObject, "");
+            if(this.description.isBlank()) this.description = Project.getStringInJSON("description", jsonObject, "");
+            if(this.icon.isBlank()) this.icon = Project.getStringInJSON("icon_url", jsonObject, "");
             cache.put(url, jsonObject);
         } catch(Exception ex){
             ex.printStackTrace();

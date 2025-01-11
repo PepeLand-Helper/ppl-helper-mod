@@ -1,10 +1,9 @@
 package ru.kelcuprum.pplhelper.api.components;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import ru.kelcuprum.pplhelper.PepelandHelper;
+import net.minecraft.network.chat.Component;
 import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
-
-import static org.apache.logging.log4j.Level.ERROR;
 
 public class Project {
     public int id;
@@ -21,27 +20,54 @@ public class Project {
     public String coordinates$nether;
     public String coordinates$end;
 
-    public String content;
     public Project(JsonObject info){
         id = info.get("id").getAsInt();
 
-        if(!info.getAsJsonObject("data").get("title").isJsonNull()) title = info.getAsJsonObject("data").get("title").getAsString();
-        if(!info.getAsJsonObject("data").get("description").isJsonNull()) description = info.getAsJsonObject("data").get("description").getAsString();
-        if(!info.getAsJsonObject("data").get("creators").isJsonNull()) creators = info.getAsJsonObject("data").get("creators").getAsString();
-        if(!info.getAsJsonObject("data").get("author").isJsonNull()) author = info.getAsJsonObject("data").get("author").getAsString();
+        title = getStringInJSON("data.title", info);
+        description = getStringInJSON("data.description", info);
+        creators = getStringInJSON("data.creators", info, Component.translatable("pplhelper.project.unknown_creators").getString());
+        author = getStringInJSON("data.author", info);
 
-        if(!info.getAsJsonObject("data").get("icon").isJsonNull()) icon = info.getAsJsonObject("data").get("icon").getAsString();
-        if(!info.getAsJsonObject("data").get("banner").isJsonNull()) banner = info.getAsJsonObject("data").get("banner").getAsString();
-        if(!info.getAsJsonObject("data").get("coordinates").isJsonNull()){
-            if(!info.getAsJsonObject("data").get("coordinates").getAsJsonObject().get("world").isJsonNull()) world = info.getAsJsonObject("data").get("coordinates").getAsJsonObject().get("world").getAsString();
-            if(!info.getAsJsonObject("data").get("coordinates").getAsJsonObject().get("overworld").isJsonNull()) coordinates$overworld = info.getAsJsonObject("data").get("coordinates").getAsJsonObject().get("overworld").getAsString();
-            if(!info.getAsJsonObject("data").get("coordinates").getAsJsonObject().get("nether").isJsonNull()) coordinates$nether = info.getAsJsonObject("data").get("coordinates").getAsJsonObject().get("nether").getAsString();
-            if(!info.getAsJsonObject("data").get("coordinates").getAsJsonObject().get("end").isJsonNull()) coordinates$end = info.getAsJsonObject("data").get("coordinates").getAsJsonObject().get("end").getAsString();
+        icon = getStringInJSON("data.icon", info);
+        banner = getStringInJSON("data.banner", info);
+        if(hasJSONElement("data.coordinates", info)){
+            world = getStringInJSON("data.coordinates.world", info);
+            coordinates$overworld = getStringInJSON("data.coordinates.overworld", info);
+            coordinates$nether = getStringInJSON("data.coordinates.nether", info);
+            coordinates$end = getStringInJSON("data.coordinates.end", info);
         }
-        try {
-            this.content = PepeLandHelperAPI.getProjectContent(this.id);
-        } catch (Exception ex){
-            PepelandHelper.LOG.log(ex.getMessage(), ERROR);
+    }
+    public String getContent(){
+        return PepeLandHelperAPI.getProjectContent(this.id);
+    }
+
+    public static String getStringInJSON(String path, JsonObject parse){
+        return getStringInJSON(path, parse, null);
+    }
+
+    public static String getStringInJSON(String path, JsonObject parse, String defResp){
+        if(!hasJSONElement(path, parse)) return defResp;
+        String[] keys = path.split("\\.");
+        JsonObject jsonObject = parse;
+        for(String key : keys){
+            if(jsonObject.has(key)){
+                JsonElement json = jsonObject.get(key);
+                if(json.isJsonObject()) jsonObject = (JsonObject) json;
+                else if(json.isJsonPrimitive() && json.getAsJsonPrimitive().isString() && !json.getAsString().isBlank()) return json.getAsString();
+            }
         }
+        return defResp;
+    }
+    public static boolean hasJSONElement(String path, JsonObject parse){
+        String[] keys = path.split("\\.");
+        JsonObject jsonObject = parse;
+        for(String key : keys){
+            if(jsonObject.has(key)){
+                JsonElement json = jsonObject.get(key);
+                if(json.isJsonObject() && !keys[keys.length-1].equals(key)) jsonObject = (JsonObject) json;
+                else if(!json.isJsonNull()) return true;
+            }
+        }
+        return false;
     }
 }

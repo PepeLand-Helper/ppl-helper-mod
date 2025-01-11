@@ -67,6 +67,7 @@
   "pplhelper.project.coordinates.nether": "Ад",
   "pplhelper.project.coordinates.end": "Энд",
   "pplhelper.project.creators": "§lСтроители:§r %s",
+  "pplhelper.project.unknown_creators": "Неизвестный",
   "pplhelper.project.follow": "Закрепить координаты",
   "pplhelper.project.unfollow": "Открепить координаты",
   "pplhelper.project.web": "Открыть страницу сайта",

@@ -15,21 +15,17 @@ public class News {
     public String banner;
     public String icon;
 
-    public String content;
     public News(JsonObject info){
         id = info.get("id").getAsInt();
 
-        if(info.getAsJsonObject("data").has("title")) title = info.getAsJsonObject("data").get("title").getAsString();
-        if(info.getAsJsonObject("data").has("description")) description = info.getAsJsonObject("data").get("description").getAsString();
-        if(info.getAsJsonObject("data").has("author")) author = info.getAsJsonObject("data").get("author").getAsString();
+        title = Project.getStringInJSON("data.title", info);
+        description = Project.getStringInJSON("data.description", info);
+        author = Project.getStringInJSON("data.author", info);
 
-        if(info.getAsJsonObject("data").has("banner")) banner = info.getAsJsonObject("data").get("banner").getAsString();
-        if(info.getAsJsonObject("data").has("icon")) icon = info.getAsJsonObject("data").get("icon").getAsString();
-
-        try {
-            this.content = PepeLandHelperAPI.getNewsContent(this.id);
-        } catch (Exception ex){
-            PepelandHelper.LOG.log(ex.getMessage(), ERROR);
-        }
+        banner = Project.getStringInJSON("data.banner", info);
+        icon = Project.getStringInJSON("data.icon", info);
+    }
+    public String getContent(){
+        return PepeLandHelperAPI.getNewsContent(this.id);
     }
 }
