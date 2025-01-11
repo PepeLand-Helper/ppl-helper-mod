@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static ru.kelcuprum.pplhelper.api.PepeLandAPI.uriEncode;
+import static ru.kelcuprum.pplhelper.utils.JsonHelper.getStringInJSON;
 
 public class PepeLandHelperAPI {
     public static String getURI(String url){
@@ -27,7 +28,7 @@ public class PepeLandHelperAPI {
     public static boolean apiAvailable(){
         try {
             JsonObject content = WebAPI.getJsonObject(getURI("ping", false));
-            if(content.has("error")) throw new Exception(Project.getStringInJSON("error.message", content));
+            if(content.has("error")) throw new Exception(getStringInJSON("error.message", content));
             return content.has("message") && content.has("time");
         } catch (Exception ex){
             ex.printStackTrace();

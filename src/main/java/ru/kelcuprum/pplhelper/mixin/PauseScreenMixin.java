@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
 import ru.kelcuprum.pplhelper.PepelandHelper;
-import ru.kelcuprum.pplhelper.TabHelper;
+import ru.kelcuprum.pplhelper.utils.TabHelper;
 
 import java.util.List;
 

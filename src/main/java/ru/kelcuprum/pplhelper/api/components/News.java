@@ -1,10 +1,8 @@
 package ru.kelcuprum.pplhelper.api.components;
 
 import com.google.gson.JsonObject;
-import ru.kelcuprum.pplhelper.PepelandHelper;
 import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
-
-import static org.apache.logging.log4j.Level.ERROR;
+import static ru.kelcuprum.pplhelper.utils.JsonHelper.getStringInJSON;
 
 public class News {
     public int id;
@@ -18,12 +16,12 @@ public class News {
     public News(JsonObject info){
         id = info.get("id").getAsInt();
 
-        title = Project.getStringInJSON("data.title", info);
-        description = Project.getStringInJSON("data.description", info);
-        author = Project.getStringInJSON("data.author", info);
+        title = getStringInJSON("data.title", info, "");
+        description = getStringInJSON("data.description", info, "");
+        author = getStringInJSON("data.author", info);
 
-        banner = Project.getStringInJSON("data.banner", info);
-        icon = Project.getStringInJSON("data.icon", info);
+        banner = getStringInJSON("data.banner", info);
+        icon = getStringInJSON("data.icon", info);
     }
     public String getContent(){
         return PepeLandHelperAPI.getNewsContent(this.id);

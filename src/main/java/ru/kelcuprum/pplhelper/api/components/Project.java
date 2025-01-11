@@ -1,9 +1,11 @@
 package ru.kelcuprum.pplhelper.api.components;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.network.chat.Component;
 import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
+
+import static ru.kelcuprum.pplhelper.utils.JsonHelper.getStringInJSON;
+import static ru.kelcuprum.pplhelper.utils.JsonHelper.hasJSONElement;
 
 public class Project {
     public int id;
@@ -23,8 +25,8 @@ public class Project {
     public Project(JsonObject info){
         id = info.get("id").getAsInt();
 
-        title = getStringInJSON("data.title", info);
-        description = getStringInJSON("data.description", info);
+        title = getStringInJSON("data.title", info, "");
+        description = getStringInJSON("data.description", info, "");
         creators = getStringInJSON("data.creators", info, Component.translatable("pplhelper.project.unknown_creators").getString());
         author = getStringInJSON("data.author", info);
 
@@ -39,35 +41,5 @@ public class Project {
     }
     public String getContent(){
         return PepeLandHelperAPI.getProjectContent(this.id);
-    }
-
-    public static String getStringInJSON(String path, JsonObject parse){
-        return getStringInJSON(path, parse, null);
-    }
-
-    public static String getStringInJSON(String path, JsonObject parse, String defResp){
-        if(!hasJSONElement(path, parse)) return defResp;
-        String[] keys = path.split("\\.");
-        JsonObject jsonObject = parse;
-        for(String key : keys){
-            if(jsonObject.has(key)){
-                JsonElement json = jsonObject.get(key);
-                if(json.isJsonObject()) jsonObject = (JsonObject) json;
-                else if(json.isJsonPrimitive() && json.getAsJsonPrimitive().isString() && !json.getAsString().isBlank()) return json.getAsString();
-            }
-        }
-        return defResp;
-    }
-    public static boolean hasJSONElement(String path, JsonObject parse){
-        String[] keys = path.split("\\.");
-        JsonObject jsonObject = parse;
-        for(String key : keys){
-            if(jsonObject.has(key)){
-                JsonElement json = jsonObject.get(key);
-                if(json.isJsonObject() && !keys[keys.length-1].equals(key)) jsonObject = (JsonObject) json;
-                else if(!json.isJsonNull()) return true;
-            }
-        }
-        return false;
     }
 }

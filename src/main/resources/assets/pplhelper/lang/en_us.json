@@ -13,6 +13,9 @@
 
   "pplhelper.configs.enable_toast": "Включить уведомления",
   "pplhelper.configs.selected_project.auto_hide": "Радиус скрытия закрепленного проекта",
+  "pplhelper.configs.abi.title": "Action Bar Info",
+  "pplhelper.configs.abi": "Интеграция с ABI",
+  "pplhelper.configs.abi.info": "Информация",
   "pplhelper.configs.sproject.abi": "Показ закрепленного проекта в ABI",
   "pplhelper.configs.api": "PepeLand Helper API",
   "pplhelper.configs.api_url": "Адрес API",
@@ -100,6 +103,8 @@
   "pplhelper.mods.installed": "(Установлен)",
   "pplhelper.mods.description": "Список модов и ресурс-паков, которые могут улучшить игру на сервере.",
   "pplhelper.mods.packs": "Ресурс-паки",
+
+  "abi.info.pplhelper": "\\n&6PPL:&r &6{pplhelper.world}&r {pplhelper.tps}TPS &6{pplhelper.online}/{pplhelper.max_online}&r",
 
   "resourcePack.pplhelper.icons": "Иконки PPL Helper",
   "resourcePack.pplhelper.icons.description": "Иконки для игрового интерфейса\nТаймер, ABI и т.д."

@@ -2,6 +2,7 @@ package ru.kelcuprum.pplhelper.gui.screens.configs;
 
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import ru.kelcuprum.abi.ActionBarInfo;
 import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBooleanBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
@@ -26,9 +27,12 @@ public class ConfigScreen {
         builder.addWidget(new TextBuilder(Component.translatable("pplhelper.configs")))
                 // Пока-что как заглушка
                 // .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.enable_toast"), true).setConfig(PepelandHelper.config,"ENABLE.TOAST"))
-                .addWidget(new SliderBuilder(Component.translatable("pplhelper.configs.selected_project.auto_hide")).setDefaultValue(15).setMin(1).setMax(32).setConfig(PepelandHelper.config, "SELECTED_PROJECT.AUTO_HIDE"))
-                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.sproject.abi"), true).setConfig(PepelandHelper.config,"SPROJECT.ABI"))
-                .addWidget(new HorizontalRuleBuilder(Component.translatable("pplhelper.configs.chat")))
+                .addWidget(new SliderBuilder(Component.translatable("pplhelper.configs.selected_project.auto_hide")).setDefaultValue(15).setMin(1).setMax(32).setConfig(PepelandHelper.config, "SELECTED_PROJECT.AUTO_HIDE"));
+                if(PepelandHelper.isInstalledABI) builder.addWidget(new HorizontalRuleBuilder(Component.translatable("pplhelper.configs.abi.title")))
+                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.abi"), false).setConfig(PepelandHelper.config,"ABI"))
+                .addWidget(new EditBoxBuilder(Component.translatable("pplhelper.configs.abi.info")).setValue(PepelandHelper.config.getString("INFO.PPLHELPER", ActionBarInfo.localization.getLocalization("info.pplhelper", false, false, false))).setConfig(PepelandHelper.config, "INFO.PPLHELPER"))
+                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.sproject.abi"), true).setConfig(PepelandHelper.config,"SPROJECT.ABI"));
+                builder.addWidget(new HorizontalRuleBuilder(Component.translatable("pplhelper.configs.chat")))
                 .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.chat.global"), false).setConfig(PepelandHelper.config,"CHAT.GLOBAL"))
                 .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.chat.global.toggle"), true).setConfig(PepelandHelper.config,"CHAT.GLOBAL.TOGGLE"))
                 .addWidget(new TextBuilder(Component.translatable("pplhelper.configs.chat.global.description")).setType(TextBuilder.TYPE.BLOCKQUOTE))

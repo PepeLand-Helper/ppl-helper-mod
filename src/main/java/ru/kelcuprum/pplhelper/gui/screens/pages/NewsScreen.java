@@ -16,12 +16,12 @@ import ru.kelcuprum.pplhelper.PepelandHelper;
 import ru.kelcuprum.pplhelper.api.components.News;
 import ru.kelcuprum.pplhelper.gui.components.BannerWidget;
 import ru.kelcuprum.pplhelper.gui.components.ScaledTextBox;
+import ru.kelcuprum.pplhelper.utils.MarkdownParser;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.WEB;
-import static ru.kelcuprum.pplhelper.gui.screens.pages.ProjectScreen.parseMarkdown;
 
 public class NewsScreen extends Screen {
     public final News news;
@@ -66,7 +66,7 @@ public class NewsScreen extends Screen {
         widgets.add(new ScaledTextBox(x, y, size, 12, Component.literal(news.title), true, 1.5f));
         widgets.add(new TextBuilder(Component.literal(news.description)).setType(TextBuilder.TYPE.MESSAGE).setAlign(TextBuilder.ALIGN.CENTER).setPosition(x, y).setSize(size, 20).build());
         widgets.add(new HorizontalRuleBuilder().setPosition(x, y).build());
-        widgets.addAll(parseMarkdown(news.getContent(), x, size, String.format("news_%s_",news.id)+"%s", this));
+        widgets.addAll(MarkdownParser.parse(news.getContent(), x, size, String.format("news_%s_",news.id)+"%s", this));
 
         addWidgetsToScroller(widgets);
     }

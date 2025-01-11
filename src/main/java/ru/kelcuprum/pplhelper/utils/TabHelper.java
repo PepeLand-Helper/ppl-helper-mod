@@ -1,7 +1,8 @@
-package ru.kelcuprum.pplhelper;
+package ru.kelcuprum.pplhelper.utils;
 
 import net.minecraft.network.chat.Component;
 import ru.kelcuprum.alinlib.AlinLib;
+import ru.kelcuprum.pplhelper.PepelandHelper;
 
 import static java.lang.Double.parseDouble;
 import static java.lang.Integer.parseInt;

@@ -47,6 +47,7 @@ import ru.kelcuprum.pplhelper.gui.screens.CommandsScreen;
 import ru.kelcuprum.pplhelper.gui.screens.ModsScreen;
 import ru.kelcuprum.pplhelper.gui.screens.NewsListScreen;
 import ru.kelcuprum.pplhelper.gui.screens.ProjectsScreen;
+import ru.kelcuprum.pplhelper.utils.TabHelper;
 
 import java.io.File;
 import java.io.FileInputStream;

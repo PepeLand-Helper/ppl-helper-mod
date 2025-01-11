@@ -13,7 +13,7 @@ import ru.kelcuprum.pplhelper.gui.screens.configs.test.TestProject;
 
 import static ru.kelcuprum.alinlib.gui.Icons.CLOWNFISH;
 import static ru.kelcuprum.alinlib.gui.Icons.OPTIONS;
-import static ru.kelcuprum.pplhelper.TabHelper.worlds;
+import static ru.kelcuprum.pplhelper.utils.TabHelper.worlds;
 
 public class TestConfigScreen {
     public Screen parent;
