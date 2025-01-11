@@ -42,6 +42,7 @@ import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
 import ru.kelcuprum.pplhelper.api.components.Project;
 import ru.kelcuprum.pplhelper.gui.screens.configs.ConfigScreen;
 import ru.kelcuprum.pplhelper.gui.screens.UpdaterScreen;
+import ru.kelcuprum.pplhelper.gui.screens.message.ErrorScreen;
 import ru.kelcuprum.pplhelper.gui.screens.message.NewUpdateScreen;
 import ru.kelcuprum.pplhelper.gui.screens.CommandsScreen;
 import ru.kelcuprum.pplhelper.gui.screens.ModsScreen;
@@ -58,14 +59,20 @@ import java.util.UUID;
 
 import static java.lang.Integer.parseInt;
 import static ru.kelcuprum.alinlib.gui.Icons.*;
-import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.COMMANDS;
-import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.PROJECTS;
+import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.*;
 
 public class PepelandHelper implements ClientModInitializer {
     public static final AlinLogger LOG = new AlinLogger("PPL Helper");
     public static Config config = new Config("config/pplhelper/config.json");
     public static boolean isInstalledABI = FabricLoader.getInstance().isModLoaded("actionbarinfo");
-    public static String[] worlds = new String[0];
+    public static String[] worlds = new String[]{
+            "МП1",
+            "МП2",
+            "МР",
+            "МФ",
+            "ТЗ",
+            "Энд"
+    };
     public static JsonArray commands = new JsonArray();
     public static JsonArray mods = new JsonArray();
     public static Project selectedProject;
@@ -100,9 +107,7 @@ public class PepelandHelper implements ClientModInitializer {
         });
         // -=-=-=- Сбор информации (НЕ ВАШИХ!) и авто-обновление -=-=-=-
         ClientLifecycleEvents.CLIENT_FULL_STARTED.register((s) -> {
-            worlds = PepeLandHelperAPI.getWorlds();
-            commands = PepeLandHelperAPI.getCommands();
-            mods = PepeLandHelperAPI.getRecommendMods();
+            loadStaticInformation();
             String packVersion = getInstalledPack();
             if ((config.getBoolean("PACK_UPDATES.NOTICE", true) || config.getBoolean("PACK_UPDATES.AUTO_UPDATE", true)) && !packVersion.isEmpty()) {
                 JsonObject packInfo = PepeLandAPI.getPackInfo(onlyEmotesCheck());
@@ -176,6 +181,19 @@ public class PepelandHelper implements ClientModInitializer {
                 .set("pplhelper.selected_project.creators", () -> Value.string(selectedProject == null ? "" : selectedProject.creators))
                 .set("pplhelper.selected_project.id", () -> Value.number(selectedProject == null ? 0 : selectedProject.id))
                 .set("pplhelper.selected_project.coordinates", () -> Value.string(selectedProject == null ? "" : getStringSelectedProjectCoordinates())));
+    }
+
+    public static void loadStaticInformation(){
+        try{
+            commands = PepeLandHelperAPI.getCommands();
+            mods = PepeLandHelperAPI.getRecommendMods();
+            worlds = PepeLandHelperAPI.getWorlds();
+        } catch (Exception ex){
+            Exception exc = new Exception("Ошибка загрузки информации\n"+ex.getMessage());
+            exc.setStackTrace(ex.getStackTrace());
+            exc.printStackTrace();
+            new ToastBuilder().setTitle(Component.literal("Ошибка загрузки информации")).setMessage(Component.literal(ex.getMessage())).setIcon(WHITE_PEPE).setType(ToastBuilder.Type.ERROR).buildAndShow();
+        }
     }
 
     public static @NotNull String getStringSelectedProjectCoordinates() {

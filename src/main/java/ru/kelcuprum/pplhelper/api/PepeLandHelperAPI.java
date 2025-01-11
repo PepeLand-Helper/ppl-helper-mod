@@ -20,7 +20,9 @@ public class PepeLandHelperAPI {
         return getURI(url, true);
     }
     public static String getURI(String url, boolean uriEncode){
-        return String.format("%1$s%2$s", PepelandHelper.config.getString("API_URL", "https://api-h.pplmods.ru/"), uriEncode ? uriEncode(url) : url);
+        String api = PepelandHelper.config.getString("API_URL", "https://api-h.pplmods.ru/");
+        if(!api.endsWith("/")) api+="/";
+        return String.format("%1$s%2$s", api, uriEncode ? uriEncode(url) : url);
     }
 
 
