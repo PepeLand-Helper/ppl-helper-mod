@@ -42,13 +42,11 @@ import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
 import ru.kelcuprum.pplhelper.api.components.Project;
 import ru.kelcuprum.pplhelper.gui.screens.configs.ConfigScreen;
 import ru.kelcuprum.pplhelper.gui.screens.UpdaterScreen;
-import ru.kelcuprum.pplhelper.gui.screens.message.ErrorScreen;
 import ru.kelcuprum.pplhelper.gui.screens.message.NewUpdateScreen;
 import ru.kelcuprum.pplhelper.gui.screens.CommandsScreen;
 import ru.kelcuprum.pplhelper.gui.screens.ModsScreen;
 import ru.kelcuprum.pplhelper.gui.screens.NewsListScreen;
 import ru.kelcuprum.pplhelper.gui.screens.ProjectsScreen;
-import ru.kelcuprum.pplhelper.mixin.ABIMixin;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -65,6 +63,7 @@ public class PepelandHelper implements ClientModInitializer {
     public static final AlinLogger LOG = new AlinLogger("PPL Helper");
     public static Config config = new Config("config/pplhelper/config.json");
     public static boolean isInstalledABI = FabricLoader.getInstance().isModLoaded("actionbarinfo");
+    public static boolean worldsLoaded = false;
     public static String[] worlds = new String[]{
             "МП1",
             "МП2",
@@ -78,11 +77,12 @@ public class PepelandHelper implements ClientModInitializer {
     public static Project selectedProject;
 
     public static AbstractBuilder[] getPanelWidgets(Screen parent, Screen current) {
+        boolean api = PepeLandHelperAPI.apiAvailable();
         return new AbstractBuilder[]{
                 new ButtonBuilder(Component.translatable("pplhelper.news")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new NewsListScreen(current))).setIcon(WIKI).setCentered(false).setSize(20, 20),
                 new ButtonBuilder(Component.translatable("pplhelper.projects")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ProjectsScreen(current))).setIcon(PROJECTS).setCentered(false).setSize(20, 20),
-                new ButtonBuilder(Component.translatable("pplhelper.commands")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new CommandsScreen().build(parent))).setIcon(COMMANDS).setCentered(false).setSize(20, 20),
-                new ButtonBuilder(Component.translatable("pplhelper.mods")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ModsScreen().build(parent))).setIcon(Icons.MODS).setCentered(false).setSize(20, 20),
+                new ButtonBuilder(Component.translatable("pplhelper.commands")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new CommandsScreen().build(parent))).setIcon(COMMANDS).setCentered(false).setSize(20, 20).setActive(api),
+                new ButtonBuilder(Component.translatable("pplhelper.mods")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ModsScreen().build(parent))).setIcon(Icons.MODS).setCentered(false).setSize(20, 20).setActive(api),
                 new ButtonBuilder(Component.translatable("pplhelper.pack")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new UpdaterScreen().build(parent))).setIcon(Icons.PACK_INFO).setCentered(false).setSize(20, 20),
         };
     }
@@ -185,9 +185,16 @@ public class PepelandHelper implements ClientModInitializer {
 
     public static void loadStaticInformation(){
         try{
-            commands = PepeLandHelperAPI.getCommands();
-            mods = PepeLandHelperAPI.getRecommendMods();
-            worlds = PepeLandHelperAPI.getWorlds();
+            if(PepeLandHelperAPI.apiAvailable()) {
+                commands = PepeLandHelperAPI.getCommands();
+                mods = PepeLandHelperAPI.getRecommendMods();
+                worlds = PepeLandHelperAPI.getWorlds();
+                worldsLoaded = true;
+            } else
+                new ToastBuilder().setTitle(Component.translatable("pplhelper.api"))
+                        .setMessage(Component.translatable("pplhelper.api.unavailable"))
+                        .setIcon(WHITE_PEPE)
+                        .setType(ToastBuilder.Type.ERROR).buildAndShow();
         } catch (Exception ex){
             Exception exc = new Exception("Ошибка загрузки информации\n"+ex.getMessage());
             exc.setStackTrace(ex.getStackTrace());

@@ -6,7 +6,6 @@ import com.google.gson.JsonObject;
 import net.minecraft.network.chat.Component;
 import ru.kelcuprum.alinlib.WebAPI;
 import ru.kelcuprum.pplhelper.PepelandHelper;
-import ru.kelcuprum.pplhelper.TabHelper;
 import ru.kelcuprum.pplhelper.api.components.News;
 import ru.kelcuprum.pplhelper.api.components.Project;
 
@@ -24,6 +23,18 @@ public class PepeLandHelperAPI {
         if(!api.endsWith("/")) api+="/";
         return String.format("%1$s%2$s", api, uriEncode ? uriEncode(url) : url);
     }
+
+    public static boolean apiAvailable(){
+        try {
+            JsonObject content = WebAPI.getJsonObject(getURI("ping", false));
+            if(content.has("error")) throw new Exception(Project.getStringInJSON("error.message", content));
+            return content.has("message") && content.has("time");
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
 
 
     public static JsonArray getRecommendMods(){
