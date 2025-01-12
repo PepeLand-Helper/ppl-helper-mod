@@ -3,6 +3,18 @@
   "pplhelper.error": "Произошла ошибка :(",
   "pplhelper.configs": "Конфиги",
 
+  "pplhelper.oauth.hello": "Добро пожаловать, %s!",
+
+
+  "pplhelper.oauth.login": "Войти в аккаунт",
+  "pplhelper.oauth.profile": "Профиль",
+  "pplhelper.oauth.open_browser": "Открыть в браузере",
+  "pplhelper.oauth.projects": "Ваши проекты",
+  "pplhelper.oauth.projects.empty": "У вас нет проектов",
+  "pplhelper.oauth.projects.create": "Создать проект",
+  "pplhelper.oauth.news": "Ваши новости",
+  "pplhelper.oauth.news.empty": "У вас нет новостей",
+  "pplhelper.oauth.news.create": "Создать новость",
 
   "pplhelper.api": "PPL Helper API",
   "pplhelper.api.unavailable": "К сожалению, API недоступен",

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Авторизация - Kel Cuprum</title>
+    <meta name="darkreader-lock">
+    <meta name="theme-color" content="#577ab0">
+    <meta name="twitter:site" content="@kel_cu">
+    <style>
+        html {
+            background-image: url("https://h.pplmods.ru/assets/back.png");
+            background-color: #09090b;
+            background-repeat: repeat;
+            background-position: center;
+            font-family: "Source Code Pro", monospace;
+            color: #fff;
+        }
+
+        .outer {
+            display: table;
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+        }
+
+        .middle {
+            display: table-cell;
+            vertical-align: middle;
+        }
+
+        .inner {
+            margin-left: auto;
+            margin-right: auto;
+            width: 75%;
+            max-width: 500pt;
+            padding: 4pt;
+            /* border: dashed 0.10pc #4c8a5b; */
+            /* background: #354d5963; */
+            /* Whatever width you want */
+        }
+
+        h1,
+        h3,
+        p {
+            margin: 4pt;
+        }
+
+        a {
+            color: #ffffffd3;
+        }
+
+        a::selection,
+        p::selection,
+        h1::selection,
+        br::selection {
+            color: #09090b;
+            background-color: #fff;
+        }
+
+        h3::selection {
+            color: #09090b;
+            background-color: #257570;
+        }
+
+        p {
+            color: #ffffffd3;
+            margin-top: 8pt;
+            margin-bottom: 4pt;
+        }
+        p a{
+            font-size: 16pt;
+            padding: 10pt;
+            background-color: #fff;
+            font-weight: bold;
+            color: #000;
+            border-radius: 16pt;
+            text-decoration: none;
+        }
+        p a:hover{
+            background-color: #257570;
+            color: #fff;
+        }
+
+        h3 {
+            font-size: 16pt;
+            color: #257570;
+            font-style: 257570;
+        }
+        img{
+            border: solid 5pt #257570;
+            max-width: 250pt;
+            min-width: 250pt;
+            width: 250pt;
+            border-radius: 16pt;
+            background-color: #2575701e;
+            margin-bottom: 10pt;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
+    <script src="https://wf.kelcu.ru/cookies.js"></script>
+    <script type="application/javascript">
+
+        let wait = [
+            "https://cdn.7tv.app/emote/01F6M5ZD3R0002B6P5MWZDK80C/4x.gif",
+            "https://cdn.7tv.app/emote/01G5AH4WB8000FYWTFV1XGVV41/4x.gif",
+            "https://cdn.7tv.app/emote/01GFZT28VG0000X7C0BVE27R6E/4x.gif",
+            "https://cdn.7tv.app/emote/01GCJ4R1WG000D8ZK13J8KV4YE/4x.gif",
+            "https://cdn.7tv.app/emote/01GCS338D8000C269N858G118M/4x.gif"
+        ];
+        let fail = [
+            "https://cdn.7tv.app/emote/01G7Y27DR0000CJHDY9TD9YG7N/4x.gif",
+            "https://cdn.7tv.app/emote/01HBTZKGT8000EBT75K3M5Y92H/4x.gif",
+            "https://cdn.7tv.app/emote/01GA9PRNJR000E7TK2XZD0KYB6/4x.gif",
+            "https://cdn.7tv.app/emote/01H3G2Q7JR000243E9YKWJZ3TD/4x.png",
+            "https://cdn.7tv.app/emote/01HQ5VK4K80003Z18NFAA1EEMA/4x.gif",
+            "https://cdn.7tv.app/emote/01H96150H00003CY09NFH3G999/4x.png"
+        ]
+        document.addEventListener("DOMContentLoaded", function (event) {
+            document.getElementById("wait").src = `${wait[Math.floor(Math.random()*wait.length)]}`;
+            auth();
+        })
+
+        function GetURLParameter(sParam) {
+            var sPageURL = window.location.search.substring(1);
+            var sURLVariables = sPageURL.split('&');
+            for (var i = 0; i < sURLVariables.length; i++) {
+                var sParameterName = sURLVariables[i].split('=');
+                if (sParameterName[0] == sParam) {
+                    return sParameterName[1];
+                }
+            }
+        }
+
+        async function auth() {
+            try {
+                let url = await axios({
+                    url: `/auth?code=${GetURLParameter('code')}&json=true`, headers:
+                    {
+                        "Content-Type": "application/json"
+                    }
+                })
+                let data = url.data;
+                let html = ``;
+                if (data.error) {
+                    html = `<img src="${fail[Math.floor(Math.random()*fail.length)]}"><br><h1>Ошибка авторизации</h1>
+                    <h3>${data.error.message.length === 0 ? data.error.codename : data.error.message}</h3>`;
+                } else {
+                    html = `<img src="${data.user.avatar}" align=""><br>
+                    <h1>Добро пожаловать, ${data.user.nickname.length === 0 ? data.user.username : data.user.nickname}!</h1>
+                    <h3>${data.state === "Updated" ? "Вы успешно обновили свои данные!" : "Вы успешно зарегистрировались!"}</h3>`;
+                    if (navigator.cookieEnabled) {
+                        docCookies.setItem("pplh_access_token", data.access, Infinity, null, ".pplmods.ru");
+                        docCookies.setItem("pplh_access_token", data.access, Infinity, null, "localhost");
+                        console.log(docCookies.getItem("pplh_access_token"))
+                    } else html = `${html}<br><h3>ВНИМАНИЕ! В вашем браузере отключены cookie</h3>`
+
+                }
+                let back = "/back"
+                if(docCookies.getItem("pplh_back_login")){
+                    back = docCookies.getItem("pplh_back_login");
+                    docCookies.removeItem("pplh_back_login")
+                }
+                html = `${html}<br><p><a href="${back}" class="actionlink"><i></i>Перейти к сайту</a></p>`
+                document.getElementById("content").innerHTML = html;
+            } catch (e) {
+                console.log(e)
+                    html = `<img src="https://cdn.7tv.app/emote/01J8QGEXCR0001V26HAKQBDTEZ/4x.png"><br><h1>Ошибка авторизации</h1>
+                    <h3>Произошла ошибка при обработке данных, посмотрите в консосе новых поколений</h3>`;
+                    document.getElementById("content").innerHTML = html;
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="outer">
+        <div class="middle">
+            <div class="inner" align="center">
+                <div id="content" style="height: auto !important;">
+                    <img id="wait" src="">
+                    <h3>Пожалуйста подождите...</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.Util;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.LerpingBossEvent;
@@ -37,16 +38,14 @@ import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
 import ru.kelcuprum.alinlib.gui.screens.ConfirmScreen;
 import ru.kelcuprum.alinlib.gui.toast.ToastBuilder;
 import ru.kelcuprum.alinlib.info.World;
+import ru.kelcuprum.pplhelper.api.OAuth;
 import ru.kelcuprum.pplhelper.api.PepeLandAPI;
 import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
 import ru.kelcuprum.pplhelper.api.components.Project;
+import ru.kelcuprum.pplhelper.api.components.user.User;
+import ru.kelcuprum.pplhelper.gui.screens.*;
 import ru.kelcuprum.pplhelper.gui.screens.configs.ConfigScreen;
-import ru.kelcuprum.pplhelper.gui.screens.UpdaterScreen;
 import ru.kelcuprum.pplhelper.gui.screens.message.NewUpdateScreen;
-import ru.kelcuprum.pplhelper.gui.screens.CommandsScreen;
-import ru.kelcuprum.pplhelper.gui.screens.ModsScreen;
-import ru.kelcuprum.pplhelper.gui.screens.NewsListScreen;
-import ru.kelcuprum.pplhelper.gui.screens.ProjectsScreen;
 import ru.kelcuprum.pplhelper.utils.TabHelper;
 
 import java.io.File;
@@ -57,11 +56,13 @@ import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 
 import static java.lang.Integer.parseInt;
+import static net.minecraft.world.item.Items.NETHER_STAR;
 import static ru.kelcuprum.alinlib.gui.Icons.*;
 import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.*;
 
 public class PepelandHelper implements ClientModInitializer {
     public static final AlinLogger LOG = new AlinLogger("PPL Helper");
+    public static User user = null;
     public static Config config = new Config("config/pplhelper/config.json");
     public static boolean isInstalledABI = FabricLoader.getInstance().isModLoaded("actionbarinfo");
     public static boolean worldsLoaded = false;
@@ -85,7 +86,26 @@ public class PepelandHelper implements ClientModInitializer {
                 new ButtonBuilder(Component.translatable("pplhelper.commands")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new CommandsScreen().build(parent))).setIcon(COMMANDS).setCentered(false).setSize(20, 20).setActive(api),
                 new ButtonBuilder(Component.translatable("pplhelper.mods")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ModsScreen().build(parent))).setIcon(Icons.MODS).setCentered(false).setSize(20, 20).setActive(api),
                 new ButtonBuilder(Component.translatable("pplhelper.pack")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new UpdaterScreen().build(parent))).setIcon(Icons.PACK_INFO).setCentered(false).setSize(20, 20),
+                getProfileButton(parent)
         };
+    }
+
+    public static ButtonBuilder getProfileButton(Screen parent){
+        ButtonBuilder builder = new ButtonBuilder(Component.translatable(user == null ? "pplhelper.oauth.login" : "pplhelper.oauth.profile"));
+        builder.setIcon(WIKI).setCentered(false);
+        builder.setOnPress((s) -> {
+           if(user == null) confirmLinkNow(AlinLib.MINECRAFT.screen, String.format("http://localhost:%s", parseInt(config.getString("oauth.port", "11430"))));
+           else AlinLib.MINECRAFT.setScreen(new ProfileScreen().build(parent, user));
+        });
+        return builder;
+    }
+
+    public static void loadUser(boolean withToast){
+        String token = config.getString("oauth.access_token", "");
+        if(token.isBlank()) return;
+        user = OAuth.getUser(token);
+        if(user != null && withToast)
+            new ToastBuilder().setTitle(Component.translatable("pplhelper")).setMessage(Component.translatable("pplhelper.oauth.hello", user.nickname == null ? user.username : user.nickname)).setIcon(NETHER_STAR).buildAndShow();
     }
 
     public static void executeCommand(LocalPlayer player, String command) {
@@ -102,12 +122,14 @@ public class PepelandHelper implements ClientModInitializer {
         LOG.log("-=-=-=-=-=-=-=-", Level.WARN);
         LOG.log("Данный проект не является официальной частью сети серверов PepeLand", Level.WARN);
         LOG.log("-=-=-=-=-=-=-=-", Level.WARN);
+        loadUser(false);
         // -=-=-=- Ресурс пак -=-=-=-
         FabricLoader.getInstance().getModContainer("pplhelper").ifPresent(s -> {
             ResourceManagerHelper.registerBuiltinResourcePack(GuiUtils.getResourceLocation("pplhelper","icons"), s, Component.translatable("resourcePack.pplhelper.icons"), ResourcePackActivationType.NORMAL);
         });
         // -=-=-=- Сбор информации (НЕ ВАШИХ!) и авто-обновление -=-=-=-
         ClientLifecycleEvents.CLIENT_FULL_STARTED.register((s) -> {
+            OAuth.run();
             loadStaticInformation();
             String packVersion = getInstalledPack();
             if ((config.getBoolean("PACK_UPDATES.NOTICE", true) || config.getBoolean("PACK_UPDATES.AUTO_UPDATE", true)) && !packVersion.isEmpty()) {
@@ -140,6 +162,9 @@ public class PepelandHelper implements ClientModInitializer {
                     }
                 }
             }
+        });
+        ClientLifecycleEvents.CLIENT_STOPPING.register((s) -> {
+            OAuth.stop();
         });
         // -=-=-=- Команда -=-=-=-
         ClientCommandRegistrationCallback.EVENT.register(PPLHelperCommand::register);

@@ -71,6 +71,7 @@ dependencies {
         officialMojangMappings()
     }
 
+    shade(implementation("ru.kelcuprum:java-express:0.2.4-dev.5"))
     implementation("meteordevelopment:starscript:0.3.4")
 
     if (mod_brand == 'fabric') {
@@ -80,6 +81,7 @@ dependencies {
         modImplementation "maven.modrinth:abi:${rootProject.abi}"
         modImplementation "ru.kelcuprum.alinlib:AlinLib-fabric:${rootProject.alinlib}+mc${project.alinlib_minecraft_version == null ? project.minecraft_version : project.alinlib_minecraft_version}"
     }
+
 
     subprojects.each {
         implementation project(path: ":${it.name}", configuration: 'namedElements')

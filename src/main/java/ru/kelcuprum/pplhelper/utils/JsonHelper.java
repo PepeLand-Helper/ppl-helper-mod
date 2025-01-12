@@ -21,6 +21,19 @@ public class JsonHelper {
         }
         return defResp;
     }
+    public static boolean getBooleanInJSON(String path, JsonObject parse, boolean defResp){
+        if(!hasJSONElement(path, parse)) return defResp;
+        String[] keys = path.split("\\.");
+        JsonObject jsonObject = parse;
+        for(String key : keys){
+            if(jsonObject.has(key)){
+                JsonElement json = jsonObject.get(key);
+                if(json.isJsonObject()) jsonObject = (JsonObject) json;
+                else if(json.isJsonPrimitive() && json.getAsJsonPrimitive().isBoolean()) return json.getAsBoolean();
+            }
+        }
+        return defResp;
+    }
     public static boolean hasJSONElement(String path, JsonObject parse){
         String[] keys = path.split("\\.");
         JsonObject jsonObject = parse;

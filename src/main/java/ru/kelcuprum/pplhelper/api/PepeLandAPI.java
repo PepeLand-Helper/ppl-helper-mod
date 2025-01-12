@@ -23,7 +23,7 @@ public class PepeLandAPI {
     public static String getURI(String url){
         return String.format("%1$s%2$s", API_URL, uriEncode(url));
     }
-    protected static String uriEncode(String uri){
+    public static String uriEncode(String uri){
         return URLEncoder.encode(uri, StandardCharsets.UTF_8);
     }
     public static JsonObject getPacksInfo(){
