@@ -115,7 +115,8 @@ public class PepelandHelper implements ClientModInitializer {
             player.connection.sendChat(command);
         }
     }
-
+    private static TabHelper.Worlds lastWorld = null;
+    private static boolean lastLobby = false;
     @Override
     public void onInitializeClient() {
         LOG.log("-=-=-=-=-=-=-=-", Level.WARN);
@@ -184,6 +185,11 @@ public class PepelandHelper implements ClientModInitializer {
                 "pplhelper"
         ));
         ClientTickEvents.START_CLIENT_TICK.register((s) -> {
+            if(lastWorld != TabHelper.getWorld()){
+                lastLobby = lastWorld == TabHelper.Worlds.LOBBY;
+                if(lastLobby) joinTime = System.currentTimeMillis()+15000;
+                lastWorld = TabHelper.getWorld();
+            }
             if (restartTime != -1 || joinTime != -1) updateBossBar();
             updateCoordinatesBB();
             if (key1.consumeClick()) AlinLib.MINECRAFT.setScreen(new ProjectsScreen(AlinLib.MINECRAFT.screen));
