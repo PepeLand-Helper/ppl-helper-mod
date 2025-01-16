@@ -26,11 +26,12 @@ import static ru.kelcuprum.alinlib.gui.Icons.SEARCH;
 public class ProjectsScreen extends AbstractPPLScreen {
     public ProjectsScreen(Screen screen) {
         super(new ScreenBuilder(screen, Component.translatable("pplhelper.projects")).addPanelWidgets(PepelandHelper.getPanelWidgets(screen, screen)));
-        builder.contentY = 60;
+        builder.contentY = 85;
     }
 
     private static String query = "";
     private static int world = 0;
+    private static int category = 0;
     private static List<Project> lastProjects;
     public Thread loadInfo = null;
     boolean apiAvailable = PepeLandHelperAPI.apiAvailable();
@@ -39,14 +40,19 @@ public class ProjectsScreen extends AbstractPPLScreen {
     public void initCategory() {
         builder.widgets.clear();
         super.initCategory();
-        final int[] y = {builder.contentY - 25};
-        int searchSize = (getContentWidth() - 30) / 2;
-        addRenderableWidget(new EditBoxBuilder(Component.translatable("pplhelper.news.search"), (s) -> query = s).setValue(query).setPosition(getX(), y[0]).setWidth(searchSize).setActive(apiAvailable).build());
+        final int[] y = {builder.contentY - 50};
+        int searchSize = (getContentWidth() - 5) / 2;
+        addRenderableWidget(new EditBoxBuilder(Component.translatable("pplhelper.news.search"), (s) -> query = s).setValue(query).setPosition(getX(), y[0]).setWidth(getContentWidth() - 25).setActive(apiAvailable).build());
+        addRenderableWidget(new ButtonBuilder(Component.translatable("pplhelper.news.find"), (s) -> search()).setSprite(SEARCH).setPosition(getX() + getContentWidth() - 20, y[0]).setWidth(20).setActive(apiAvailable).build());
+        y[0] += 25;
         addRenderableWidget(new SelectorBuilder(Component.translatable("pplhelper.project.world"), (s) -> {
             world = s.getPosition();
             search();
-        }).setList(PepelandHelper.worlds).setValue(world).setPosition(getX() + 5 + searchSize, y[0]).setWidth(searchSize).setActive(apiAvailable).build());
-        addRenderableWidget(new ButtonBuilder(Component.translatable("pplhelper.news.find"), (s) -> search()).setSprite(SEARCH).setPosition(getX() + getContentWidth() - 20, y[0]).setWidth(20).setActive(apiAvailable).build());
+        }).setList(PepelandHelper.worlds).setValue(world).setPosition(getX(), y[0]).setWidth(searchSize).setActive(apiAvailable).build());
+        addRenderableWidget(new SelectorBuilder(Component.translatable("pplhelper.project.category"), (s) -> {
+            category = s.getPosition();
+            search();
+        }).setList(PepelandHelper.pc).setValue(category).setPosition(getX() + 5 + searchSize, y[0]).setWidth(searchSize).setActive(apiAvailable).build());
         y[0] += 25;
         if (apiAvailable) {
             if(!PepelandHelper.worldsLoaded){
@@ -55,8 +61,17 @@ public class ProjectsScreen extends AbstractPPLScreen {
                     PepelandHelper.worldsLoaded = true;
                 } catch (Exception ignored){}
             }
+            if(!PepelandHelper.categoriesAndTags){
+                try {
+                    PepelandHelper.pc = PepeLandHelperAPI.getProjectCategories();
+                    PepelandHelper.pct = PepeLandHelperAPI.getProjectCategoriesTags();
+                    PepelandHelper.nc = PepeLandHelperAPI.getNewsCategories();
+                    PepelandHelper.nct = PepeLandHelperAPI.getNewsCategoriesTags();
+                    PepelandHelper.categoriesAndTags = true;
+                } catch (Exception ignored){}
+            }
             loadInfo = new Thread(() -> {
-                List<Project> projects = lastProjects == null ? PepeLandHelperAPI.getProjects(query, PepelandHelper.worlds[world]) : lastProjects;
+                List<Project> projects = lastProjects == null ? PepeLandHelperAPI.getProjects(query, PepelandHelper.worlds[world], PepelandHelper.pct[category]) : lastProjects;
                 lastProjects = projects;
                 if (projects.isEmpty()) {
                     builder.addWidget(new TextBuilder(Component.translatable("pplhelper.news.not_found")).setType(TextBuilder.TYPE.MESSAGE).setAlign(TextBuilder.ALIGN.CENTER).setPosition(getX(), 55).setSize(getContentWidth(), 20).build());

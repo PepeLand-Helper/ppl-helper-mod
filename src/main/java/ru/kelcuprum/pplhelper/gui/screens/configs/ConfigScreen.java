@@ -27,7 +27,7 @@ public class ConfigScreen {
         builder.addWidget(new TextBuilder(Component.translatable("pplhelper.configs")))
                 // Пока-что как заглушка
                 // .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.enable_toast"), true).setConfig(PepelandHelper.config,"ENABLE.TOAST"))
-                .addWidget(new SliderBuilder(Component.translatable("pplhelper.configs.selected_project.auto_hide")).setDefaultValue(15).setMin(1).setMax(32).setConfig(PepelandHelper.config, "SELECTED_PROJECT.AUTO_HIDE"));
+                .addWidget(new SliderBuilder(Component.translatable("pplhelper.configs.selected_project.auto_hide")).setDefaultValue(5).setMin(1).setMax(32).setConfig(PepelandHelper.config, "SELECTED_PROJECT.AUTO_HIDE"));
                 if(PepelandHelper.isInstalledABI) builder.addWidget(new HorizontalRuleBuilder(Component.translatable("pplhelper.configs.abi.title")))
                 .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.abi"), false).setConfig(PepelandHelper.config,"ABI"))
                 .addWidget(new EditBoxBuilder(Component.translatable("pplhelper.configs.abi.info")).setValue(PepelandHelper.config.getString("INFO.PPLHELPER", ActionBarInfo.localization.getLocalization("info.pplhelper", false, false, false))).setConfig(PepelandHelper.config, "INFO.PPLHELPER"))

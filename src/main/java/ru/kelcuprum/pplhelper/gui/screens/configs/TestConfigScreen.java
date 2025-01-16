@@ -9,7 +9,7 @@ import ru.kelcuprum.alinlib.gui.components.builder.selector.SelectorBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.text.TextBuilder;
 import ru.kelcuprum.alinlib.gui.screens.ConfigScreenBuilder;
 import ru.kelcuprum.pplhelper.PepelandHelper;
-import ru.kelcuprum.pplhelper.gui.screens.configs.test.TestProject;
+import ru.kelcuprum.pplhelper.api.components.projects.TestProject;
 
 import static ru.kelcuprum.alinlib.gui.Icons.CLOWNFISH;
 import static ru.kelcuprum.alinlib.gui.Icons.OPTIONS;

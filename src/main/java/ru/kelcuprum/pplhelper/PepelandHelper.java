@@ -8,7 +8,6 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.Util;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.LerpingBossEvent;
@@ -43,6 +42,7 @@ import ru.kelcuprum.pplhelper.api.PepeLandAPI;
 import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
 import ru.kelcuprum.pplhelper.api.components.Project;
 import ru.kelcuprum.pplhelper.api.components.user.User;
+import ru.kelcuprum.pplhelper.command.PPLHelperCommand;
 import ru.kelcuprum.pplhelper.gui.screens.*;
 import ru.kelcuprum.pplhelper.gui.screens.configs.ConfigScreen;
 import ru.kelcuprum.pplhelper.gui.screens.message.NewUpdateScreen;
@@ -66,26 +66,25 @@ public class PepelandHelper implements ClientModInitializer {
     public static Config config = new Config("config/pplhelper/config.json");
     public static boolean isInstalledABI = FabricLoader.getInstance().isModLoaded("actionbarinfo");
     public static boolean worldsLoaded = false;
-    public static String[] worlds = new String[]{
-            "МП1",
-            "МП2",
-            "МР",
-            "МФ",
-            "ТЗ",
-            "Энд"
-    };
+    public static String[] worlds = new String[]{":("};
     public static JsonArray commands = new JsonArray();
     public static JsonArray mods = new JsonArray();
+    // -=-=-=- Категории -=-=-=-
+    public static boolean categoriesAndTags = false;
+    public static String[] pc = new String[]{":("};
+    public static String[] pct = new String[]{":("};
+    public static String[] nc = new String[]{":("};
+    public static String[] nct = new String[]{":("};
+    //
     public static Project selectedProject;
 
     public static AbstractBuilder[] getPanelWidgets(Screen parent, Screen current) {
-        boolean api = PepeLandHelperAPI.apiAvailable();
         return new AbstractBuilder[]{
-                new ButtonBuilder(Component.translatable("pplhelper.news")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new NewsListScreen(current))).setIcon(WIKI).setCentered(false).setSize(20, 20),
-                new ButtonBuilder(Component.translatable("pplhelper.projects")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ProjectsScreen(current))).setIcon(PROJECTS).setCentered(false).setSize(20, 20),
-                new ButtonBuilder(Component.translatable("pplhelper.commands")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new CommandsScreen().build(parent))).setIcon(COMMANDS).setCentered(false).setSize(20, 20).setActive(api),
-                new ButtonBuilder(Component.translatable("pplhelper.mods")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ModsScreen().build(parent))).setIcon(Icons.MODS).setCentered(false).setSize(20, 20).setActive(api),
-                new ButtonBuilder(Component.translatable("pplhelper.pack")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new UpdaterScreen().build(parent))).setIcon(Icons.PACK_INFO).setCentered(false).setSize(20, 20),
+                new ButtonBuilder(Component.translatable("pplhelper.news")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new NewsListScreen(current))).setIcon(WIKI).setCentered(false),
+                new ButtonBuilder(Component.translatable("pplhelper.projects")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ProjectsScreen(current))).setIcon(PROJECTS).setCentered(false),
+                new ButtonBuilder(Component.translatable("pplhelper.commands")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new CommandsScreen().build(parent))).setIcon(COMMANDS).setCentered(false),
+                new ButtonBuilder(Component.translatable("pplhelper.mods")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ModsScreen().build(parent))).setIcon(Icons.MODS).setCentered(false),
+                new ButtonBuilder(Component.translatable("pplhelper.pack")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new UpdaterScreen().build(parent))).setIcon(Icons.PACK_INFO).setCentered(false),
                 getProfileButton(parent)
         };
     }
@@ -95,7 +94,7 @@ public class PepelandHelper implements ClientModInitializer {
         builder.setIcon(WIKI).setCentered(false);
         builder.setOnPress((s) -> {
            if(user == null) confirmLinkNow(AlinLib.MINECRAFT.screen, String.format("http://localhost:%s", parseInt(config.getString("oauth.port", "11430"))));
-           else AlinLib.MINECRAFT.setScreen(new ProfileScreen().build(parent, user));
+           else AlinLib.MINECRAFT.setScreen(new ProfileScreen(parent, user));
         });
         return builder;
     }
@@ -214,6 +213,13 @@ public class PepelandHelper implements ClientModInitializer {
             if(PepeLandHelperAPI.apiAvailable()) {
                 commands = PepeLandHelperAPI.getCommands();
                 mods = PepeLandHelperAPI.getRecommendMods();
+                //
+                pc = PepeLandHelperAPI.getProjectCategories();
+                pct = PepeLandHelperAPI.getProjectCategoriesTags();
+                nc = PepeLandHelperAPI.getNewsCategories();
+                nct = PepeLandHelperAPI.getNewsCategoriesTags();
+                categoriesAndTags = true;
+                //
                 worlds = PepeLandHelperAPI.getWorlds();
                 worldsLoaded = true;
             } else
@@ -238,6 +244,27 @@ public class PepelandHelper implements ClientModInitializer {
         else if(World.getCodeName().equals("minecraft:the_end") && PepelandHelper.selectedProject.coordinates$end != null && !PepelandHelper.selectedProject.coordinates$end.isEmpty())
             coordinates = PepelandHelper.selectedProject.coordinates$end;
         return coordinates.replaceAll("[^0-9 \\-.]", "");
+    }
+
+    public static @NotNull String getStringSelectedProjectCoordinatesButWithRofls() {
+        String coordinates = "";
+        if(PepelandHelper.selectedProject.coordinates$overworld != null && !PepelandHelper.selectedProject.coordinates$overworld.isEmpty())
+            coordinates = PepelandHelper.selectedProject.coordinates$overworld;
+        else if(PepelandHelper.selectedProject.coordinates$nether != null && !PepelandHelper.selectedProject.coordinates$nether.isEmpty())
+            coordinates = PepelandHelper.selectedProject.coordinates$nether;
+        else if(PepelandHelper.selectedProject.coordinates$end != null && !PepelandHelper.selectedProject.coordinates$end.isEmpty())
+            coordinates = PepelandHelper.selectedProject.coordinates$end;
+        return coordinates.replaceAll("[^0-9 \\-.]", "");
+    }
+    public static @NotNull String getWorldStringSelectedProjectCoordinatesButWithRofls() {
+        String coordinates = "";
+        if(PepelandHelper.selectedProject.coordinates$overworld != null && !PepelandHelper.selectedProject.coordinates$overworld.isEmpty())
+            coordinates = AlinLib.localization.getLocalization("world.overworld");
+        else if(PepelandHelper.selectedProject.coordinates$nether != null && !PepelandHelper.selectedProject.coordinates$nether.isEmpty())
+            coordinates = AlinLib.localization.getLocalization("world.nether");
+        else if(PepelandHelper.selectedProject.coordinates$end != null && !PepelandHelper.selectedProject.coordinates$end.isEmpty())
+            coordinates = AlinLib.localization.getLocalization("world.the_end");
+        return coordinates;
     }
     public static float dist(int i, int j, int k, int l) {
         int m = k - i;
@@ -320,7 +347,7 @@ public class PepelandHelper implements ClientModInitializer {
             if(p != null && PepelandHelper.selectedProject.world.equalsIgnoreCase(TabHelper.getWorld().shortName)) {
                 String[] args = parsedCoordinates.split(" ");
                 near = (long) dist(parseInt(args[0]), parseInt(args[args.length-1]),p.getBlockX(), p.getBlockZ());
-                if(near <= PepelandHelper.config.getNumber("SELECTED_PROJECT.AUTO_HIDE", 15).longValue()){
+                if(near <= PepelandHelper.config.getNumber("SELECTED_PROJECT.AUTO_HIDE", 5).longValue()){
                     PepelandHelper.selectedProject = null;
                     lastMaxNear = 0;
                     return;

@@ -9,6 +9,7 @@ import ru.kelcuprum.alinlib.gui.GuiUtils;
 import ru.kelcuprum.alinlib.gui.components.ImageWidget;
 import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.editbox.EditBoxBuilder;
+import ru.kelcuprum.alinlib.gui.components.builder.selector.SelectorBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.text.TextBuilder;
 import ru.kelcuprum.pplhelper.PepelandHelper;
 import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
@@ -29,6 +30,7 @@ public class NewsListScreen extends AbstractPPLScreen {
         builder.contentY = 60;
     }
     private static String query = "";
+    private static int category = 0;
     private static List<News> lastNews;
     public Thread loadInfo = null;
     boolean apiAvailable = PepeLandHelperAPI.apiAvailable();
@@ -37,12 +39,26 @@ public class NewsListScreen extends AbstractPPLScreen {
         builder.widgets.clear();
         super.initCategory();
         final int[] y = {builder.contentY-25};
-        addRenderableWidget(new EditBoxBuilder(Component.translatable("pplhelper.news.search"), (s) -> query = s).setValue(query).setPosition(getX(), y[0]).setWidth(getContentWidth()-25).setActive(apiAvailable).build());
+        int searchSize = (getContentWidth() - 30) / 2;
+        addRenderableWidget(new EditBoxBuilder(Component.translatable("pplhelper.news.search"), (s) -> query = s).setValue(query).setPosition(getX(), y[0]).setWidth(searchSize).setActive(apiAvailable).build());
+        addRenderableWidget(new SelectorBuilder(Component.translatable("pplhelper.project.category"), (s) -> {
+            category = s.getPosition();
+            search();
+        }).setList(PepelandHelper.nc).setValue(category).setPosition(getX() + 5 + searchSize, y[0]).setWidth(searchSize).setActive(apiAvailable).build());
         addRenderableWidget(new ButtonBuilder(Component.translatable("pplhelper.news.find"), (s) -> search()).setSprite(SEARCH).setPosition(getX()+getContentWidth()-20, y[0]).setWidth(20).setActive(apiAvailable).build());
         y[0] += 25;
         if(apiAvailable) {
+            if(!PepelandHelper.categoriesAndTags){
+                try {
+                    PepelandHelper.pc = PepeLandHelperAPI.getProjectCategories();
+                    PepelandHelper.pct = PepeLandHelperAPI.getProjectCategoriesTags();
+                    PepelandHelper.nc = PepeLandHelperAPI.getNewsCategories();
+                    PepelandHelper.nct = PepeLandHelperAPI.getNewsCategoriesTags();
+                    PepelandHelper.categoriesAndTags = true;
+                } catch (Exception ignored){}
+            }
             loadInfo = new Thread(() -> {
-                List<News> projects = lastNews == null ? PepeLandHelperAPI.getNews(query) : lastNews;
+                List<News> projects = lastNews == null ? PepeLandHelperAPI.getNews(query, PepelandHelper.nct[category]) : lastNews;
                 lastNews = projects;
                 if (projects.isEmpty()) {
                     builder.addWidget(new TextBuilder(Component.translatable("pplhelper.news.not_found")).setType(TextBuilder.TYPE.MESSAGE).setAlign(TextBuilder.ALIGN.CENTER).setPosition(getX(), 55).setSize(getContentWidth(), 20).build());

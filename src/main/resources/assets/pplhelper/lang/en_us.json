@@ -91,6 +91,14 @@
   "pplhelper.project.unfollow": "Открепить координаты",
   "pplhelper.project.web": "Открыть страницу сайта",
 
+  "pplhelper.project.category": "Категория",
+  "pplhelper.categories.ppl": "PepeLand",
+  "pplhelper.categories.hppl": "PPL Helper",
+  "pplhelper.categories.events": "Ивенты",
+  "pplhelper.categories.structure": "Проекты",
+  "pplhelper.categories.spawn": "Спавн",
+  "pplhelper.categories.farm": "Фермы",
+
   "pplhelper.world.lobby": "Лобби",
   "pplhelper.world.resource": "Мир Ресурсов",
   "pplhelper.world.constructions.1": "Мир Построек #1",

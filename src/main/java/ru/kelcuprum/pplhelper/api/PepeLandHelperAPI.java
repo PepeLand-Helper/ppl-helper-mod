@@ -14,6 +14,7 @@ import java.util.List;
 
 import static ru.kelcuprum.pplhelper.api.PepeLandAPI.uriEncode;
 import static ru.kelcuprum.pplhelper.utils.JsonHelper.getStringInJSON;
+import static ru.kelcuprum.pplhelper.utils.JsonHelper.hasJSONElement;
 
 public class PepeLandHelperAPI {
     public static String getURI(String url){
@@ -36,15 +37,14 @@ public class PepeLandHelperAPI {
         }
     }
 
-
-
     public static JsonArray getRecommendMods(){
         try {
             return WebAPI.getJsonArray(getURI("mods"));
         } catch (Exception ex){
             throw new RuntimeException(ex);
         }
-    }public static JsonArray getRecommendPacks(){
+    }
+    public static JsonArray getRecommendPacks(){
         try {
             return WebAPI.getJsonArray(getURI("resourcepacks"));
         } catch (Exception ex){
@@ -66,13 +66,98 @@ public class PepeLandHelperAPI {
             for(int i = 1; i<array.size()+1;i++) worlds[i] = array.get(i-1).getAsString();
             return worlds;
         } catch (Exception ex){
-            return new String[0];
+            return new String[]{
+                    Component.translatable("pplhelper.project.world.all").getString(),
+                    "МП1",
+                    "МП2",
+                    "МР",
+                    "МФ",
+                    "ТЗ",
+                    "Энд"
+            };
         }
     }
 
-    public static List<Project> getProjects(String query, String world){
+    public static String[] getProjectCategories(){
         try {
-            JsonObject projects = WebAPI.getJsonObject(getURI("projects?query="+uriEncode(query)+(world.equalsIgnoreCase(Component.translatable("pplhelper.project.world.all").getString()) ? "" : "&world="+uriEncode(world)), false));
+            JsonArray array = WebAPI.getJsonObject(getURI("category")).getAsJsonArray("projects");
+            String[] categories = new String[array.size()+1];
+            categories[0] = Component.translatable("pplhelper.project.world.all").getString();
+            int size = 1;
+            for(JsonElement data : array) {
+                categories[size] = !hasJSONElement("translatable", (JsonObject) data) ? getStringInJSON("name", (JsonObject) data, "")
+                        : Component.translatable(getStringInJSON("name", (JsonObject) data, "")).getString();
+                size++;
+            }
+            return categories;
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return new String[]{
+                    Component.translatable("pplhelper.project.world.all").getString(),
+            };
+        }
+    }
+    public static String[] getProjectCategoriesTags(){
+        try {
+            JsonArray array = WebAPI.getJsonObject(getURI("category")).getAsJsonArray("projects");
+            String[] categories = new String[array.size()+1];
+            categories[0] = "";
+            int size = 1;
+            for(JsonElement data : array) {
+                categories[size] =  Component.translatable(getStringInJSON("tag", (JsonObject) data, "")).getString();
+                size++;
+            }
+            return categories;
+        } catch (Exception ex){
+            return new String[]{
+                    "",
+            };
+        }
+    }
+    // -=-=-=-
+
+    public static String[] getNewsCategories(){
+        try {
+            JsonArray array = WebAPI.getJsonObject(getURI("category")).getAsJsonArray("news");
+            String[] categories = new String[array.size()+1];
+            categories[0] = Component.translatable("pplhelper.project.world.all").getString();
+            int size = 1;
+            for(JsonElement data : array) {
+                categories[size] = !hasJSONElement("translatable", (JsonObject) data) ? getStringInJSON("name", (JsonObject) data, "")
+                        : Component.translatable(getStringInJSON("name", (JsonObject) data, "")).getString();
+                size++;
+            }
+            return categories;
+        } catch (Exception ex){
+            return new String[]{
+                    Component.translatable("pplhelper.project.world.all").getString(),
+            };
+        }
+    }
+    public static String[] getNewsCategoriesTags(){
+        try {
+            JsonArray array = WebAPI.getJsonObject(getURI("category")).getAsJsonArray("news");
+            String[] categories = new String[array.size()+1];
+            categories[0] = "";
+            int size = 1;
+            for(JsonElement data : array) {
+                categories[size] = getStringInJSON("tag", (JsonObject) data, "");
+                size++;
+            }
+            return categories;
+        } catch (Exception ex){
+            return new String[]{
+                    ""
+            };
+        }
+    }
+    // -=-=-=-
+
+    public static List<Project> getProjects(String query, String world, String category){
+        try {
+            JsonObject projects = WebAPI.getJsonObject(getURI("projects?query="+uriEncode(query)+
+                    (world.equalsIgnoreCase(Component.translatable("pplhelper.project.world.all").getString()) ? "" : "&world="+uriEncode(world))+
+                    (category.isEmpty() ? "" : "&category="+uriEncode(category)), false));
             List<Project> list = new ArrayList<>();
             for(JsonElement element : projects.getAsJsonArray("items")) list.add(new Project(element.getAsJsonObject()));
             return list;
@@ -99,9 +184,10 @@ public class PepeLandHelperAPI {
         }
     }
 
-    public static List<News> getNews(String search){
+    public static List<News> getNews(String search, String category){
         try {
-            JsonObject projects = WebAPI.getJsonObject(getURI("news?query="+uriEncode(search), false));
+            JsonObject projects = WebAPI.getJsonObject(getURI("news?query="+uriEncode(search)+
+            (category.isEmpty() ? "" : "&category="+uriEncode(category)), false));
             List<News> list = new ArrayList<>();
             for(JsonElement element : projects.getAsJsonArray("items")) list.add(new News(element.getAsJsonObject()));
             return list;
