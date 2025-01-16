@@ -209,30 +209,32 @@ public class PepelandHelper implements ClientModInitializer {
     }
 
     public static void loadStaticInformation(){
-        try{
-            if(PepeLandHelperAPI.apiAvailable()) {
-                commands = PepeLandHelperAPI.getCommands();
-                mods = PepeLandHelperAPI.getRecommendMods();
-                //
-                pc = PepeLandHelperAPI.getProjectCategories();
-                pct = PepeLandHelperAPI.getProjectCategoriesTags();
-                nc = PepeLandHelperAPI.getNewsCategories();
-                nct = PepeLandHelperAPI.getNewsCategoriesTags();
-                categoriesAndTags = true;
-                //
-                worlds = PepeLandHelperAPI.getWorlds();
-                worldsLoaded = true;
-            } else
-                new ToastBuilder().setTitle(Component.translatable("pplhelper.api"))
-                        .setMessage(Component.translatable("pplhelper.api.unavailable"))
-                        .setIcon(WHITE_PEPE)
-                        .setType(ToastBuilder.Type.ERROR).buildAndShow();
-        } catch (Exception ex){
-            Exception exc = new Exception("Ошибка загрузки информации\n"+ex.getMessage());
-            exc.setStackTrace(ex.getStackTrace());
-            exc.printStackTrace();
-            new ToastBuilder().setTitle(Component.literal("Ошибка загрузки информации")).setMessage(Component.literal(ex.getMessage())).setIcon(WHITE_PEPE).setType(ToastBuilder.Type.ERROR).buildAndShow();
-        }
+        new Thread(() -> {
+            try{
+                if(PepeLandHelperAPI.apiAvailable()) {
+                    commands = PepeLandHelperAPI.getCommands();
+                    mods = PepeLandHelperAPI.getRecommendMods();
+                    //
+                    pc = PepeLandHelperAPI.getProjectCategories();
+                    pct = PepeLandHelperAPI.getProjectCategoriesTags();
+                    nc = PepeLandHelperAPI.getNewsCategories();
+                    nct = PepeLandHelperAPI.getNewsCategoriesTags();
+                    categoriesAndTags = true;
+                    //
+                    worlds = PepeLandHelperAPI.getWorlds();
+                    worldsLoaded = true;
+                } else
+                    new ToastBuilder().setTitle(Component.translatable("pplhelper.api"))
+                            .setMessage(Component.translatable("pplhelper.api.unavailable"))
+                            .setIcon(WHITE_PEPE)
+                            .setType(ToastBuilder.Type.ERROR).buildAndShow();
+            } catch (Exception ex){
+                Exception exc = new Exception("Ошибка загрузки информации\n"+ex.getMessage());
+                exc.setStackTrace(ex.getStackTrace());
+                exc.printStackTrace();
+                new ToastBuilder().setTitle(Component.literal("Ошибка загрузки информации")).setMessage(Component.literal(ex.getMessage())).setIcon(WHITE_PEPE).setType(ToastBuilder.Type.ERROR).buildAndShow();
+            }
+        }).start();
     }
 
     public static @NotNull String getStringSelectedProjectCoordinates() {
