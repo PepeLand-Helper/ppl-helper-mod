@@ -26,7 +26,7 @@ public class PauseScreenMixin extends Screen {
 
     @Inject(method = "createPauseMenu", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/layouts/GridLayout;visitWidgets(Ljava/util/function/Consumer;)V"))
     void createPauseMenu(CallbackInfo ci, @Local GridLayout gridLayout){
-        if(AlinLib.MINECRAFT.hasSingleplayerServer() || AlinLib.MINECRAFT.isLocalServer() || AlinLib.MINECRAFT.getCurrentServer() == null) return;
+        if(AlinLib.MINECRAFT.hasSingleplayerServer() || AlinLib.MINECRAFT.isLocalServer() || AlinLib.MINECRAFT.getCurrentServer() == null || !PepelandHelper.config.getBoolean("MENU.LOBBY", true)) return;
         if(AlinLib.MINECRAFT.getCurrentServer().ip.contains("pepeland.net") && TabHelper.getWorld() != TabHelper.Worlds.LOBBY) {
             TabHelper.getWorld();
             if (gridLayout != null) {

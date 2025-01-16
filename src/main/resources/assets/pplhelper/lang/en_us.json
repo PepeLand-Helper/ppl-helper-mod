@@ -24,6 +24,7 @@
   "pplhelper.key.unfollow_project": "Открепить проект",
 
   "pplhelper.configs.enable_toast": "Включить уведомления",
+  "pplhelper.configs.menu.lobby": "Кнопка лобби",
   "pplhelper.configs.selected_project.auto_hide": "Радиус скрытия закрепленного проекта",
   "pplhelper.configs.abi.title": "Action Bar Info",
   "pplhelper.configs.abi": "Интеграция с ABI",
