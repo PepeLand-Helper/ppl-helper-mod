@@ -89,21 +89,22 @@ public class PepelandHelper implements ClientModInitializer {
         };
     }
 
-    public static ButtonBuilder getProfileButton(Screen parent){
+    public static ButtonBuilder getProfileButton(Screen parent) {
         ButtonBuilder builder = new ButtonBuilder(Component.translatable(user == null ? "pplhelper.oauth.login" : "pplhelper.oauth.profile"));
         builder.setIcon(WIKI).setCentered(false);
         builder.setOnPress((s) -> {
-           if(user == null) confirmLinkNow(AlinLib.MINECRAFT.screen, String.format("http://localhost:%s", parseInt(config.getString("oauth.port", "11430"))));
-           else AlinLib.MINECRAFT.setScreen(new ProfileScreen(parent, user));
+            if (user == null)
+                confirmLinkNow(AlinLib.MINECRAFT.screen, String.format("http://localhost:%s", parseInt(config.getString("oauth.port", "11430"))));
+            else AlinLib.MINECRAFT.setScreen(new ProfileScreen(parent, user));
         });
         return builder;
     }
 
-    public static void loadUser(boolean withToast){
+    public static void loadUser(boolean withToast) {
         String token = config.getString("oauth.access_token", "");
-        if(token.isBlank()) return;
+        if (token.isBlank()) return;
         user = OAuth.getUser(token);
-        if(user != null && withToast)
+        if (user != null && withToast)
             new ToastBuilder().setTitle(Component.translatable("pplhelper")).setMessage(Component.translatable("pplhelper.oauth.hello", user.nickname == null ? user.username : user.nickname)).setIcon(NETHER_STAR).buildAndShow();
     }
 
@@ -115,8 +116,10 @@ public class PepelandHelper implements ClientModInitializer {
             player.connection.sendChat(command);
         }
     }
+
     private static TabHelper.Worlds lastWorld = null;
     private static boolean lastLobby = false;
+
     @Override
     public void onInitializeClient() {
         LOG.log("-=-=-=-=-=-=-=-", Level.WARN);
@@ -125,7 +128,7 @@ public class PepelandHelper implements ClientModInitializer {
         loadUser(false);
         // -=-=-=- Ресурс пак -=-=-=-
         FabricLoader.getInstance().getModContainer("pplhelper").ifPresent(s -> {
-            ResourceManagerHelper.registerBuiltinResourcePack(GuiUtils.getResourceLocation("pplhelper","icons"), s, Component.translatable("resourcePack.pplhelper.icons"), ResourcePackActivationType.NORMAL);
+            ResourceManagerHelper.registerBuiltinResourcePack(GuiUtils.getResourceLocation("pplhelper", "icons"), s, Component.translatable("resourcePack.pplhelper.icons"), ResourcePackActivationType.NORMAL);
         });
         // -=-=-=- Сбор информации (НЕ ВАШИХ!) и авто-обновление -=-=-=-
         ClientLifecycleEvents.CLIENT_FULL_STARTED.register((s) -> {
@@ -185,9 +188,10 @@ public class PepelandHelper implements ClientModInitializer {
                 "pplhelper"
         ));
         ClientTickEvents.START_CLIENT_TICK.register((s) -> {
-            if(lastWorld != TabHelper.getWorld()){
-                lastLobby = lastWorld == TabHelper.Worlds.LOBBY;
-                if(lastLobby) joinTime = System.currentTimeMillis()+15000;
+            if (lastWorld != TabHelper.getWorld() && s.getCurrentServer() != null) {
+                lastLobby = (lastWorld == TabHelper.Worlds.LOBBY);
+                if (lastLobby) joinTime = System.currentTimeMillis() + 15000;
+
                 lastWorld = TabHelper.getWorld();
             }
             if (restartTime != -1 || joinTime != -1) updateBossBar();
@@ -214,10 +218,10 @@ public class PepelandHelper implements ClientModInitializer {
                 .set("pplhelper.selected_project.coordinates", () -> Value.string(selectedProject == null ? "" : getStringSelectedProjectCoordinates())));
     }
 
-    public static void loadStaticInformation(){
+    public static void loadStaticInformation() {
         new Thread(() -> {
-            try{
-                if(PepeLandHelperAPI.apiAvailable()) {
+            try {
+                if (PepeLandHelperAPI.apiAvailable()) {
                     commands = PepeLandHelperAPI.getCommands();
                     mods = PepeLandHelperAPI.getRecommendMods();
                     //
@@ -234,8 +238,8 @@ public class PepelandHelper implements ClientModInitializer {
                             .setMessage(Component.translatable("pplhelper.api.unavailable"))
                             .setIcon(WHITE_PEPE)
                             .setType(ToastBuilder.Type.ERROR).buildAndShow();
-            } catch (Exception ex){
-                Exception exc = new Exception("Ошибка загрузки информации\n"+ex.getMessage());
+            } catch (Exception ex) {
+                Exception exc = new Exception("Ошибка загрузки информации\n" + ex.getMessage());
                 exc.setStackTrace(ex.getStackTrace());
                 exc.printStackTrace();
                 new ToastBuilder().setTitle(Component.literal("Ошибка загрузки информации")).setMessage(Component.literal(ex.getMessage())).setIcon(WHITE_PEPE).setType(ToastBuilder.Type.ERROR).buildAndShow();
@@ -245,39 +249,41 @@ public class PepelandHelper implements ClientModInitializer {
 
     public static @NotNull String getStringSelectedProjectCoordinates() {
         String coordinates = "";
-        if(World.getCodeName().equals("minecraft:overworld") && PepelandHelper.selectedProject.coordinates$overworld != null && !PepelandHelper.selectedProject.coordinates$overworld.isEmpty())
+        if (World.getCodeName().equals("minecraft:overworld") && PepelandHelper.selectedProject.coordinates$overworld != null && !PepelandHelper.selectedProject.coordinates$overworld.isEmpty())
             coordinates = PepelandHelper.selectedProject.coordinates$overworld;
-        else if(World.getCodeName().equals("minecraft:the_nether") && PepelandHelper.selectedProject.coordinates$nether != null && !PepelandHelper.selectedProject.coordinates$nether.isEmpty())
+        else if (World.getCodeName().equals("minecraft:the_nether") && PepelandHelper.selectedProject.coordinates$nether != null && !PepelandHelper.selectedProject.coordinates$nether.isEmpty())
             coordinates = PepelandHelper.selectedProject.coordinates$nether;
-        else if(World.getCodeName().equals("minecraft:the_end") && PepelandHelper.selectedProject.coordinates$end != null && !PepelandHelper.selectedProject.coordinates$end.isEmpty())
+        else if (World.getCodeName().equals("minecraft:the_end") && PepelandHelper.selectedProject.coordinates$end != null && !PepelandHelper.selectedProject.coordinates$end.isEmpty())
             coordinates = PepelandHelper.selectedProject.coordinates$end;
         return coordinates.replaceAll("[^0-9 \\-.]", "");
     }
 
     public static @NotNull String getStringSelectedProjectCoordinatesButWithRofls() {
         String coordinates = "";
-        if(PepelandHelper.selectedProject.coordinates$overworld != null && !PepelandHelper.selectedProject.coordinates$overworld.isEmpty())
+        if (PepelandHelper.selectedProject.coordinates$overworld != null && !PepelandHelper.selectedProject.coordinates$overworld.isEmpty())
             coordinates = PepelandHelper.selectedProject.coordinates$overworld;
-        else if(PepelandHelper.selectedProject.coordinates$nether != null && !PepelandHelper.selectedProject.coordinates$nether.isEmpty())
+        else if (PepelandHelper.selectedProject.coordinates$nether != null && !PepelandHelper.selectedProject.coordinates$nether.isEmpty())
             coordinates = PepelandHelper.selectedProject.coordinates$nether;
-        else if(PepelandHelper.selectedProject.coordinates$end != null && !PepelandHelper.selectedProject.coordinates$end.isEmpty())
+        else if (PepelandHelper.selectedProject.coordinates$end != null && !PepelandHelper.selectedProject.coordinates$end.isEmpty())
             coordinates = PepelandHelper.selectedProject.coordinates$end;
         return coordinates.replaceAll("[^0-9 \\-.]", "");
     }
+
     public static @NotNull String getWorldStringSelectedProjectCoordinatesButWithRofls() {
         String coordinates = "";
-        if(PepelandHelper.selectedProject.coordinates$overworld != null && !PepelandHelper.selectedProject.coordinates$overworld.isEmpty())
+        if (PepelandHelper.selectedProject.coordinates$overworld != null && !PepelandHelper.selectedProject.coordinates$overworld.isEmpty())
             coordinates = AlinLib.localization.getLocalization("world.overworld");
-        else if(PepelandHelper.selectedProject.coordinates$nether != null && !PepelandHelper.selectedProject.coordinates$nether.isEmpty())
+        else if (PepelandHelper.selectedProject.coordinates$nether != null && !PepelandHelper.selectedProject.coordinates$nether.isEmpty())
             coordinates = AlinLib.localization.getLocalization("world.nether");
-        else if(PepelandHelper.selectedProject.coordinates$end != null && !PepelandHelper.selectedProject.coordinates$end.isEmpty())
+        else if (PepelandHelper.selectedProject.coordinates$end != null && !PepelandHelper.selectedProject.coordinates$end.isEmpty())
             coordinates = AlinLib.localization.getLocalization("world.the_end");
         return coordinates;
     }
+
     public static float dist(int i, int j, int k, int l) {
         int m = k - i;
         int n = l - j;
-        return Mth.sqrt((float)(m * m + n * n));
+        return Mth.sqrt((float) (m * m + n * n));
     }
 
     public static long restartTime = 0;
@@ -304,7 +310,7 @@ public class PepelandHelper implements ClientModInitializer {
             if (rest <= 0 || !config.getBoolean("TIMER.RESTART", true)) {
                 restartTime = 0;
             } else {
-                rtBossBar = new LerpingBossEvent(rtUUID, Component.translatable("pplhelper.restart", getTimestamp(rest)), (float) rest/300000,
+                rtBossBar = new LerpingBossEvent(rtUUID, Component.translatable("pplhelper.restart", getTimestamp(rest)), (float) rest / 300000,
                         (rest >= 180000 ? BossEvent.BossBarColor.GREEN : rest >= 60000 ? BossEvent.BossBarColor.YELLOW : BossEvent.BossBarColor.RED),
                         BossEvent.BossBarOverlay.NOTCHED_20, false, false, false);
                 AlinLib.MINECRAFT.gui.getBossOverlay().update(ClientboundBossEventPacket.createAddPacket(rtBossBar));
@@ -327,7 +333,7 @@ public class PepelandHelper implements ClientModInitializer {
             if (rest <= 0 || !config.getBoolean("TIMER.JOIN", true)) {
                 joinTime = 0;
             } else {
-                jtBossBar = new LerpingBossEvent(jtUUID, Component.translatable("pplhelper.join", getTimestamp(rest)), (float) rest/15000,
+                jtBossBar = new LerpingBossEvent(jtUUID, Component.translatable("pplhelper.join", getTimestamp(rest)), (float) rest / 15000,
                         BossEvent.BossBarColor.RED,
                         BossEvent.BossBarOverlay.PROGRESS, false, false, false);
                 AlinLib.MINECRAFT.gui.getBossOverlay().update(ClientboundBossEventPacket.createAddPacket(jtBossBar));
@@ -338,7 +344,8 @@ public class PepelandHelper implements ClientModInitializer {
     public static UUID spUUID = UUID.randomUUID();
     public static LerpingBossEvent spBossBar;
     private static long lastMaxNear = 0;
-    public static void updateCoordinatesBB(){
+
+    public static void updateCoordinatesBB() {
         if (selectedProject == null || !playerInPPL() || (PepelandHelper.config.getBoolean("SPROJECT.ABI", true) && isInstalledABI)) {
             if (spBossBar != null) {
                 spBossBar = null;
@@ -346,16 +353,16 @@ public class PepelandHelper implements ClientModInitializer {
                 AlinLib.MINECRAFT.gui.getBossOverlay().update(ClientboundBossEventPacket.createRemovePacket(spUUID));
             }
         } else {
-            if(TabHelper.getWorld() == null) return;
+            if (TabHelper.getWorld() == null) return;
             String parsedCoordinates = getStringSelectedProjectCoordinates();
-            if(parsedCoordinates.isEmpty()) return;
+            if (parsedCoordinates.isEmpty()) return;
             LocalPlayer p = AlinLib.MINECRAFT.player;
             long near = 0;
             String huy = "";
-            if(p != null && PepelandHelper.selectedProject.world.equalsIgnoreCase(TabHelper.getWorld().shortName)) {
+            if (p != null && PepelandHelper.selectedProject.world.equalsIgnoreCase(TabHelper.getWorld().shortName)) {
                 String[] args = parsedCoordinates.split(" ");
-                near = (long) dist(parseInt(args[0]), parseInt(args[args.length-1]),p.getBlockX(), p.getBlockZ());
-                if(near <= PepelandHelper.config.getNumber("SELECTED_PROJECT.AUTO_HIDE", 5).longValue()){
+                near = (long) dist(parseInt(args[0]), parseInt(args[args.length - 1]), p.getBlockX(), p.getBlockZ());
+                if (near <= PepelandHelper.config.getNumber("SELECTED_PROJECT.AUTO_HIDE", 5).longValue()) {
                     PepelandHelper.selectedProject = null;
                     lastMaxNear = 0;
                     return;
@@ -363,9 +370,9 @@ public class PepelandHelper implements ClientModInitializer {
             }
             lastMaxNear = Math.max(lastMaxNear, near);
             spBossBar = new LerpingBossEvent(spUUID, Component.translatable("pplhelper.selected_project", PepelandHelper.selectedProject.world, parsedCoordinates, huy), (float) near / lastMaxNear,
-                        BossEvent.BossBarColor.GREEN,
-                        BossEvent.BossBarOverlay.PROGRESS, false, false, false);
-                AlinLib.MINECRAFT.gui.getBossOverlay().update(ClientboundBossEventPacket.createAddPacket(spBossBar));
+                    BossEvent.BossBarColor.GREEN,
+                    BossEvent.BossBarOverlay.PROGRESS, false, false, false);
+            AlinLib.MINECRAFT.gui.getBossOverlay().update(ClientboundBossEventPacket.createAddPacket(spBossBar));
         }
     }
 
