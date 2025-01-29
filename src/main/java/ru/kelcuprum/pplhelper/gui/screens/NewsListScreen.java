@@ -1,10 +1,12 @@
 package ru.kelcuprum.pplhelper.gui.screens;
 
+import net.minecraft.Util;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
+import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.gui.GuiUtils;
 import ru.kelcuprum.alinlib.gui.components.ImageWidget;
 import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
@@ -93,8 +95,23 @@ public class NewsListScreen extends AbstractPPLScreen {
         }
         return super.keyPressed(i, j, k);
     }
+    private long lastSearch = System.currentTimeMillis();
+    private int count = 0;
 
-    private void search(){
+    private void search() {
+        long cur = System.currentTimeMillis();
+        long limit = 750;
+        if(cur - lastSearch <= limit){
+            if(count > 4){
+                Util.getPlatform().openUri("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+                AlinLib.MINECRAFT.setScreen(builder.parent);
+            } else count++;
+            return;
+        } else if(cur - lastSearch > limit) {
+            lastSearch = cur;
+            count = 0;
+        }
+        count++;
         lastNews = null;
         if(loadInfo != null){
             loadInfo.interrupt();
