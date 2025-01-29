@@ -393,7 +393,7 @@ public class PepelandHelper implements ClientModInitializer {
     }
 
     public static boolean onlyEmotesCheck() {
-        return !FabricLoader.getInstance().isModLoaded("citresewn") || config.getBoolean("PACK_UPDATES.ONLY_EMOTE", false);
+        return config.getBoolean("PACK_UPDATES.ONLY_EMOTE", false); // !FabricLoader.getInstance().isModLoaded("citresewn") ||
     }
 
     public static String getInstalledPack() {

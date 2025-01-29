@@ -38,9 +38,9 @@ public class UpdaterScreen {
 
                 .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.pack_updates.notice"), true).setConfig(PepelandHelper.config, "PACK_UPDATES.NOTICE"))
                 .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.pack_updates.auto_update"), true).setConfig(PepelandHelper.config, "PACK_UPDATES.AUTO_UPDATE"));
-                if(!FabricLoader.getInstance().isModLoaded("citresewn"))
-                    builder.addWidget(new TextBuilder(Component.translatable("pplhelper.configs.pack_updates.only_emote.citresewn_not_installed")).setType(TextBuilder.TYPE.BLOCKQUOTE).setColor(GROUPIE));
-                builder.addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.pack_updates.only_emote"), false).setConfig(PepelandHelper.config, "PACK_UPDATES.ONLY_EMOTE").setActive(FabricLoader.getInstance().isModLoaded("citresewn")));
+//                if(!FabricLoader.getInstance().isModLoaded("citresewn"))
+//                    builder.addWidget(new TextBuilder(Component.translatable("pplhelper.configs.pack_updates.only_emote.citresewn_not_installed")).setType(TextBuilder.TYPE.BLOCKQUOTE).setColor(GROUPIE));
+                builder.addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.pack_updates.only_emote"), false).setConfig(PepelandHelper.config, "PACK_UPDATES.ONLY_EMOTE")); // .setActive(FabricLoader.getInstance().isModLoaded("citresewn"))
 
         try {
             JsonObject pack = PepeLandAPI.getPackInfo(PepelandHelper.onlyEmotesCheck());
