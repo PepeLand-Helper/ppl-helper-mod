@@ -18,6 +18,7 @@ import ru.kelcuprum.alinlib.gui.toast.ToastBuilder;
 import ru.kelcuprum.pplhelper.PepelandHelper;
 
 import static ru.kelcuprum.alinlib.gui.Colors.CPM_BLUE;
+import static ru.kelcuprum.alinlib.gui.Colors.SEADRIVE;
 import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.WHITE_PEPE;
 
 @Mixin(ChatScreen.class)
@@ -49,9 +50,10 @@ public abstract class ChatScreenMixin extends Screen {
     }
     @Inject(method = "render", at=@At("RETURN"))
     public void render(GuiGraphics guiGraphics, int i, int j, float f, CallbackInfo ci){
+        assert minecraft != null;
         if(isGlobalChat && PepelandHelper.playerInPPL()) {
             guiGraphics.drawString(minecraft.font, Component.translatable("pplhelper.chat.global.on"), 5, input.getY()-5-minecraft.font.lineHeight, -1);
-            guiGraphics.fill(2, height-2, width-2, height-1, CPM_BLUE);
+            guiGraphics.fill(2, height-2, width-2, height-1, SEADRIVE);
         }
     }
 

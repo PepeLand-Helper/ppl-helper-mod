@@ -6,8 +6,8 @@ import ru.kelcuprum.pplhelper.PepelandHelper;
 
 import java.util.HashMap;
 
-import static ru.kelcuprum.pplhelper.utils.JsonHelper.getStringInJSON;
-import static ru.kelcuprum.pplhelper.utils.JsonHelper.hasJSONElement;
+import static ru.kelcuprum.alinlib.utils.GsonHelper.getStringInJSON;
+import static ru.kelcuprum.alinlib.utils.GsonHelper.jsonElementIsNull;
 
 public class Mod {
     public String modid;
@@ -24,7 +24,7 @@ public class Mod {
         icon = getStringInJSON("icon", info, "");
         title = getStringInJSON("title", info, "");
         description = getStringInJSON("description", info, "");
-        if(hasJSONElement("url", info)) url = getStringInJSON("url", info, "");
+        if(!jsonElementIsNull("url", info)) url = getStringInJSON("url", info, "");
         else this.url = Service.getServiceURL(service, id);
         new Thread(() -> {
             switch (service){

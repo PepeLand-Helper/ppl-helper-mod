@@ -2,8 +2,8 @@ package ru.kelcuprum.pplhelper.api.components.user;
 
 import com.google.gson.JsonObject;
 
-import static ru.kelcuprum.pplhelper.utils.JsonHelper.getBooleanInJSON;
-import static ru.kelcuprum.pplhelper.utils.JsonHelper.getStringInJSON;
+import static ru.kelcuprum.alinlib.utils.GsonHelper.getBooleanInJSON;
+import static ru.kelcuprum.alinlib.utils.GsonHelper.getStringInJSON;
 
 public class Role {
     public String name;

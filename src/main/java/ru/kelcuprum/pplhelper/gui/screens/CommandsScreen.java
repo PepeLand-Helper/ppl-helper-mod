@@ -38,7 +38,7 @@ public class CommandsScreen {
                                         .setIcon(PepelandHelper.Icons.WHITE_PEPE)
                                         .setMessage(Component.translatable("pplhelper.commands.notice.description")).buildAndShow();
                             }
-                    ).setType(TextBuilder.TYPE.BLOCKQUOTE).build();
+                    ).setType(TextBuilder.TYPE.BLOCKQUOTE).setColor(0xFF13A10E).build();
                     cat.addValue(box);
                 }
                 cat.changeState(false);

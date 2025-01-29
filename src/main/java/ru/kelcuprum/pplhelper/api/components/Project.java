@@ -4,8 +4,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.network.chat.Component;
 import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
 
-import static ru.kelcuprum.pplhelper.utils.JsonHelper.getStringInJSON;
-import static ru.kelcuprum.pplhelper.utils.JsonHelper.hasJSONElement;
+import static ru.kelcuprum.alinlib.utils.GsonHelper.*;
 
 public class Project {
     public int id;
@@ -32,7 +31,7 @@ public class Project {
 
         icon = getStringInJSON("data.icon", info);
         banner = getStringInJSON("data.banner", info);
-        if(hasJSONElement("data.coordinates", info)){
+        if(!jsonElementIsNull("data.coordinates", info)){
             world = getStringInJSON("data.coordinates.world", info);
             coordinates$overworld = getStringInJSON("data.coordinates.overworld", info);
             coordinates$nether = getStringInJSON("data.coordinates.nether", info);

@@ -23,18 +23,22 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 
 public class PPLHelperCommand {
     public static void register(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
-        dispatcher.register(literal("pplhelper").then(literal("report").then(argument("description", greedyString()).executes((s) -> sendReport(s, getString(s, "description")))).executes((s) -> sendReport(s, "<описание>")))
+        dispatcher.register(literal("pplhelper").then(literal("report")
+                        .then(argument("description", greedyString()).executes((s) -> sendReport(s, getString(s, "description"))))
+                        .executes((s) -> sendReport(s, "<описание>")))
                 .then(literal("follow")
                         .then(argument("x", integer())
                                 .then(argument("z", integer()).executes((s) -> {
-                                    PepelandHelper.selectedProject = new FollowProject(TabHelper.getWorld().shortName, String.format("%s %s", getInteger(s, "x"), getInteger(s, "z")), AlinLib.MINECRAFT.player.level().dimension().location().toString());
+                                    if(!PepelandHelper.playerInPPL() || TabHelper.getWorld() == null) sendFeedback(s, Component.literal("Вы не можете использовать команду вне сервера"));
+                                    else PepelandHelper.selectedProject = new FollowProject(TabHelper.getWorld().shortName, String.format("%s %s", getInteger(s, "x"), getInteger(s, "z")), AlinLib.MINECRAFT.player.level().dimension().location().toString());
                                     return 0;
                                 })))
 
                         .then(argument("x", integer())
                                 .then(argument("z", integer())
                                         .then(argument("world", new WorldArgumentType()).executes((s) -> {
-                                            PepelandHelper.selectedProject = new FollowProject(getString(s, "world"), String.format("%s %s", getInteger(s, "x"), getInteger(s, "z")), AlinLib.MINECRAFT.player.level().dimension().location().toString());
+                                            if(!PepelandHelper.playerInPPL() || TabHelper.getWorld() == null) sendFeedback(s, Component.literal("Вы не можете использовать команду вне сервера"));
+                                            else PepelandHelper.selectedProject = new FollowProject(getString(s, "world"), String.format("%s %s", getInteger(s, "x"), getInteger(s, "z")), AlinLib.MINECRAFT.player.level().dimension().location().toString());
                                             return 0;
                                         }))
                                 )
@@ -60,6 +64,9 @@ public class PPLHelperCommand {
             s.getSource().getClient().keyboardHandler.setClipboard(report);
             sendFeedback(s, Component.literal(String.format("Сообщение репорта было скопировано в буфер обмена:\n%s", report)));
             return 0;
-        } else return 1;
+        } else {
+            sendFeedback(s, Component.literal("Вы не можете использовать команду вне сервера"));
+            return 1;
+        }
     }
 }

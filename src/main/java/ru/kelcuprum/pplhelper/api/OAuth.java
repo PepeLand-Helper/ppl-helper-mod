@@ -24,7 +24,7 @@ import java.nio.charset.StandardCharsets;
 import static java.lang.Integer.parseInt;
 import static ru.kelcuprum.pplhelper.PepelandHelper.config;
 import static ru.kelcuprum.pplhelper.api.PepeLandAPI.uriEncode;
-import static ru.kelcuprum.pplhelper.utils.JsonHelper.getStringInJSON;
+import static ru.kelcuprum.alinlib.utils.GsonHelper.getStringInJSON;
 
 public class OAuth {
     public static boolean state = false;

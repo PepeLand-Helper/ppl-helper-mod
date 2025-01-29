@@ -12,9 +12,9 @@ import ru.kelcuprum.pplhelper.api.components.Project;
 import java.util.ArrayList;
 import java.util.List;
 
+import static ru.kelcuprum.alinlib.utils.GsonHelper.jsonElementIsNull;
 import static ru.kelcuprum.pplhelper.api.PepeLandAPI.uriEncode;
-import static ru.kelcuprum.pplhelper.utils.JsonHelper.getStringInJSON;
-import static ru.kelcuprum.pplhelper.utils.JsonHelper.hasJSONElement;
+import static ru.kelcuprum.alinlib.utils.GsonHelper.getStringInJSON;
 
 public class PepeLandHelperAPI {
     public static String getURI(String url){
@@ -85,7 +85,7 @@ public class PepeLandHelperAPI {
             categories[0] = Component.translatable("pplhelper.project.world.all").getString();
             int size = 1;
             for(JsonElement data : array) {
-                categories[size] = !hasJSONElement("translatable", (JsonObject) data) ? getStringInJSON("name", (JsonObject) data, "")
+                categories[size] = jsonElementIsNull("translatable", (JsonObject) data) ? getStringInJSON("name", (JsonObject) data, "")
                         : Component.translatable(getStringInJSON("name", (JsonObject) data, "")).getString();
                 size++;
             }
@@ -123,7 +123,7 @@ public class PepeLandHelperAPI {
             categories[0] = Component.translatable("pplhelper.project.world.all").getString();
             int size = 1;
             for(JsonElement data : array) {
-                categories[size] = !hasJSONElement("translatable", (JsonObject) data) ? getStringInJSON("name", (JsonObject) data, "")
+                categories[size] = jsonElementIsNull("translatable", (JsonObject) data) ? getStringInJSON("name", (JsonObject) data, "")
                         : Component.translatable(getStringInJSON("name", (JsonObject) data, "")).getString();
                 size++;
             }

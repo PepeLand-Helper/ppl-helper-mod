@@ -2,7 +2,7 @@ package ru.kelcuprum.pplhelper.api.components;
 
 import com.google.gson.JsonObject;
 import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
-import static ru.kelcuprum.pplhelper.utils.JsonHelper.getStringInJSON;
+import static ru.kelcuprum.alinlib.utils.GsonHelper.getStringInJSON;
 
 public class News {
     public int id;
