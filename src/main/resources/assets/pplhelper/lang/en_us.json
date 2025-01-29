@@ -5,6 +5,8 @@
 
   "pplhelper.oauth.hello": "Добро пожаловать, %s!",
 
+  "pplhelper.command.ie_gradient": "Содержимое было скопировано в буфер обмена:\n%s",
+
 
   "pplhelper.oauth.login": "Войти в аккаунт",
   "pplhelper.oauth.profile": "Профиль",
@@ -22,7 +24,6 @@
   "pplhelper.key.open.projects": "Открыть проекты",
   "pplhelper.key.open.config": "Открыть настройки",
   "pplhelper.key.unfollow_project": "Открепить проект",
-
   "pplhelper.configs.enable_toast": "Включить уведомления",
   "pplhelper.configs.menu.lobby": "Кнопка лобби",
   "pplhelper.configs.selected_project.auto_hide": "Радиус скрытия закрепленного проекта",
