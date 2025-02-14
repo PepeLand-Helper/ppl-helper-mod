@@ -167,7 +167,7 @@ public class PepelandHelper implements ClientModInitializer {
                     }
                 }
             } catch (Exception ex){
-                new ToastBuilder().setTitle(Component.translatable("pplhelper")).setMessage(Component.literal("Авто-обновлению стало грустно")).setIcon(DONT).buildAndShow();
+                new ToastBuilder().setTitle(Component.translatable("pplhelper")).setMessage(Component.literal("Произошла ошибка авто-обновления, загляните в логи!")).setType(ToastBuilder.Type.ERROR).setIcon(DONT).buildAndShow();
                 ex.printStackTrace();
             }
         });

@@ -160,7 +160,7 @@ modrinth {
     else loaders = [mod_brand]
     dependencies {
 //        required.project "alinlib"
-        required.version "f9MTEfuo"
+        required.version "UOwp73RE"
         if(mod_brand == "fabric"){
             required.project "fabric-api"
             optional.project "modmenu"

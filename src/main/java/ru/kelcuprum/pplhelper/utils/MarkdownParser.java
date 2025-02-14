@@ -110,7 +110,6 @@ public class MarkdownParser {
         String ret = getString(string);
         MutableComponent component = Component.empty();
         String[] links = hehSplit(ret,"\\[(.+?)]\\((.+?)\\)");
-        AlinLib.LOG.log(""+links.length);
         if(links.length >= 1) {
             String sp = ret;
             for(String link : links) sp = sp.replace(link, "[\uE699]");
