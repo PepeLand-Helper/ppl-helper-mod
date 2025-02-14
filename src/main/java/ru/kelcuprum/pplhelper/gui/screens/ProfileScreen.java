@@ -45,55 +45,57 @@ public class ProfileScreen extends AbstractPPLScreen {
     }
 
     boolean apiAvailable = PepeLandHelperAPI.apiAvailable();
+    boolean loaded = false;
     public Thread loadInfo = null;
 
     @Override
     public void initCategory() {
-        builder.widgets.clear();
-        super.initCategory();
         final int[] y = {builder.contentY - 25};
         if (apiAvailable) {
-            try {
-                loadInfo = new Thread(() -> {
-                    builder.addWidget(new ScaledTextBox(Component.translatable("pplhelper.oauth.news"), false, 1.2f));
-                    if(user.role.CREATE_NEWS) builder.addWidget(new ButtonBuilder(Component.translatable("pplhelper.oauth.news.create")).setIcon(ADD).setOnPress((s) ->
-                            PepelandHelper.confirmLinkNow(AlinLib.MINECRAFT.screen, getURI("news/create", false))));
-                    List<News> news = user.getNews();
-                    if (news.isEmpty()) {
-                        builder.addWidget(new TextBuilder(Component.translatable("pplhelper.oauth.projects.empty")).setType(TextBuilder.TYPE.BLOCKQUOTE).setColor(GROUPIE).setPosition(getX(), 55).setSize(getContentWidth(), 20).build());
-                    } else for (News project : news)
-                        builder.addWidget(new NewsButton(getX(), -40, DEFAULT_WIDTH(), project, this));
-                    // -=-=-=
-                    builder.addWidget(new ScaledTextBox(Component.translatable("pplhelper.oauth.projects"), false, 1.2f));
-                    if(user.role.CREATE_PROJECTS) builder.addWidget(new ButtonBuilder(Component.translatable("pplhelper.oauth.projects.create")).setIcon(ADD).setOnPress((s) ->
-                            PepelandHelper.confirmLinkNow(AlinLib.MINECRAFT.screen, getURI("projects/create", false))));
-                    List<Project> projects = user.getProjects();
-                    if (projects.isEmpty()) {
-                        builder.addWidget(new TextBuilder(Component.translatable("pplhelper.oauth.projects.empty")).setType(TextBuilder.TYPE.BLOCKQUOTE).setColor(GROUPIE).setPosition(getX(), 55).setSize(getContentWidth(), 20).build());
-                    } else for (Project project : projects)
-                        builder.addWidget(new ProjectButton(getX(), -40, DEFAULT_WIDTH(), project, this));
-                    // -=-=-=
+            if(!loaded){
+                builder.widgets.clear();
+                try {
+                    loadInfo = new Thread(() -> {
+                        builder.addWidget(new ScaledTextBox(Component.translatable("pplhelper.oauth.news"), false, 1.2f));
+                        if(user.role.CREATE_NEWS) builder.addWidget(new ButtonBuilder(Component.translatable("pplhelper.oauth.news.create")).setIcon(ADD).setOnPress((s) ->
+                                PepelandHelper.confirmLinkNow(AlinLib.MINECRAFT.screen, getURI("news/create", false))));
+                        List<News> news = user.getNews();
+                        if (news.isEmpty()) {
+                            builder.addWidget(new TextBuilder(Component.translatable("pplhelper.oauth.projects.empty")).setType(TextBuilder.TYPE.BLOCKQUOTE).setColor(GROUPIE).setPosition(getX(), 55).setSize(getContentWidth(), 20).build());
+                        } else for (News project : news)
+                            builder.addWidget(new NewsButton(getX(), -40, DEFAULT_WIDTH(), project, this));
+                        // -=-=-=
+                        builder.addWidget(new ScaledTextBox(Component.translatable("pplhelper.oauth.projects"), false, 1.2f));
+                        if(user.role.CREATE_PROJECTS) builder.addWidget(new ButtonBuilder(Component.translatable("pplhelper.oauth.projects.create")).setIcon(ADD).setOnPress((s) ->
+                                PepelandHelper.confirmLinkNow(AlinLib.MINECRAFT.screen, getURI("projects/create", false))));
+                        List<Project> projects = user.getProjects();
+                        if (projects.isEmpty()) {
+                            builder.addWidget(new TextBuilder(Component.translatable("pplhelper.oauth.projects.empty")).setType(TextBuilder.TYPE.BLOCKQUOTE).setColor(GROUPIE).setPosition(getX(), 55).setSize(getContentWidth(), 20).build());
+                        } else for (Project project : projects)
+                            builder.addWidget(new ProjectButton(getX(), -40, DEFAULT_WIDTH(), project, this));
+                        // -=-=-=
 
-                    int heigthScroller = builder.contentY;
-                    for (AbstractWidget widget : builder.widgets) {
-                        heigthScroller += (widget.getHeight() + 5);
-                        widget.setWidth(getContentWidth());
-                        widget.setPosition(getX(), y[0]);
-                        y[0] += (widget.getHeight() + 5);
-                    }
-                    yc = Math.min(height - 5, heigthScroller);
-                    addRenderableWidgets$scroller(scroller, builder.widgets);
-                });
-                loadInfo.start();
-            } catch (Exception ex){
-                ex.printStackTrace();
-                AlinLib.MINECRAFT.setScreen(new ErrorScreen(ex, builder.parent));
+                        int heigthScroller = builder.contentY;
+                        final List<AbstractWidget> widgets = builder.widgets;
+                        for (AbstractWidget widget : widgets) {
+                            heigthScroller += (widget.getHeight() + 5);
+                            widget.setWidth(getContentWidth());
+                            widget.setPosition(getX(), y[0]);
+                            y[0] += (widget.getHeight() + 5);
+                        }
+                        yc = Math.min(height - 5, heigthScroller);
+                        addRenderableWidgets$scroller(scroller, widgets);
+                    });
+                    loaded = true;
+                    loadInfo.start();
+                } catch (Exception ex){
+                    ex.printStackTrace();
+                    AlinLib.MINECRAFT.setScreen(new ErrorScreen(ex, builder.parent));
+                }
             }
-
         } else {
             builder.addWidget(new TextBuilder(Component.translatable("pplhelper.api.unavailable")).setType(TextBuilder.TYPE.BLOCKQUOTE).setColor(GROUPIE).setWidth(getContentWidth()));
-            addRenderableWidgets$scroller(scroller, builder.widgets);
         }
-
+        super.initCategory();
     }
 }

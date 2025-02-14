@@ -22,6 +22,7 @@ import ru.kelcuprum.alinlib.gui.components.text.DescriptionBox;
 import ru.kelcuprum.alinlib.gui.screens.ConfirmScreen;
 import ru.kelcuprum.alinlib.gui.screens.ThanksScreen;
 import ru.kelcuprum.alinlib.gui.toast.ToastBuilder;
+import ru.kelcuprum.pplhelper.PepelandHelper;
 import ru.kelcuprum.pplhelper.gui.screens.configs.ConfigScreen;
 
 import java.util.List;
@@ -315,13 +316,17 @@ public class AbstractPPLScreen extends Screen {
 
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
-        guiGraphics.enableScissor(10, 35, builder.panelSize-10, yo-5);
-        if (scroller_panel != null) for (AbstractWidget widget : scroller_panel.widgets) widget.render(guiGraphics, mouseX, mouseY, partialTicks);
-        guiGraphics.disableScissor();
+        try {
+            guiGraphics.enableScissor(10, 35, builder.panelSize-10, yo-5);
+            if (scroller_panel != null) for (AbstractWidget widget : scroller_panel.widgets) widget.render(guiGraphics, mouseX, mouseY, partialTicks);
+            guiGraphics.disableScissor();
 
-        guiGraphics.enableScissor(0, builder.contentY, width, yc-5);
-        if (scroller != null) for (AbstractWidget widget : scroller.widgets) widget.render(guiGraphics, mouseX, mouseY, partialTicks);
-        guiGraphics.disableScissor();
+            guiGraphics.enableScissor(0, builder.contentY, width, yc-5);
+            if (scroller != null) for (AbstractWidget widget : scroller.widgets) widget.render(guiGraphics, mouseX, mouseY, partialTicks);
+            guiGraphics.disableScissor();
+        } catch (Exception ex) {
+            PepelandHelper.LOG.error(ex.getMessage());
+        }
     }
     // ------------------------
     // --- Position + Width ---
