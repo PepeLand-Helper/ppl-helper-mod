@@ -41,7 +41,7 @@ public class ConfigScreen {
                 .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.timer.restart"), true).setConfig(PepelandHelper.config,"TIMER.RESTART"))
                 .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.timer.join"), true).setConfig(PepelandHelper.config,"TIMER.JOIN"))
                 .addWidget(new HorizontalRuleBuilder(Component.translatable("pplhelper.configs.api")))
-                .addWidget(new EditBoxBuilder(Component.translatable("pplhelper.configs.api_url")).setValue("https://api-h.pplmods.ru/").setConfig(PepelandHelper.config, "API_URL"))
+                .addWidget(new EditBoxBuilder(Component.translatable("pplhelper.configs.api_url")).setValue("https://api.pplh.ru/").setConfig(PepelandHelper.config, "API_URL"))
                 .addWidget(new HorizontalRuleBuilder(Component.translatable("pplhelper.configs.urls")))
                 .addWidget(new EditBoxBuilder(Component.translatable("pplhelper.configs.modrinth_url")).setValue("https://modrinth.com/").setConfig(PepelandHelper.config, "MODRINTH_URL"));
 

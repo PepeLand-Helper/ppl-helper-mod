@@ -115,7 +115,7 @@ public class ProjectsScreen extends AbstractPPLScreen {
         long limit = 750;
         if(cur - lastSearch <= limit){
             if(count > 4){
-                Util.getPlatform().openUri("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+                Util.getPlatform().openUri("https://wfu.kelcu.ru/vpEJaZQ");
                 AlinLib.MINECRAFT.setScreen(builder.parent);
             } else count++;
             return;
