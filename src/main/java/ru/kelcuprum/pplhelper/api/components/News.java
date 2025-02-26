@@ -9,6 +9,7 @@ public class News {
     public String title;
     public String description;
     public String author;
+    public String studio;
 
     public String banner;
     public String icon;
@@ -19,6 +20,7 @@ public class News {
         title = getStringInJSON("data.title", info, "");
         description = getStringInJSON("data.description", info, "");
         author = getStringInJSON("data.author", info);
+        studio = getStringInJSON("data.studio", info);
 
         banner = getStringInJSON("data.banner", info);
         icon = getStringInJSON("data.icon", info);

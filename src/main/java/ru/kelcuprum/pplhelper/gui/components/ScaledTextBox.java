@@ -52,21 +52,17 @@ public class ScaledTextBox extends TextBox {
     public void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
         guiGraphics.pose().pushPose();
         guiGraphics.pose().scale(scale, scale, scale);
-        guiGraphics.enableScissor((int) (getX()-(3*scale)), (int) (getY()-(3*scale)), (int) (getRight()+(3*scale)), (int) (getBottom()+(3*scale)));
         if(isDoesNotFit()){
             if(isCentered) guiGraphics.drawCenteredString(AlinLib.MINECRAFT.font, AlinLib.MINECRAFT.font.plainSubstrByWidth(this.getMessage().getString(), (int) ((width-30)/scale))+"...", (int) ((this.getX() + (float) this.getWidth() / 2) / scale), (int) ((this.getY() + ((this.getHeight()/scale) - 8) / 2)/scale), 16777215);
             else guiGraphics.drawString(AlinLib.MINECRAFT.font, AlinLib.MINECRAFT.font.plainSubstrByWidth(this.getMessage().getString(), (int) ((width-30)/scale))+"...", (int) ((this.getX() + ((this.getHeight()/scale) - 8) / 2)/scale), (int) ((this.getY() + ((this.getHeight()/scale) - 8) / 2)/scale), 16777215);
             if(isHovered) {
                 guiGraphics.pose().popPose();
-                guiGraphics.disableScissor();
                 guiGraphics.renderTooltip(AlinLib.MINECRAFT.font, AlinLib.MINECRAFT.font.split(getMessage(), width - 10), i, j);
                 guiGraphics.pose().pushPose();
                 guiGraphics.pose().scale(scale, scale, scale);
-                guiGraphics.enableScissor((int) (getX()-(3*scale)), (int) (getY()-(3*scale)), (int) (getRight()+(3*scale)), (int) (getBottom()+(3*scale)));
             }
         } else if (this.isCentered) guiGraphics.drawCenteredString(AlinLib.MINECRAFT.font, this.getMessage(), (int) ((this.getX() + (float) this.getWidth() / 2) / scale), (int) ((this.getY() + ((this.getHeight()/scale) - 8) / 2)/scale), 16777215);
         else guiGraphics.drawString(AlinLib.MINECRAFT.font, this.getMessage(), (int) ((this.getX() + ((this.getHeight()/scale) - 8) / 2)/scale), (int) ((this.getY() + ((this.getHeight()/scale) - 8) / 2)/scale), 16777215);
-        guiGraphics.disableScissor();
         guiGraphics.pose().popPose();
     }
 

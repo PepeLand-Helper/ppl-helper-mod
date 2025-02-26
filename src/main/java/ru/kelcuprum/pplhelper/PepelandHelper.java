@@ -32,6 +32,7 @@ import ru.kelcuprum.alinlib.api.events.client.ClientTickEvents;
 import ru.kelcuprum.alinlib.config.Config;
 import ru.kelcuprum.alinlib.config.Localization;
 import ru.kelcuprum.alinlib.gui.GuiUtils;
+import ru.kelcuprum.alinlib.gui.Icons;
 import ru.kelcuprum.alinlib.gui.components.builder.AbstractBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
 import ru.kelcuprum.alinlib.gui.screens.ConfirmScreen;
@@ -126,6 +127,10 @@ public class PepelandHelper implements ClientModInitializer {
         LOG.log("Данный проект не является официальной частью сети серверов PepeLand", Level.WARN);
         LOG.log("-=-=-=-=-=-=-=-", Level.WARN);
         loadUser(false);
+        // -=-=-=- -=-=-=-
+        if(isAprilFool()){
+
+        }
         // -=-=-=- Ресурс пак -=-=-=-
         FabricLoader.getInstance().getModContainer("pplhelper").ifPresent(s -> {
             ResourceManagerHelper.registerBuiltinResourcePack(GuiUtils.getResourceLocation("pplhelper", "icons"), s, Component.translatable("resourcePack.pplhelper.icons"), ResourcePackActivationType.NORMAL);
@@ -221,6 +226,10 @@ public class PepelandHelper implements ClientModInitializer {
                 .set("pplhelper.selected_project.creators", () -> Value.string(selectedProject == null ? "" : selectedProject.creators))
                 .set("pplhelper.selected_project.id", () -> Value.number(selectedProject == null ? 0 : selectedProject.id))
                 .set("pplhelper.selected_project.coordinates", () -> Value.string(selectedProject == null ? "" : getStringSelectedProjectCoordinates())));
+    }
+
+    public static boolean isAprilFool(){
+        return AlinLib.isAprilFool();
     }
 
     public static void loadStaticInformation() {
@@ -423,7 +432,7 @@ public class PepelandHelper implements ClientModInitializer {
     }
 
     public interface Icons {
-        ResourceLocation WHITE_PEPE = GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/white_pepe.png");
+        ResourceLocation WHITE_PEPE = (isAprilFool() ? CLOWNFISH : GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/white_pepe.png"));
         ResourceLocation PEPE = GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/pepe.png");
         ResourceLocation PACK_INFO = GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/pack_info.png");
         ResourceLocation PROJECTS = GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/projects.png");

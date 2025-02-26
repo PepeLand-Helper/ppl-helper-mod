@@ -21,7 +21,7 @@ public class ABIMixin {
         if (!PepelandHelper.playerInPPL()) return;
         String msg = cir.getReturnValue();
         if (PepelandHelper.config.getBoolean("ABI", false)) {
-            msg += AlinLib.localization.getParsedText(PepelandHelper.config.getString("INFO.PPLHELPER", ActionBarInfo.localization.getLocalization("info.pplhelper", false, true, false)));
+            msg += AlinLib.localization.getParsedText(Localization.fixFormatCodes(PepelandHelper.config.getString("INFO.PPLHELPER", ActionBarInfo.localization.getLocalization("info.pplhelper", false, false, false))));
         }
         if (PepelandHelper.selectedProject != null && TabHelper.getWorld() != null && PepelandHelper.config.getBoolean("SPROJECT.ABI", true)) {
             String huy = "\\n";

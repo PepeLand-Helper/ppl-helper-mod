@@ -37,7 +37,7 @@ public class OAuth {
         return getURI(url, true);
     }
     public static String getURI(String url, boolean uriEncode){
-        String api = PepelandHelper.config.getString("oauth.url", "https://oauth.pplmods.ru/");
+        String api = PepelandHelper.config.getString("oauth.url", "https://auth.pplh.ru/");
         if(!api.endsWith("/")) api+="/";
         if(url.startsWith("/")) url=url.substring(1);
         return String.format("%1$s%2$s", api, uriEncode ? uriEncode(url) : url);

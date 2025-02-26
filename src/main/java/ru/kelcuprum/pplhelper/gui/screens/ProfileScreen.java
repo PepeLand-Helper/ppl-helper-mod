@@ -29,7 +29,7 @@ import static ru.kelcuprum.pplhelper.api.PepeLandAPI.uriEncode;
 
 public class ProfileScreen extends AbstractPPLScreen {
     public static String getURI(String url, boolean uriEncode) {
-        String api = PepelandHelper.config.getString("SITE_URL", "https://h.pplmods.ru/");
+        String api = PepelandHelper.config.getString("SITE_URL", "https://pplh.ru/");
         if (!api.endsWith("/")) api += "/";
         return String.format("%1$s%2$s", api, uriEncode ? uriEncode(url) : url);
     }

@@ -19,12 +19,14 @@ public class User {
     public String id;
     public String avatar;
     public Role role = new Role(new JsonObject());
+    public Studio studio = new Studio(new JsonObject());
     public User(JsonObject object){
         if(object.has("nickname")) nickname = object.get("nickname").getAsString();
         if(object.has("username")) username = object.get("username").getAsString();
         if(object.has("id")) id = object.get("id").getAsString();
         if(object.has("avatar")) avatar = object.get("avatar").getAsString();
         if(object.has("role")) role = new Role(object.getAsJsonObject("role"));
+        if(object.has("studio")) studio = new Studio(object.getAsJsonObject("studio"));
     }
 
     public List<Project> getProjects(){
