@@ -121,6 +121,9 @@ public class PepelandHelper implements ClientModInitializer {
     private static TabHelper.Worlds lastWorld = null;
     private static boolean lastLobby = false;
 
+    private static boolean gameStarted = false;
+    private static boolean loginAval = false;
+
     @Override
     public void onInitializeClient() {
         LOG.log("-=-=-=-=-=-=-=-", Level.WARN);
@@ -128,16 +131,13 @@ public class PepelandHelper implements ClientModInitializer {
         LOG.log("-=-=-=-=-=-=-=-", Level.WARN);
         loadUser(false);
         // -=-=-=- -=-=-=-
-        if(isAprilFool()){
-
-        }
         // -=-=-=- Ресурс пак -=-=-=-
         FabricLoader.getInstance().getModContainer("pplhelper").ifPresent(s -> {
             ResourceManagerHelper.registerBuiltinResourcePack(GuiUtils.getResourceLocation("pplhelper", "icons"), s, Component.translatable("resourcePack.pplhelper.icons"), ResourcePackActivationType.NORMAL);
         });
         // -=-=-=- Сбор информации (НЕ ВАШИХ!) и авто-обновление -=-=-=-
         ClientLifecycleEvents.CLIENT_FULL_STARTED.register((s) -> {
-            OAuth.run();
+            gameStarted = true;
             loadStaticInformation();
             try {
                 String packVersion = getInstalledPack();
@@ -198,6 +198,11 @@ public class PepelandHelper implements ClientModInitializer {
                 "pplhelper"
         ));
         ClientTickEvents.START_CLIENT_TICK.register((s) -> {
+            if(gameStarted && loginAval != (user == null)){
+                loginAval = user == null;
+                if(loginAval) OAuth.run();
+                else OAuth.stop();
+            }
             if (lastWorld != TabHelper.getWorld() && s.getCurrentServer() != null) {
                 lastLobby = (lastWorld == TabHelper.Worlds.LOBBY);
                 if (lastLobby) joinTime = System.currentTimeMillis() + 15000;

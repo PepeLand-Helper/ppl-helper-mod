@@ -130,6 +130,16 @@ public class OAuth {
             return null;
         }
     }
+    public static User getUserByID(String id){
+        try {
+            JsonObject object = WebAPI.getJsonObject(getURI(String.format("user?id=%s", id), false));
+            if(object.has("error")) return null;
+            return new User(object);
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return null;
+        }
+    }
 
     public interface Objects {
         JsonObject NOT_FOUND = GsonHelper.parse("{\"error\":{\"code\":404,\"codename\":\"Not found\",\"message\":\"Method not found\"}}");

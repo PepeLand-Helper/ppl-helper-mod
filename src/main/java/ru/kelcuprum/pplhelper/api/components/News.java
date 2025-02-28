@@ -1,7 +1,10 @@
 package ru.kelcuprum.pplhelper.api.components;
 
 import com.google.gson.JsonObject;
+import ru.kelcuprum.pplhelper.api.OAuth;
 import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
+import ru.kelcuprum.pplhelper.api.components.user.User;
+
 import static ru.kelcuprum.alinlib.utils.GsonHelper.getStringInJSON;
 
 public class News {
@@ -27,5 +30,9 @@ public class News {
     }
     public String getContent(){
         return PepeLandHelperAPI.getNewsContent(this.id);
+    }
+
+    public User getAuthor(){
+        return OAuth.getUserByID(author);
     }
 }

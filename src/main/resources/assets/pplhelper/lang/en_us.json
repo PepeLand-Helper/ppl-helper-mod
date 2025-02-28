@@ -92,6 +92,8 @@
   "pplhelper.project.follow": "Закрепить координаты",
   "pplhelper.project.unfollow": "Открепить координаты",
   "pplhelper.project.web": "Открыть страницу сайта",
+  "pplhelper.project.author": "Проект опубликовал",
+  "pplhelper.news.author": "Новость написал",
 
   "pplhelper.project.category": "Категория",
   "pplhelper.categories.ppl": "PepeLand",

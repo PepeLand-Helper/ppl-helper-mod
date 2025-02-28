@@ -2,5 +2,8 @@
   "pplhelper.restart": "\uE699  Рестарт через %s  \uE699",
   "pplhelper.join": "\uE699  Вы cможете зайти через %s  \uE699",
   "pplhelper.selected_project": "\uE699  %1$s » %2$s%3$s  \uE699",
-  "abi.info.pplhelper": "\\n&6\uE699&r &6{pplhelper.world}&r {pplhelper.tps}TPS &6{pplhelper.online}/{pplhelper.max_online}&r"
+  "abi.info.pplhelper": "\\n&6\uE699&r &6{pplhelper.world}&r {pplhelper.tps}TPS &6{pplhelper.online}/{pplhelper.max_online}&r",
+
+  "pplhelper.project.author": "\uE699 Проект опубликовал \uE699",
+  "pplhelper.news.author": "\uE699 Новость написал \uE699"
 }

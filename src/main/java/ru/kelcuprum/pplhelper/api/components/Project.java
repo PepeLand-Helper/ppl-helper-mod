@@ -2,7 +2,9 @@ package ru.kelcuprum.pplhelper.api.components;
 
 import com.google.gson.JsonObject;
 import net.minecraft.network.chat.Component;
+import ru.kelcuprum.pplhelper.api.OAuth;
 import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
+import ru.kelcuprum.pplhelper.api.components.user.User;
 
 import static ru.kelcuprum.alinlib.utils.GsonHelper.*;
 
@@ -40,5 +42,9 @@ public class Project {
     }
     public String getContent(){
         return PepeLandHelperAPI.getProjectContent(this.id);
+    }
+
+    public User getAuthor(){
+        return OAuth.getUserByID(author);
     }
 }

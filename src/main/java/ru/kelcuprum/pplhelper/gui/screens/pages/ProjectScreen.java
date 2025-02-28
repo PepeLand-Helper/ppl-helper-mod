@@ -19,6 +19,7 @@ import ru.kelcuprum.pplhelper.PepelandHelper;
 import ru.kelcuprum.pplhelper.api.components.Project;
 import ru.kelcuprum.pplhelper.gui.components.BannerWidget;
 import ru.kelcuprum.pplhelper.gui.components.ScaledTextBox;
+import ru.kelcuprum.pplhelper.gui.components.UserCard;
 import ru.kelcuprum.pplhelper.gui.components.WebImageWidget;
 import ru.kelcuprum.pplhelper.utils.MarkdownParser;
 
@@ -87,7 +88,8 @@ public class ProjectScreen extends Screen {
         }).setPosition(x, y).setWidth(size).build());
         widgets.add(new HorizontalRuleBuilder().setPosition(x, y).build());
         widgets.addAll(MarkdownParser.parse(project.getContent(), x, size, String.format("project_%s_", project.id) + "%s", this));
-
+        widgets.add(new HorizontalRuleBuilder().setTitle(Component.translatable("pplhelper.project.author")).build());
+        widgets.add(new UserCard(x, y, size, project.getAuthor(), true));
         addWidgetsToScroller(widgets);
     }
 

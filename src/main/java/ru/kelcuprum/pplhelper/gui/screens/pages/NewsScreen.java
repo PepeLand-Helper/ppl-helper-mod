@@ -16,6 +16,7 @@ import ru.kelcuprum.pplhelper.PepelandHelper;
 import ru.kelcuprum.pplhelper.api.components.News;
 import ru.kelcuprum.pplhelper.gui.components.BannerWidget;
 import ru.kelcuprum.pplhelper.gui.components.ScaledTextBox;
+import ru.kelcuprum.pplhelper.gui.components.UserCard;
 import ru.kelcuprum.pplhelper.utils.MarkdownParser;
 
 import java.util.ArrayList;
@@ -67,7 +68,8 @@ public class NewsScreen extends Screen {
         widgets.add(new TextBuilder(Component.literal(news.description)).setType(TextBuilder.TYPE.MESSAGE).setAlign(TextBuilder.ALIGN.CENTER).setPosition(x, y).setSize(size, 20).build());
         widgets.add(new HorizontalRuleBuilder().setPosition(x, y).build());
         widgets.addAll(MarkdownParser.parse(news.getContent(), x, size, String.format("news_%s_",news.id)+"%s", this));
-
+        widgets.add(new HorizontalRuleBuilder().setTitle(Component.translatable("pplhelper.news.author")).build());
+        widgets.add(new UserCard(x, y, size, news.getAuthor(), true));
         addWidgetsToScroller(widgets);
     }
 
