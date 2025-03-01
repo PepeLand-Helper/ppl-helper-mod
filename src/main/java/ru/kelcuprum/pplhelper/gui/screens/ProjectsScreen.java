@@ -75,10 +75,9 @@ public class ProjectsScreen extends AbstractPPLScreen {
             loadInfo = new Thread(() -> {
                 List<Project> projects = lastProjects == null ? PepeLandHelperAPI.getProjects(query, PepelandHelper.worlds[world], PepelandHelper.pct[category]) : lastProjects;
                 lastProjects = projects;
-                if (projects.isEmpty()) {
-                    builder.addWidget(new TextBuilder(Component.translatable("pplhelper.news.not_found")).setType(TextBuilder.TYPE.MESSAGE).setAlign(TextBuilder.ALIGN.CENTER).setPosition(getX(), 55).setSize(getContentWidth(), 20).build());
-                    builder.addWidget(new ImageWidget(getX(), 55, getContentWidth(), 20, GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/ozon.png"), 640, 360, true, Component.empty()));
-                } else for (Project project : projects)
+                if (projects.isEmpty())
+                    builder.addWidget(new TextBuilder(Component.translatable("pplhelper.news.not_found")).setType(TextBuilder.TYPE.BLOCKQUOTE).setColor(GROUPIE).setPosition(getX(), 55).setSize(getContentWidth(), 20).build());
+                else for (Project project : projects)
                     builder.addWidget(new ProjectButton(getX(), -40, getContentWidth(), project, this));
                 int heigthScroller = builder.contentY;
                 for (AbstractWidget widget : builder.widgets) {

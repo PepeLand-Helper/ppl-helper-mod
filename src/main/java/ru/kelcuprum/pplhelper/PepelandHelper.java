@@ -54,9 +54,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.UUID;
 
 import static java.lang.Integer.parseInt;
+import static java.util.Collections.shuffle;
 import static net.minecraft.world.item.Items.NETHER_STAR;
 import static ru.kelcuprum.alinlib.gui.Icons.*;
 import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.*;
@@ -80,7 +82,7 @@ public class PepelandHelper implements ClientModInitializer {
     public static Project selectedProject;
 
     public static AbstractBuilder[] getPanelWidgets(Screen parent, Screen current) {
-        return new AbstractBuilder[]{
+        AbstractBuilder[] list = new AbstractBuilder[]{
                 new ButtonBuilder(Component.translatable("pplhelper.news")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new NewsListScreen(current))).setIcon(WIKI).setCentered(false),
                 new ButtonBuilder(Component.translatable("pplhelper.projects")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ProjectsScreen(current))).setIcon(PROJECTS).setCentered(false),
                 new ButtonBuilder(Component.translatable("pplhelper.commands")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new CommandsScreen().build(parent))).setIcon(COMMANDS).setCentered(false),
@@ -88,6 +90,7 @@ public class PepelandHelper implements ClientModInitializer {
                 new ButtonBuilder(Component.translatable("pplhelper.pack")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new UpdaterScreen().build(parent))).setIcon(Icons.PACK_INFO).setCentered(false),
                 getProfileButton(parent)
         };
+        return list;
     }
 
     public static ButtonBuilder getProfileButton(Screen parent) {
@@ -127,7 +130,12 @@ public class PepelandHelper implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         LOG.log("-=-=-=-=-=-=-=-", Level.WARN);
-        LOG.log("Данный проект не является официальной частью сети серверов PepeLand", Level.WARN);
+        if(isAprilFool()){
+            if(isPWGood()) LOG.log("World machine loading...", Level.WARN);
+            LOG.log("Данная версия OneShot не является официальной частью сети серверов The World Machine", Level.WARN);
+        } else {
+            LOG.log("Данный проект не является официальной частью сети серверов PepeLand", Level.WARN);
+        }
         LOG.log("-=-=-=-=-=-=-=-", Level.WARN);
         loadUser(false);
         // -=-=-=- -=-=-=-
@@ -135,10 +143,16 @@ public class PepelandHelper implements ClientModInitializer {
         FabricLoader.getInstance().getModContainer("pplhelper").ifPresent(s -> {
             ResourceManagerHelper.registerBuiltinResourcePack(GuiUtils.getResourceLocation("pplhelper", "icons"), s, Component.translatable("resourcePack.pplhelper.icons"), ResourcePackActivationType.NORMAL);
         });
-        // -=-=-=- Сбор информации (НЕ ВАШИХ!) и авто-обновление -=-=-=-
+        // -=-=-=- Сбор информации (НЕ ВАШИХ! [возможно позже]) и авто-обновление -=-=-=-
         ClientLifecycleEvents.CLIENT_FULL_STARTED.register((s) -> {
             gameStarted = true;
             loadStaticInformation();
+            if(isAprilFool()){
+                if(isPWGood()) AlinLib.MINECRAFT.getLanguageManager().setSelected("ru_ru");
+                else {
+                    AlinLib.MINECRAFT.getLanguageManager().setSelected(AlinLib.MINECRAFT.options.languageCode.equals("ru_ru") ? "en_us" : "ru_ru");
+                }
+            }
             try {
                 String packVersion = getInstalledPack();
                 if ((config.getBoolean("PACK_UPDATES.NOTICE", true) || config.getBoolean("PACK_UPDATES.AUTO_UPDATE", true)) && !packVersion.isEmpty()) {
@@ -234,7 +248,13 @@ public class PepelandHelper implements ClientModInitializer {
     }
 
     public static boolean isAprilFool(){
-        return AlinLib.isAprilFool();
+        return true;
+//        return AlinLib.isAprilFool();
+    }
+
+    public static boolean isPWGood(){
+        return true;
+//        return AlinLib.MINECRAFT.getGameProfile().getName().equals("PWGoood") || AlinLib.MINECRAFT.getGameProfile().getName().equals("_PWGood_") || AlinLib.MINECRAFT.getGameProfile().getName().equals("CyCeKu");
     }
 
     public static void loadStaticInformation() {
