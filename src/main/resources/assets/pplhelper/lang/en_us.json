@@ -11,6 +11,7 @@
   "pplhelper.oauth.login": "Войти в аккаунт",
   "pplhelper.oauth.profile": "Профиль",
   "pplhelper.oauth.open_browser": "Открыть в браузере",
+  "pplhelper.oauth.leave": "Выйти из аккаунта",
   "pplhelper.oauth.projects": "Ваши проекты",
   "pplhelper.oauth.projects.empty": "У вас нет проектов",
   "pplhelper.oauth.projects.create": "Создать проект",

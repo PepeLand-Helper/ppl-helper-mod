@@ -1,15 +1,15 @@
 package ru.kelcuprum.pplhelper.command;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.Util;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import ru.kelcuprum.alinlib.AlinLib;
-import ru.kelcuprum.alinlib.config.Localization;
-import ru.kelcuprum.alinlib.gui.Colors;
 import ru.kelcuprum.alinlib.info.Player;
 import ru.kelcuprum.pplhelper.PepelandHelper;
 import ru.kelcuprum.pplhelper.api.components.projects.FollowProject;
@@ -24,10 +24,9 @@ import java.util.stream.IntStream;
 import static com.mojang.brigadier.arguments.IntegerArgumentType.getInteger;
 import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
 import static com.mojang.brigadier.arguments.StringArgumentType.*;
-import static java.lang.Integer.parseInt;
-import static java.lang.Integer.valueOf;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static ru.kelcuprum.pplhelper.api.PepeLandAPI.uriEncode;
 
 public class PPLHelperCommand {
     public static void register(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
@@ -55,20 +54,16 @@ public class PPLHelperCommand {
                         .then(argument("colors", StringArgumentType.string()).then(argument("name", greedyString())
                                 .executes((s) -> {
                                     String name = getString(s, "name");
-                                    String[] array = name.split("");
-                                    StringBuilder builder = new StringBuilder();
                                     String[] argsColors = getString(s, "colors").split(",");
-                                    int[] colors = new int[argsColors.length];
-                                    for(int i = 0; i<colors.length;i++) colors[i] = (int) Long.parseLong((argsColors[i].length() == 1 ? fixFormatCodes(argsColors[i]) : argsColors[i]).toUpperCase(), 16);
-                                    for(int i=0;i<array.length;i++){
-                                        int color = TabHelper.interpolate(colors[0], colors[1], (float) i/(array.length-1));
-                                        String hex = Integer.toHexString(color);
-                                        if(hex.length() > 6) hex=hex.substring(2);
-                                        builder.append("&#").append(hex).append(array[i]);
+                                    JsonArray colorsArray = new JsonArray();
+                                    for(int j = 0; j<argsColors.length; j++) {
+                                        JsonObject object = new JsonObject();
+                                        object.addProperty("pos", ((float) j /(argsColors.length-1)) * 100);
+                                        object.addProperty("hex", "#"+argsColors[j]);
+                                        colorsArray.add(object);
                                     }
-                                    s.getSource().getClient().keyboardHandler.setClipboard(builder.toString());
-                                    sendFeedback(s, TabHelper.getGradient(name, colors[0], colors[1]));
-                                    sendFeedback(s, Component.translatable("pplhelper.command.ie_gradient", builder));
+                                    Util.getPlatform().openUri("https://www.birdflop.com/resources/rgb/?colors="+uriEncode(colorsArray.toString())+"&text="+uriEncode(name));
+
                                     return 0;
                                 }))))
                 .executes(s -> {
