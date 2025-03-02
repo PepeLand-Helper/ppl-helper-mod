@@ -45,7 +45,7 @@ public abstract class PauseScreenMixin extends Screen {
 
     @Inject(method = "init", at = @At("RETURN"))
     void init(CallbackInfo cl) {
-        if(!PepelandHelper.playerInPPL() && !PepelandHelper.isPWGood()) return;
+        if(!PepelandHelper.isAprilFool() && !PepelandHelper.isPWGood()) return;
         clearWidgets();
         // 86
         int size = (width - 24 - 10) / 3;
