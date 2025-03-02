@@ -17,6 +17,15 @@
          "chars": [
             "\uE700"
          ]
+      },
+      {
+         "type": "bitmap",
+         "file": "pplhelper:gui/sprites/class.png",
+         "ascent": 10,
+         "height": 12,
+         "chars": [
+            "\uE701"
+         ]
       }
    ]
 }

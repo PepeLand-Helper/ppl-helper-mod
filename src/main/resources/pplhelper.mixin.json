@@ -9,9 +9,15 @@
     "AccessorGridLayout",
     "ChatComponentMixin",
     "ChatScreenMixin",
-    "PauseScreenMixin"
+    "PauseScreenMixin",
+    "april.LanguageScreenMixin",
+    "april.PauseScreenMixin",
+    "april.TitleScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "mixins": [
+    "april.PlayerInventoryMixin"
+  ]
 }

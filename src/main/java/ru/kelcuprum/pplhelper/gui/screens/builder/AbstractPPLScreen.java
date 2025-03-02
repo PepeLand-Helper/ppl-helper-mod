@@ -24,6 +24,7 @@ import ru.kelcuprum.alinlib.gui.screens.ThanksScreen;
 import ru.kelcuprum.alinlib.gui.toast.ToastBuilder;
 import ru.kelcuprum.pplhelper.PepelandHelper;
 import ru.kelcuprum.pplhelper.gui.screens.configs.ConfigScreen;
+import ru.kelcuprum.pplhelper.gui.screens.configs.TestConfigScreen;
 
 import java.util.List;
 
@@ -239,6 +240,8 @@ public class AbstractPPLScreen extends Screen {
         }
         if(keyCode == GLFW.GLFW_KEY_D && (modifiers & GLFW.GLFW_MOD_SHIFT) != 0 && !(getFocused() instanceof EditBox))
             AlinLib.MINECRAFT.setScreen(new ThanksScreen(this));
+        if(keyCode == GLFW.GLFW_KEY_T && (modifiers & GLFW.GLFW_MOD_SHIFT) != 0 && !(getFocused() instanceof EditBox))
+            AlinLib.MINECRAFT.setScreen(new TestConfigScreen().build(this));
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
 

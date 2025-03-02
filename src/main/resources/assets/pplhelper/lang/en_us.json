@@ -96,6 +96,8 @@
   "pplhelper.project.author": "Проект опубликовал",
   "pplhelper.news.author": "Новость написал",
 
+  "pplhelper.schematics": "Схематики (Скоро...)",
+
   "pplhelper.project.category": "Категория",
   "pplhelper.categories.ppl": "PepeLand",
   "pplhelper.categories.hppl": "PPL Helper",
@@ -132,5 +134,19 @@
   "abi.info.pplhelper": "\\n&6PPL:&r &6{pplhelper.world}&r {pplhelper.tps}TPS &6{pplhelper.online}/{pplhelper.max_online}&r",
 
   "resourcePack.pplhelper.icons": "Иконки PPL Helper",
-  "resourcePack.pplhelper.icons.description": "Иконки для игрового интерфейса\nТаймер, ABI и т.д."
+  "resourcePack.pplhelper.icons.description": "Иконки для игрового интерфейса\nТаймер, ABI и т.д.",
+
+
+
+
+
+  "pwshot.single":    "Альт. мир",
+  "pwshot.start":     "Пуск",
+  "pwshot.start.alt": "Пуск (Альт)",
+  "pwshot.options":   "Параметры",
+  "pwshot.exit":      "Выход",
+  "pwshot.mods":      "Моды",
+
+  "pwshot.lobby":     "Переместиться",
+  "pwshot.other":     "Заметки"
 }

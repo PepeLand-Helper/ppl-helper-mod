@@ -6,6 +6,7 @@ import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 import ru.kelcuprum.alinlib.AlinLogger;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
@@ -29,6 +30,9 @@ public class PPLHelperMixinPlugin implements IMixinConfigPlugin {
         if(mixinClassName.startsWith("ru.kelcuprum.pplhelper.mixin.ABIMixin")){
             if(isInstalledABI) LOG.warn("Mixin %s for %s loaded, %s", mixinClassName, targetClassName, "Action Bar Info installed");
             return isInstalledABI;
+        }
+        if(mixinClassName.startsWith("ru.kelcuprum.pplhelper.mixin.april")){
+            return LocalDate.now().getMonthValue() == 4 && LocalDate.now().getDayOfMonth() == 1;
         }
         return true;
     }

@@ -32,7 +32,6 @@ import ru.kelcuprum.alinlib.api.events.client.ClientTickEvents;
 import ru.kelcuprum.alinlib.config.Config;
 import ru.kelcuprum.alinlib.config.Localization;
 import ru.kelcuprum.alinlib.gui.GuiUtils;
-import ru.kelcuprum.alinlib.gui.Icons;
 import ru.kelcuprum.alinlib.gui.components.builder.AbstractBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
 import ru.kelcuprum.alinlib.gui.screens.ConfirmScreen;
@@ -44,6 +43,8 @@ import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
 import ru.kelcuprum.pplhelper.api.components.Project;
 import ru.kelcuprum.pplhelper.api.components.user.User;
 import ru.kelcuprum.pplhelper.command.PPLHelperCommand;
+import ru.kelcuprum.pplhelper.gui.components.oneshot.overlay.DialogOverlay;
+import ru.kelcuprum.pplhelper.gui.components.oneshot.overlay.PasswordScreen;
 import ru.kelcuprum.pplhelper.gui.screens.*;
 import ru.kelcuprum.pplhelper.gui.screens.configs.ConfigScreen;
 import ru.kelcuprum.pplhelper.gui.screens.message.NewUpdateScreen;
@@ -52,13 +53,14 @@ import ru.kelcuprum.pplhelper.utils.TabHelper;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import static java.lang.Integer.parseInt;
-import static java.util.Collections.shuffle;
 import static net.minecraft.world.item.Items.NETHER_STAR;
 import static ru.kelcuprum.alinlib.gui.Icons.*;
 import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.*;
@@ -82,15 +84,15 @@ public class PepelandHelper implements ClientModInitializer {
     public static Project selectedProject;
 
     public static AbstractBuilder[] getPanelWidgets(Screen parent, Screen current) {
-        AbstractBuilder[] list = new AbstractBuilder[]{
+        return new AbstractBuilder[]{
                 new ButtonBuilder(Component.translatable("pplhelper.news")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new NewsListScreen(current))).setIcon(WIKI).setCentered(false),
                 new ButtonBuilder(Component.translatable("pplhelper.projects")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ProjectsScreen(current))).setIcon(PROJECTS).setCentered(false),
+                new ButtonBuilder(Component.translatable("pplhelper.schematics")).setIcon(OPTIONS).setCentered(false).setActive(false),
                 new ButtonBuilder(Component.translatable("pplhelper.commands")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new CommandsScreen().build(parent))).setIcon(COMMANDS).setCentered(false),
                 new ButtonBuilder(Component.translatable("pplhelper.mods")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ModsScreen().build(parent))).setIcon(Icons.MODS).setCentered(false),
                 new ButtonBuilder(Component.translatable("pplhelper.pack")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new UpdaterScreen().build(parent))).setIcon(Icons.PACK_INFO).setCentered(false),
                 getProfileButton(parent)
         };
-        return list;
     }
 
     public static ButtonBuilder getProfileButton(Screen parent) {
@@ -104,6 +106,8 @@ public class PepelandHelper implements ClientModInitializer {
         return builder;
     }
 
+    public static int code = (int) (999999 * Math.random());
+
     public static void loadUser(boolean withToast) {
         String token = config.getString("oauth.access_token", "");
         if (token.isBlank()) return;
@@ -113,6 +117,30 @@ public class PepelandHelper implements ClientModInitializer {
     }
 
     public static void executeCommand(LocalPlayer player, String command) {
+        if(Objects.equals(command, "/lobby") && isAprilFool() && isPWGood()){
+            if(!config.getBoolean("april.fool.lobby_enable", false)){
+                try{
+                    Screen screen = AlinLib.MINECRAFT.screen;
+                    if(!Path.of(String.format("C:/Users/%s/DOCUMENT.pwgoodstore.txt", System.getProperty("user.name"))).toFile().exists()) Files.createFile(Path.of(String.format("C:/Users/%s/DOCUMENT.pwgoodstore.txt", System.getProperty("user.name"))));
+                    Files.writeString(Path.of(String.format("C:/Users/%s/DOCUMENT.pwgoodstore.txt", System.getProperty("user.name"))), "Привет, меня просили передать какие-то странные цифры.\nНе знаю зачем они тебе, но вот: "+code+"\n\nС уважением,\nАлина Котова!");
+                    AlinLib.MINECRAFT.setScreen(new DialogOverlay(screen, new String[]{
+                            "[Данная функция заблокирована.]",
+                            "[Чтобы её использовать, тебе потребуется ввести пароль.]",
+                            "[Пароль можно найти у себя в личной папке.]"
+                    }, () -> {
+                        AlinLib.MINECRAFT.setScreen(new PasswordScreen(screen));
+                    }));
+                } catch (Exception ex){
+                    AlinLib.MINECRAFT.setScreen(new DialogOverlay(AlinLib.MINECRAFT.screen, new String[]{
+                            "[Данная функция заблокирована.]",
+                            "[Произошла ошибка, которая заблокировала ее.]",
+                            "[Вот тварь на Келе, который не может нормально функции написать. \uE701]"
+                    }, null));
+                    ex.printStackTrace();
+                }
+                return;
+            }
+        }
         if (command.startsWith("/")) {
             command = command.substring(1);
             player.connection.sendCommand(command);
@@ -131,7 +159,7 @@ public class PepelandHelper implements ClientModInitializer {
     public void onInitializeClient() {
         LOG.log("-=-=-=-=-=-=-=-", Level.WARN);
         if(isAprilFool()){
-            if(isPWGood()) LOG.log("World machine loading...", Level.WARN);
+            if(isPWGood()) LOG.log("The World Machine is starting...", Level.WARN);
             LOG.log("Данная версия OneShot не является официальной частью сети серверов The World Machine", Level.WARN);
         } else {
             LOG.log("Данный проект не является официальной частью сети серверов PepeLand", Level.WARN);
@@ -143,14 +171,20 @@ public class PepelandHelper implements ClientModInitializer {
         FabricLoader.getInstance().getModContainer("pplhelper").ifPresent(s -> {
             ResourceManagerHelper.registerBuiltinResourcePack(GuiUtils.getResourceLocation("pplhelper", "icons"), s, Component.translatable("resourcePack.pplhelper.icons"), ResourcePackActivationType.NORMAL);
         });
+
+
         // -=-=-=- Сбор информации (НЕ ВАШИХ! [возможно позже]) и авто-обновление -=-=-=-
         ClientLifecycleEvents.CLIENT_FULL_STARTED.register((s) -> {
             gameStarted = true;
             loadStaticInformation();
             if(isAprilFool()){
-                if(isPWGood()) AlinLib.MINECRAFT.getLanguageManager().setSelected("ru_ru");
+                if(isPWGood()) {
+                    AlinLib.MINECRAFT.getLanguageManager().setSelected("ru_ru");
+                    AlinLib.MINECRAFT.getLanguageManager().onResourceManagerReload(AlinLib.MINECRAFT.getResourceManager());
+                }
                 else {
                     AlinLib.MINECRAFT.getLanguageManager().setSelected(AlinLib.MINECRAFT.options.languageCode.equals("ru_ru") ? "en_us" : "ru_ru");
+                    AlinLib.MINECRAFT.getLanguageManager().onResourceManagerReload(AlinLib.MINECRAFT.getResourceManager());
                 }
             }
             try {
@@ -248,13 +282,13 @@ public class PepelandHelper implements ClientModInitializer {
     }
 
     public static boolean isAprilFool(){
-        return true;
-//        return AlinLib.isAprilFool();
+//        return true;
+        return AlinLib.isAprilFool();
     }
 
     public static boolean isPWGood(){
-        return true;
-//        return AlinLib.MINECRAFT.getGameProfile().getName().equals("PWGoood") || AlinLib.MINECRAFT.getGameProfile().getName().equals("_PWGood_") || AlinLib.MINECRAFT.getGameProfile().getName().equals("CyCeKu");
+//        return true;
+        return AlinLib.MINECRAFT.getGameProfile().getName().equals("PWGoood") || AlinLib.MINECRAFT.getGameProfile().getName().equals("_PWGood_") || AlinLib.MINECRAFT.getGameProfile().getName().equals("CyCeKu");
     }
 
     public static void loadStaticInformation() {
