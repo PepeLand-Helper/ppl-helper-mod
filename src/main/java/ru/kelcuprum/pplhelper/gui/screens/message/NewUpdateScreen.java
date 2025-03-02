@@ -14,11 +14,13 @@ public class NewUpdateScreen extends Screen {
     public final Screen parent;
     public final String oldVer;
     public final JsonObject pack;
-    public NewUpdateScreen(Screen screen, String oldVer, JsonObject pack) {
+    public final boolean modrinth;
+    public NewUpdateScreen(Screen screen, String oldVer, JsonObject pack, boolean modrinth) {
         super(Component.translatable("pplhelper.pack.update.avalible"));
         this.parent = screen;
         this.oldVer = oldVer;
         this.pack = pack;
+        this.modrinth = modrinth;
     }
     TextBox msg;
     @Override
@@ -27,11 +29,11 @@ public class NewUpdateScreen extends Screen {
         msg = (TextBox) addRenderableOnly(new TextBuilder( Component.translatable("pplhelper.pack.update.avalible.description", oldVer, pack.get("version").getAsString()))
                 .setType(TextBuilder.TYPE.MESSAGE).setAlign(TextBuilder.ALIGN.CENTER).setPosition(width/2-125, 40).setSize(250, 40).build());
         addRenderableWidget(new ButtonBuilder(Component.translatable("pplhelper.pack.update.avalible.accept"))
-                .setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new DownloadScreen(parent, pack, PepelandHelper.onlyEmotesCheck())))
+                .setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new DownloadScreen(parent, pack, PepelandHelper.onlyEmotesCheck(), modrinth)))
                 .setPosition(width/2-150, height-50).setWidth(148).build());
         addRenderableWidget(new ButtonBuilder(Component.translatable("pplhelper.pack.update.avalible.auto"))
                 .setOnPress((s) -> {
-                    AlinLib.MINECRAFT.setScreen(new DownloadScreen(parent, pack, PepelandHelper.config.getBoolean("PACK_UPDATES.ONLY_EMOTE", false)));
+                    AlinLib.MINECRAFT.setScreen(new DownloadScreen(parent, pack, PepelandHelper.config.getBoolean("PACK_UPDATES.ONLY_EMOTE", false), modrinth));
                     PepelandHelper.config.setBoolean("PACK_UPDATES.AUTO_UPDATE", true);
                 })
                 .setPosition(width/2-150, height-25).setWidth(148).build());

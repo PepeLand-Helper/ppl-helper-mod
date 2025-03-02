@@ -46,6 +46,7 @@
   "pplhelper.configs.pack_updates.notice": "Оповещения о новой версии пака",
   "pplhelper.configs.pack_updates.auto_update": "Автообновление",
   "pplhelper.configs.pack_updates.only_emote": "Только эмоуты",
+  "pplhelper.configs.pack_updates.modrinth": "Загружать информацию с Modrinth (API PPL Helper)",
   "pplhelper.configs.pack_updates.only_emote.citresewn_not_installed": "У вас не установлен CIT Resewn, поэтому мод будет загружать только эмоуты",
 
   "pplhelper.test": "Тестовый объект",

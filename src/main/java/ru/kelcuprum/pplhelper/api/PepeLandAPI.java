@@ -1,5 +1,7 @@
 package ru.kelcuprum.pplhelper.api;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.apache.logging.log4j.Level;
 import ru.kelcuprum.alinlib.AlinLib;
@@ -26,16 +28,17 @@ public class PepeLandAPI {
     public static String uriEncode(String uri){
         return URLEncoder.encode(uri, StandardCharsets.UTF_8);
     }
-    public static JsonObject getPacksInfo(){
+    public static JsonObject getPacksInfo(boolean modrinth){
         try {
-            return WebAPI.getJsonObject(getURI("resourcepack/latest.json"));
+            if(modrinth) return WebAPI.getJsonObject(PepeLandHelperAPI.getURI("resourcepacks/versions", false));
+            else return WebAPI.getJsonObject(getURI("resourcepack/latest.json"));
         } catch (Exception ex){
             throw new RuntimeException(ex);
         }
     }
-    public static JsonObject getPackInfo(boolean onlyEmote){
+    public static JsonObject getPackInfo(boolean onlyEmote, boolean modrinth){
         try {
-            return getPacksInfo().getAsJsonObject(onlyEmote ? "emotes" : "main");
+            return getPacksInfo(modrinth).getAsJsonObject(onlyEmote ? "emotes" : "main");
         } catch (Exception ex){
             throw new RuntimeException(ex);
         }
@@ -66,7 +69,7 @@ public class PepeLandAPI {
         }
         httpConn.disconnect();
     }
-    public static void downloadFile$queue(String fileURL, String saveDir, String filename, String originalChecksum, int count){
+    public static void downloadFile$queue(String fileURL, String saveDir, String filename, String originalChecksum, boolean modrinth, int count){
         int position = 0;
         while (position < count){
             PepelandHelper.LOG.log("Count: %s", position);
@@ -74,7 +77,7 @@ public class PepeLandAPI {
                 downloadFile(fileURL, saveDir, filename);
                 String path = AlinLib.MINECRAFT.getResourcePackDirectory().resolve(filename).toString();
                 File file = new File(path);
-                if(file.exists() && originalChecksum.contains(toSHA(path))) position = count;
+                if(file.exists() && originalChecksum.contains(toSHA(path, modrinth))) position = count;
                 else position++;
             } catch (Exception ex){
                 position++;

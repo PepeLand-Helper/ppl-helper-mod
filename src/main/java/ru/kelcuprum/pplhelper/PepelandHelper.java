@@ -189,13 +189,14 @@ public class PepelandHelper implements ClientModInitializer {
             }
             try {
                 String packVersion = getInstalledPack();
+                boolean modrinth = config.getBoolean("PACK.MODRINTH", true);
                 if ((config.getBoolean("PACK_UPDATES.NOTICE", true) || config.getBoolean("PACK_UPDATES.AUTO_UPDATE", true)) && !packVersion.isEmpty()) {
-                    JsonObject packInfo = PepeLandAPI.getPackInfo(onlyEmotesCheck());
+                    JsonObject packInfo = PepeLandAPI.getPackInfo(onlyEmotesCheck(), modrinth);
                     if (config.getBoolean("PACK_UPDATES.NOTICE", true) && !config.getBoolean("PACK_UPDATES.AUTO_UPDATE", false)) {
-                        if (!packInfo.get("version").getAsString().contains(packVersion))
-                            AlinLib.MINECRAFT.setScreen(new NewUpdateScreen(s.screen, packVersion, packInfo));
+                        if (!packInfo.get("version").getAsString().equals(packVersion))
+                            AlinLib.MINECRAFT.setScreen(new NewUpdateScreen(s.screen, packVersion, packInfo, modrinth));
                     } else if (config.getBoolean("PACK_UPDATES.AUTO_UPDATE", false)) {
-                        if (!packInfo.get("version").getAsString().contains(packVersion)) {
+                        if (!packInfo.get("version").getAsString().equals(packVersion)) {
                             PepelandHelper.downloadPack(packInfo, onlyEmotesCheck(), (ss) -> {
                                 if (ss) {
                                     String fileName = String.format("pepeland-%1$s-v%2$s.zip", onlyEmotesCheck() ? "emotes" : "main", packInfo.get("version").getAsString());
@@ -215,7 +216,7 @@ public class PepelandHelper implements ClientModInitializer {
                                             .setMessage(Component.translatable("pplhelper.pack.downloaded", packInfo.get("version").getAsString())).buildAndShow();
                                 } else
                                     new ToastBuilder().setTitle(Component.translatable("pplhelper")).setMessage(Component.translatable("pplhelper.pack.file_broken")).setIcon(DONT).buildAndShow();
-                            });
+                            }, modrinth);
                         }
                     }
                 }
@@ -500,15 +501,15 @@ public class PepelandHelper implements ClientModInitializer {
         ResourceLocation WEB = GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/web.png");
     }
 
-    public static Thread downloadPack(JsonObject packData, boolean onlyEmote, BooleanConsumer consumer) {
+    public static Thread downloadPack(JsonObject packData, boolean onlyEmote, BooleanConsumer consumer, boolean modrinth) {
         Thread thread = new Thread(() -> {
             try {
                 String originalChecksum = packData.get("checksum").getAsString();
                 String path = AlinLib.MINECRAFT.getResourcePackDirectory().resolve(String.format("pepeland-%1$s-v%2$s.zip", onlyEmote ? "emotes" : "main", packData.get("version").getAsString())).toString();
                 File file = new File(path);
                 if (!file.exists())
-                    PepeLandAPI.downloadFile$queue(packData.get("url").getAsString(), AlinLib.MINECRAFT.getResourcePackDirectory().toString(), String.format("pepeland-%1$s-v%2$s.zip", onlyEmote ? "emotes" : "main", packData.get("version").getAsString()), originalChecksum, 5);
-                if (file.exists() && originalChecksum.contains(toSHA(path))) {
+                    PepeLandAPI.downloadFile$queue(packData.get("url").getAsString(), AlinLib.MINECRAFT.getResourcePackDirectory().toString(), String.format("pepeland-%1$s-v%2$s.zip", onlyEmote ? "emotes" : "main", packData.get("version").getAsString()), originalChecksum, modrinth, 5);
+                if (file.exists() && originalChecksum.contains(toSHA(path, modrinth))) {
                     consumer.accept(true);
                 } else {
                     if (file.exists()) file.deleteOnExit();
@@ -523,8 +524,8 @@ public class PepelandHelper implements ClientModInitializer {
         return thread;
     }
 
-    public static String toSHA(String filePath) throws NoSuchAlgorithmException, IOException {
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+    public static String toSHA(String filePath, boolean modrinth) throws NoSuchAlgorithmException, IOException {
+        MessageDigest digest = MessageDigest.getInstance(modrinth ? "SHA-512" : "SHA-256");
         FileInputStream fis = new FileInputStream(filePath);
 
         byte[] buffer = new byte[1024];

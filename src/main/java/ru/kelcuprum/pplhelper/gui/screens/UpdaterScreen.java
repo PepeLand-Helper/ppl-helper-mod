@@ -37,19 +37,21 @@ public class UpdaterScreen {
                 .addPanelWidgets(PepelandHelper.getPanelWidgets(parent, parent))
 
                 .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.pack_updates.notice"), true).setConfig(PepelandHelper.config, "PACK_UPDATES.NOTICE"))
-                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.pack_updates.auto_update"), true).setConfig(PepelandHelper.config, "PACK_UPDATES.AUTO_UPDATE"));
+                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.pack_updates.auto_update"), true).setConfig(PepelandHelper.config, "PACK_UPDATES.AUTO_UPDATE"))
+                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.pack_updates.modrinth"), true).setConfig(PepelandHelper.config, "PACK.MODRINTH"));
 //                if(!FabricLoader.getInstance().isModLoaded("citresewn"))
 //                    builder.addWidget(new TextBuilder(Component.translatable("pplhelper.configs.pack_updates.only_emote.citresewn_not_installed")).setType(TextBuilder.TYPE.BLOCKQUOTE).setColor(GROUPIE));
                 builder.addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.pack_updates.only_emote"), false).setConfig(PepelandHelper.config, "PACK_UPDATES.ONLY_EMOTE")); // .setActive(FabricLoader.getInstance().isModLoaded("citresewn"))
 
         try {
-            JsonObject pack = PepeLandAPI.getPackInfo(PepelandHelper.onlyEmotesCheck());
+            boolean modrinth = PepelandHelper.config.getBoolean("PACK.MODRINTH", true);
+            JsonObject pack = PepeLandAPI.getPackInfo(PepelandHelper.onlyEmotesCheck(), modrinth);
             if (packVersion.isBlank()) {
                 if (PepelandHelper.getAvailablePack().isEmpty()) {
                     builder.addWidget(new TextBuilder(Component.translatable("pplhelper.pack.not_installed")));
                     builder.addWidget(new ButtonBuilder(Component.translatable("pplhelper.pack.download"), Component.literal("v" + pack.get("version").getAsString()))
                             .setOnPress((s) ->
-                                    AlinLib.MINECRAFT.setScreen(new DownloadScreen(build(parent), pack, PepelandHelper.onlyEmotesCheck()))
+                                    AlinLib.MINECRAFT.setScreen(new DownloadScreen(build(parent), pack, PepelandHelper.onlyEmotesCheck(), modrinth))
                             ).build());
                 } else {
                     builder.addWidget(new ButtonBuilder(Component.translatable("pplhelper.pack.not_selected")).setOnPress((s) -> {
@@ -59,10 +61,10 @@ public class UpdaterScreen {
                     }));
                 }
             } else {
-                if (!pack.get("version").getAsString().contains(packVersion))
+                if (!pack.get("version").getAsString().equals(packVersion))
                     builder.addWidget(new ButtonBuilder(Component.translatable("pplhelper.pack.download_update"), Component.literal("v" + pack.get("version").getAsString()))
                             .setOnPress((s) ->
-                                    AlinLib.MINECRAFT.setScreen(new DownloadScreen(build(parent), pack, PepelandHelper.onlyEmotesCheck()))
+                                    AlinLib.MINECRAFT.setScreen(new DownloadScreen(build(parent), pack, PepelandHelper.onlyEmotesCheck(), modrinth))
                             ).build());
                 builder.addWidget(new ButtonBuilder(Component.translatable("pplhelper.pack.installed"), Component.literal("v" + packVersion)).setActive(false));
             }

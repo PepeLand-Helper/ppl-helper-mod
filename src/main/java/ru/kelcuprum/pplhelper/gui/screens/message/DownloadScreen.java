@@ -14,11 +14,13 @@ public class DownloadScreen extends Screen {
     public Screen parent;
     public JsonObject packData;
     public boolean onlyEmote;
-    public DownloadScreen(Screen screen, JsonObject object, boolean onlyEmote) {
+    public boolean modrinth;
+    public DownloadScreen(Screen screen, JsonObject object, boolean onlyEmote, boolean modrinth) {
         super(Component.translatable("pplhelper.pack.download_screen"));
         this.parent = screen;
         this.packData = object;
         this.onlyEmote = onlyEmote;
+        this.modrinth = modrinth;
     }
     boolean inited = false;
     boolean downloaded = false;
@@ -33,7 +35,7 @@ public class DownloadScreen extends Screen {
             thread = PepelandHelper.downloadPack(packData, onlyEmote, (s) -> {
                 if(s) downloaded = true;
                 else exception = new Exception(Component.translatable("pplhelper.pack.file_broken").getString());
-            });
+            }, modrinth);
         }
     }
 
