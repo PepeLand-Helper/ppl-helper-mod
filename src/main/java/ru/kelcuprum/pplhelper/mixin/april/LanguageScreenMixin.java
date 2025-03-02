@@ -35,7 +35,7 @@ public class LanguageScreenMixin extends OptionsSubScreen {
 
     @Inject(method = "onDone", at = @At("HEAD"), cancellable = true)
     private void init(CallbackInfo ci) {
-        if(!PepelandHelper.isAprilFool() && !PepelandHelper.isPWGood()) return;
+        if(!PepelandHelper.isAprilFool() || !PepelandHelper.isPWGood()) return;
         new ToastBuilder().setTitle(Component.literal("aetenae")).setMessage(Component.literal("ого \uE701 пошел нахуй")).setDisplayTime(7500).setType(ToastBuilder.Type.WARN).setIcon(THANKS).buildAndShow();
         this.minecraft.setScreen(this.lastScreen);
         ci.cancel();

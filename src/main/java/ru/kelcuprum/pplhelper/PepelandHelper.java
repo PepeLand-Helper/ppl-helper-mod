@@ -283,13 +283,13 @@ public class PepelandHelper implements ClientModInitializer {
     }
 
     public static boolean isAprilFool(){
-//        return true;
-        return AlinLib.isAprilFool();
+        return true;
+//        return AlinLib.isAprilFool();
     }
 
     public static boolean isPWGood(){
-//        return true;
-        return AlinLib.MINECRAFT.getGameProfile().getName().equals("PWGoood") || AlinLib.MINECRAFT.getGameProfile().getName().equals("_PWGood_") || AlinLib.MINECRAFT.getGameProfile().getName().equals("CyCeKu");
+        return true;
+//        return AlinLib.MINECRAFT.getGameProfile().getName().equals("PWGoood") || AlinLib.MINECRAFT.getGameProfile().getName().equals("_PWGood_") || AlinLib.MINECRAFT.getGameProfile().getName().equals("CyCeKu");
     }
 
     public static void loadStaticInformation() {

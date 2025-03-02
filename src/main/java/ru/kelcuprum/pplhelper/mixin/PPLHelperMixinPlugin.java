@@ -32,7 +32,7 @@ public class PPLHelperMixinPlugin implements IMixinConfigPlugin {
             return isInstalledABI;
         }
         if(mixinClassName.startsWith("ru.kelcuprum.pplhelper.mixin.april")){
-            return LocalDate.now().getMonthValue() == 4 && LocalDate.now().getDayOfMonth() == 1;
+//            return LocalDate.now().getMonthValue() == 4 && LocalDate.now().getDayOfMonth() == 1;
         }
         return true;
     }
