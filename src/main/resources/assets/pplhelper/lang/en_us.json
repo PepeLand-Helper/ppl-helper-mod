@@ -79,7 +79,7 @@
   "pplhelper.news": "Новости",
   "pplhelper.news.search": "Поиск",
   "pplhelper.news.find": "Найти",
-  "pplhelper.news.not_found": "По вашему запросу был найден только этот чувак",
+  "pplhelper.news.not_found": "По вашему запросу была найдена только пустота",
   "pplhelper.projects": "Проекты",
 
   "pplhelper.project": "Проекты > %s",

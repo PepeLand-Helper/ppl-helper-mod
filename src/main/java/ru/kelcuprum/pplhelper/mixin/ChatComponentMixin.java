@@ -39,7 +39,7 @@ public abstract class ChatComponentMixin {
                 component1.append("го ебаться");
                 for(int i = 0; i<3; i++){
                     addMessage(Component.empty().append(component1).withStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal("Sanhez 300 блоков от вас")))));
-                    AlinLib.MINECRAFT.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.ITEM_PICKUP, 2f));
+                    AlinLib.MINECRAFT.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.CHICKEN_EGG, 1.5f));
                 }
             }
         }

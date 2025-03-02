@@ -38,6 +38,7 @@ public class PasswordScreen extends Screen {
     @Override
     public boolean keyPressed(int i, int j, int k) {
         if(i == GLFW.GLFW_KEY_ESCAPE) {
+            pos = 2;
             onClose();
             return false;
         }
@@ -60,6 +61,21 @@ public class PasswordScreen extends Screen {
                 return true;
             } return true;
         } else return super.keyPressed(i, j, k);
+    }
+
+    @Override
+    public boolean mouseClicked(double d, double e, int i) {
+        if(pos != 0){
+            if(pos == 1){
+                message = Component.empty().append(follow ? "Доступ Разрешён!" : "Доступ Запрещён!").withColor(follow ? SEADRIVE : GROUPIE);
+                pos++;
+                return true;
+            } else if(pos == 2) {
+                onClose();
+                return true;
+            }
+        }
+        return super.mouseClicked(d, e, i);
     }
 
     @Override
