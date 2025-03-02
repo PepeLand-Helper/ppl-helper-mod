@@ -7,7 +7,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import org.lwjgl.glfw.GLFW;
-import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.gui.Colors;
 import ru.kelcuprum.alinlib.gui.components.ConfigureScrolWidget;
 import ru.kelcuprum.alinlib.gui.components.ImageWidget;
@@ -20,7 +19,6 @@ import ru.kelcuprum.pplhelper.api.components.Project;
 import ru.kelcuprum.pplhelper.gui.components.BannerWidget;
 import ru.kelcuprum.pplhelper.gui.components.ScaledTextBox;
 import ru.kelcuprum.pplhelper.gui.components.UserCard;
-import ru.kelcuprum.pplhelper.gui.components.WebImageWidget;
 import ru.kelcuprum.pplhelper.utils.MarkdownParser;
 
 import java.util.ArrayList;

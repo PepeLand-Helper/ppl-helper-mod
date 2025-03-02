@@ -1,7 +1,6 @@
 package ru.kelcuprum.pplhelper.gui.screens;
 
 import com.google.gson.JsonObject;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import ru.kelcuprum.alinlib.AlinLib;
@@ -13,8 +12,6 @@ import ru.kelcuprum.pplhelper.api.PepeLandAPI;
 import ru.kelcuprum.pplhelper.gui.screens.message.DownloadScreen;
 import ru.kelcuprum.pplhelper.gui.screens.message.ErrorScreen;
 import ru.kelcuprum.pplhelper.gui.screens.builder.ScreenBuilder;
-
-import static ru.kelcuprum.alinlib.gui.Colors.GROUPIE;
 
 public class UpdaterScreen {
     public Screen parent;
