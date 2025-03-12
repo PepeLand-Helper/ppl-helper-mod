@@ -6,10 +6,12 @@ import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBooleanBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.selector.SelectorBuilder;
+import ru.kelcuprum.alinlib.gui.components.builder.text.HorizontalRuleBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.text.TextBuilder;
 import ru.kelcuprum.alinlib.gui.screens.ConfigScreenBuilder;
 import ru.kelcuprum.pplhelper.PepelandHelper;
 import ru.kelcuprum.pplhelper.api.components.projects.TestProject;
+import ru.kelcuprum.pplhelper.utils.FollowManager;
 
 import static ru.kelcuprum.alinlib.gui.Icons.CLOWNFISH;
 import static ru.kelcuprum.alinlib.gui.Icons.OPTIONS;
@@ -27,7 +29,14 @@ public class TestConfigScreen {
                 .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.test.im_a_test_subject"), false).setConfig(PepelandHelper.config,"IM_A_TEST_SUBJECT"))
                 .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.test.im_a_test_subject.enable_world"), false).setConfig(PepelandHelper.config,"IM_A_TEST_SUBJECT.ENABLE_WORLD"))
                 .addWidget(new SelectorBuilder(Component.translatable("pplhelper.test.im_a_test_subject.world")).setValue(worlds[0]).setList(worlds).setConfig(PepelandHelper.config,"IM_A_TEST_SUBJECT.WORLD"))
-                .addWidget(new ButtonBuilder(Component.translatable("pplhelper.test.im_a_test_subject.project"), (s) -> PepelandHelper.selectedProject = PepelandHelper.selectedProject == null ? new TestProject() : null));
+                .addWidget(new ButtonBuilder(Component.translatable("pplhelper.test.im_a_test_subject.project"), (s) -> {
+                    if(FollowManager.project == null) FollowManager.setCoordinates(new TestProject());
+                    else FollowManager.resetCoordinates();
+                }))
+                .addWidget(new HorizontalRuleBuilder(Component.literal("Первое апреля")))
+                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.test.im_a_test_subject.april"), false).setConfig(PepelandHelper.config,"IM_A_TEST_SUBJECT.APRIL"))
+                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.test.im_a_test_subject.april.pwgood"), false).setConfig(PepelandHelper.config,"IM_A_TEST_SUBJECT.PWGOOD"));
+
 
         return builder.build();
     }

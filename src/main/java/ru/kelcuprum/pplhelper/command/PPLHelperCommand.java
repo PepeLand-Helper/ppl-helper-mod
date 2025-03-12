@@ -13,6 +13,7 @@ import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.info.Player;
 import ru.kelcuprum.pplhelper.PepelandHelper;
 import ru.kelcuprum.pplhelper.api.components.projects.FollowProject;
+import ru.kelcuprum.pplhelper.utils.FollowManager;
 import ru.kelcuprum.pplhelper.utils.TabHelper;
 
 import java.util.List;
@@ -37,7 +38,10 @@ public class PPLHelperCommand {
                         .then(argument("x", integer())
                                 .then(argument("z", integer()).executes((s) -> {
                                     if(!PepelandHelper.playerInPPL() || TabHelper.getWorld() == null) sendFeedback(s, Component.literal("Вы не можете использовать команду вне сервера"));
-                                    else PepelandHelper.selectedProject = new FollowProject(TabHelper.getWorld().shortName, String.format("%s %s", getInteger(s, "x"), getInteger(s, "z")), AlinLib.MINECRAFT.player.level().dimension().location().toString());
+                                    else {
+//                                        PepelandHelper.selectedProject = new FollowProject(TabHelper.getWorld().shortName, String.format("%s %s", getInteger(s, "x"), getInteger(s, "z")), AlinLib.MINECRAFT.player.level().dimension().location().toString());
+                                        FollowManager.setCoordinates("followed", TabHelper.getWorld(), AlinLib.MINECRAFT.player.level().dimension().location().toString(), getInteger(s, "x"), getInteger(s, "z"));
+                                    }
                                     return 0;
                                 })))
 
@@ -45,7 +49,7 @@ public class PPLHelperCommand {
                                 .then(argument("z", integer())
                                         .then(argument("world", new WorldArgumentType()).executes((s) -> {
                                             if(!PepelandHelper.playerInPPL() || TabHelper.getWorld() == null) sendFeedback(s, Component.literal("Вы не можете использовать команду вне сервера"));
-                                            else PepelandHelper.selectedProject = new FollowProject(getString(s, "world"), String.format("%s %s", getInteger(s, "x"), getInteger(s, "z")), AlinLib.MINECRAFT.player.level().dimension().location().toString());
+                                            else FollowManager.setCoordinates("followed", TabHelper.getWorldByShortName(getString(s, "world")), AlinLib.MINECRAFT.player.level().dimension().location().toString(), getInteger(s, "x"), getInteger(s, "z"));
                                             return 0;
                                         }))
                                 )
@@ -65,7 +69,13 @@ public class PPLHelperCommand {
                                     Util.getPlatform().openUri("https://www.birdflop.com/resources/rgb/?colors="+uriEncode(colorsArray.toString())+"&text="+uriEncode(name));
 
                                     return 0;
-                                }))))
+                                })))
+
+                        .executes((s) -> {
+                            Util.getPlatform().openUri("https://www.birdflop.com/resources/rgb");
+                            return 0;
+                        })
+                )
                 .executes(s -> {
                     sendFeedback(s, Component.literal(String.format("Привет, %s!", Player.getName())));
                     return 0;

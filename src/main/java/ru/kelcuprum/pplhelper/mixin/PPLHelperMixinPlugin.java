@@ -5,6 +5,7 @@ import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 import ru.kelcuprum.alinlib.AlinLogger;
+import ru.kelcuprum.alinlib.config.Config;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.Set;
 public class PPLHelperMixinPlugin implements IMixinConfigPlugin {
     public static final AlinLogger LOG = new AlinLogger("PPL Helper > Mixin");
     public static boolean isInstalledABI = FabricLoader.getInstance().isModLoaded("actionbarinfo");
+    public static Config config = new Config("config/pplhelper/config.json");
     @Override
     public void onLoad(String mixinPackage) {
 
@@ -32,7 +34,7 @@ public class PPLHelperMixinPlugin implements IMixinConfigPlugin {
             return isInstalledABI;
         }
         if(mixinClassName.startsWith("ru.kelcuprum.pplhelper.mixin.april")){
-            return LocalDate.now().getMonthValue() == 4 && LocalDate.now().getDayOfMonth() == 1;
+            return (LocalDate.now().getMonthValue() == 4 && LocalDate.now().getDayOfMonth() == 1) || config.getBoolean("IM_A_TEST_SUBJECT.APRIL", false);
         }
         return true;
     }

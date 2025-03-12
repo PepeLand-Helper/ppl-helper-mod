@@ -7,6 +7,8 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
 import ru.kelcuprum.alinlib.AlinLib;
+import ru.kelcuprum.alinlib.gui.GuiUtils;
+import ru.kelcuprum.alinlib.gui.components.ImageWidget;
 import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.editbox.EditBoxBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.selector.SelectorBuilder;
@@ -60,9 +62,10 @@ public class NewsListScreen extends AbstractPPLScreen {
             loadInfo = new Thread(() -> {
                 List<News> projects = lastNews == null ? PepeLandHelperAPI.getNews(query, PepelandHelper.nct[category]) : lastNews;
                 lastNews = projects;
-                if (projects.isEmpty())
+                if (projects.isEmpty()) {
                     builder.addWidget(new TextBuilder(Component.translatable("pplhelper.news.not_found")).setType(TextBuilder.TYPE.BLOCKQUOTE).setColor(GROUPIE).setPosition(getX(), 55).setSize(getContentWidth(), 20).build());
-                else for (News project : projects)
+                    builder.addWidget(new ImageWidget(getX(), 55, getContentWidth(), 20, GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/amogus.png"), 256, 32, true, Component.empty()));
+                } else for (News project : projects)
                     builder.addWidget(new NewsButton(getX(), -40, DEFAULT_WIDTH(), project, this));
                 int heigthScroller = builder.contentY;
                 for (AbstractWidget widget : builder.widgets) {

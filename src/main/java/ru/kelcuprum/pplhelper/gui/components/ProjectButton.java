@@ -20,7 +20,7 @@ public class ProjectButton extends Button {
     protected Project project;
 
     public ProjectButton(int x, int y, int width, Project project, Screen screen) {
-        super(new ButtonBuilder().setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ProjectScreen(screen, project))).setTitle(Component.empty()).setStyle(GuiUtils.getSelected()).setSize(width, 40).setPosition(x, y));
+        super(new ButtonBuilder().setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ProjectScreen(screen, project))).setTitle(Component.empty()).setStyle(GuiUtils.getSelected()).setSize(width, project.description.isEmpty() ? 20 : 40).setPosition(x, y));
         this.project = project;
         setMessage(Component.literal(project.title));
     }
@@ -30,15 +30,15 @@ public class ProjectButton extends Button {
         if (getY() < guiGraphics.guiHeight() && !(getY() <= -getHeight())) {
             int x = 5;
             ResourceLocation icon = (project.icon != null && !project.icon.isEmpty()) ? TextureHelper.getTexture(project.icon, String.format("project_%s", project.id)) : WHITE_PEPE;
-            guiGraphics.blit(RenderType::guiTextured, icon, getX() + 2, getY() + 2, 0.0F, 0.0F, 36, 36, 36, 36);
-            x += 40;
-            renderString(guiGraphics, project.title, getX() + x, getY() + 8);
-            renderString(guiGraphics, project.description, getX() + x, getY() + height - 8 - AlinLib.MINECRAFT.font.lineHeight);
+            guiGraphics.blit(RenderType::guiTextured, icon, getX() + 2, getY() + 2, 0.0F, 0.0F, getHeight()-4, getHeight()-4, getHeight()-4, getHeight()-4);
+            x += getHeight();
+            renderString(guiGraphics, project.title, getX() + x, getY() + (project.description.isEmpty() ? 6 : 8));
+            if(!project.description.isEmpty()) renderString(guiGraphics, project.description, getX() + x, getY() + getHeight() - 8 - AlinLib.MINECRAFT.font.lineHeight);
         }
     }
 
     protected void renderScrollingString(GuiGraphics guiGraphics, Font font, Component message, int y) {
-        int k = this.getX() + 45;
+        int k = this.getX() + height + 5;
         int l = this.getX() + this.getWidth() - 5;
         renderScrollingString(guiGraphics, font, message, k, y, l, y + font.lineHeight, -1);
     }

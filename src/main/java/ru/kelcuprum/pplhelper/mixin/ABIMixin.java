@@ -9,10 +9,12 @@ import ru.kelcuprum.abi.ActionBarInfo;
 import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.config.Localization;
 import ru.kelcuprum.pplhelper.PepelandHelper;
+import ru.kelcuprum.pplhelper.utils.FollowManager;
 import ru.kelcuprum.pplhelper.utils.TabHelper;
 
 import static java.lang.Integer.parseInt;
 import static ru.kelcuprum.pplhelper.PepelandHelper.*;
+import static ru.kelcuprum.pplhelper.utils.FollowManager.dist;
 
 @Mixin(ActionBarInfo.class)
 public class ABIMixin {
@@ -23,21 +25,16 @@ public class ABIMixin {
         if (PepelandHelper.config.getBoolean("ABI", false)) {
             msg += AlinLib.localization.getParsedText(Localization.fixFormatCodes(PepelandHelper.config.getString("INFO.PPLHELPER", ActionBarInfo.localization.getLocalization("info.pplhelper", false, false, false))));
         }
-        if (PepelandHelper.selectedProject != null && TabHelper.getWorld() != null && PepelandHelper.config.getBoolean("SPROJECT.ABI", true)) {
+        FollowManager.Coordinates coordinates = FollowManager.getCurrentCoordinates();
+        if (coordinates != null && TabHelper.getWorld() != null && PepelandHelper.config.getBoolean("SPROJECT.ABI", true)) {
             String huy = "\\n";
-            String parsedCoordinates = getStringSelectedProjectCoordinates();
-            String gameWorld = "";
-            if (parsedCoordinates.isEmpty()) {
-                parsedCoordinates = getStringSelectedProjectCoordinatesButWithRofls();
-                gameWorld = String.format(" (%s)", getWorldStringSelectedProjectCoordinatesButWithRofls());
-            }
-            huy += String.format("&6%s:&r %s%s", PepelandHelper.selectedProject.world, parsedCoordinates, gameWorld);
+            String gameWorld = " "+(FollowManager.playerInCurrentLevel() ? "" : FollowManager.getLevelName(coordinates.level()));
+            huy += String.format("&6%s:&r %s%s", coordinates.world().shortName, coordinates.getStringCoordinates(), gameWorld);
             LocalPlayer p = AlinLib.MINECRAFT.player;
-            if (gameWorld.isEmpty() && p != null && PepelandHelper.selectedProject.world.equalsIgnoreCase(TabHelper.getWorld().shortName)) {
-                String[] args = parsedCoordinates.split(" ");
-                int near = (int) dist(parseInt(args[0]), parseInt(args[args.length - 1]), p.getBlockX(), p.getBlockZ());
+            if (FollowManager.playerInCurrentWorld() && gameWorld.isBlank()) {
+                long near = (long) FollowManager.dist(coordinates.coordinates()[0], coordinates.coordinates()[coordinates.coordinates().length-1], p.getBlockX(), p.getBlockZ());
                 if (near <= PepelandHelper.config.getNumber("SELECTED_PROJECT.AUTO_HIDE", 5).intValue()) {
-                    PepelandHelper.selectedProject = null;
+                    FollowManager.resetCoordinates();
                 } else huy += String.format(" &6(%s блоков от вас)&r", near);
             }
 

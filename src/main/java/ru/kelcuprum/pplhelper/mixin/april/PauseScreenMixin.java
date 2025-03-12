@@ -77,7 +77,7 @@ public abstract class PauseScreenMixin extends Screen {
 
     @Inject(method = "render", at = @At("HEAD"), cancellable = true)
     void render(GuiGraphics guiGraphics, int i, int j, float f, CallbackInfo cl) {
-        if(!PepelandHelper.playerInPPL() && !PepelandHelper.isPWGood()) return;
+        if(!PepelandHelper.isAprilFool() || !PepelandHelper.isPWGood()) return;
         guiGraphics.blitSprite(RenderType::guiTextured, ResourceLocation.fromNamespaceAndPath("pplhelper", "pause/oneshot_pause_panel"), 5, 5, width - 10, 38);
         super.render(guiGraphics, i, j, f);
         cl.cancel();

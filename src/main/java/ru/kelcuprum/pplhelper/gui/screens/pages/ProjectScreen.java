@@ -19,6 +19,7 @@ import ru.kelcuprum.pplhelper.api.components.Project;
 import ru.kelcuprum.pplhelper.gui.components.BannerWidget;
 import ru.kelcuprum.pplhelper.gui.components.ScaledTextBox;
 import ru.kelcuprum.pplhelper.gui.components.UserCard;
+import ru.kelcuprum.pplhelper.utils.FollowManager;
 import ru.kelcuprum.pplhelper.utils.MarkdownParser;
 
 import java.util.ArrayList;
@@ -80,9 +81,9 @@ public class ProjectScreen extends Screen {
             coord.append("\n").append(Component.translatable("pplhelper.project.coordinates.end")).append(": ").append(project.coordinates$end);
         TextBox msg = (TextBox) new TextBuilder(coord).setType(TextBuilder.TYPE.BLOCKQUOTE).setPosition(x, y).setSize(size, 20).build();
         widgets.add(msg);
-        widgets.add(new ButtonBuilder(Component.translatable((PepelandHelper.selectedProject == null || PepelandHelper.selectedProject.id != project.id) ? "pplhelper.project.follow" : "pplhelper.project.unfollow"), (s) -> {
-            PepelandHelper.selectedProject = (PepelandHelper.selectedProject == null || PepelandHelper.selectedProject.id != project.id) ? project : null;
-            s.builder.setTitle(Component.translatable(PepelandHelper.selectedProject == null ? "pplhelper.project.follow" : "pplhelper.project.unfollow"));
+        widgets.add(new ButtonBuilder(Component.translatable((FollowManager.project == null || FollowManager.project.id != project.id) ? "pplhelper.project.follow" : "pplhelper.project.unfollow"), (s) -> {
+            if(FollowManager.project == null || FollowManager.project.id != project.id) FollowManager.setCoordinates(project); else FollowManager.resetCoordinates();
+            s.builder.setTitle(Component.translatable(FollowManager.project == null ? "pplhelper.project.follow" : "pplhelper.project.unfollow"));
         }).setPosition(x, y).setWidth(size).build());
         widgets.add(new HorizontalRuleBuilder().setPosition(x, y).build());
         widgets.addAll(MarkdownParser.parse(project.getContent(), x, size, String.format("project_%s_", project.id) + "%s", this));

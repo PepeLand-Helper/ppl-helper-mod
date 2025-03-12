@@ -79,6 +79,7 @@ dependencies {
         modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
         modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
         modImplementation "maven.modrinth:abi:${rootProject.abi}"
+//        modCompileOnly "maven.modrinth:litematica:${rootProject.litematica}"
         modImplementation "ru.kelcuprum:AlinLib-fabric:${rootProject.alinlib}+mc${project.alinlib_minecraft_version == null ? project.minecraft_version : project.alinlib_minecraft_version}"
     }
 
@@ -165,5 +166,6 @@ modrinth {
             required.project "fabric-api"
             optional.project "modmenu"
         }
+//        optional.project "litematica"
     }
 }

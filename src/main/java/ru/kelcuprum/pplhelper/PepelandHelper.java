@@ -48,6 +48,7 @@ import ru.kelcuprum.pplhelper.gui.components.oneshot.overlay.PasswordScreen;
 import ru.kelcuprum.pplhelper.gui.screens.*;
 import ru.kelcuprum.pplhelper.gui.screens.configs.ConfigScreen;
 import ru.kelcuprum.pplhelper.gui.screens.message.NewUpdateScreen;
+import ru.kelcuprum.pplhelper.utils.FollowManager;
 import ru.kelcuprum.pplhelper.utils.TabHelper;
 
 import java.io.File;
@@ -81,13 +82,13 @@ public class PepelandHelper implements ClientModInitializer {
     public static String[] nc = new String[]{":("};
     public static String[] nct = new String[]{":("};
     //
-    public static Project selectedProject;
+//    public static Project selectedProject;
 
     public static AbstractBuilder[] getPanelWidgets(Screen parent, Screen current) {
         return new AbstractBuilder[]{
                 new ButtonBuilder(Component.translatable("pplhelper.news")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new NewsListScreen(current))).setIcon(WIKI).setCentered(false),
                 new ButtonBuilder(Component.translatable("pplhelper.projects")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ProjectsScreen(current))).setIcon(PROJECTS).setCentered(false),
-                new ButtonBuilder(Component.translatable("pplhelper.schematics")).setIcon(OPTIONS).setCentered(false).setActive(false),
+//                new ButtonBuilder(Component.translatable("pplhelper.schematics")).setIcon(OPTIONS).setCentered(false).setActive(false),
                 new ButtonBuilder(Component.translatable("pplhelper.commands")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new CommandsScreen().build(parent))).setIcon(COMMANDS).setCentered(false),
                 new ButtonBuilder(Component.translatable("pplhelper.mods")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ModsScreen().build(parent))).setIcon(Icons.MODS).setCentered(false),
                 new ButtonBuilder(Component.translatable("pplhelper.pack")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new UpdaterScreen().build(parent))).setIcon(Icons.PACK_INFO).setCentered(false),
@@ -262,7 +263,7 @@ public class PepelandHelper implements ClientModInitializer {
             updateCoordinatesBB();
             if (key1.consumeClick()) AlinLib.MINECRAFT.setScreen(new ProjectsScreen(AlinLib.MINECRAFT.screen));
             if (key2.consumeClick()) AlinLib.MINECRAFT.setScreen(new ConfigScreen().build(AlinLib.MINECRAFT.screen));
-            if (key3.consumeClick() && selectedProject != null) selectedProject = null;
+//            if (key3.consumeClick() && selectedProject != null) selectedProject = null;
         });
         // -=-=-=- Локализация -=-=-=-
         LocalizationEvents.DEFAULT_PARSER_INIT.register(starScript -> starScript.ss.set("pplhelper.world", () -> {
@@ -275,21 +276,22 @@ public class PepelandHelper implements ClientModInitializer {
                 .set("pplhelper.online", () -> Value.number(TabHelper.getOnline()))
                 .set("pplhelper.max_online", () -> Value.number(TabHelper.getMaxOnline()))
 
-                .set("pplhelper.selected_project.name", () -> Value.string(selectedProject == null ? "" : selectedProject.title))
-                .set("pplhelper.selected_project.description", () -> Value.string(selectedProject == null ? "" : selectedProject.description))
-                .set("pplhelper.selected_project.creators", () -> Value.string(selectedProject == null ? "" : selectedProject.creators))
-                .set("pplhelper.selected_project.id", () -> Value.number(selectedProject == null ? 0 : selectedProject.id))
-                .set("pplhelper.selected_project.coordinates", () -> Value.string(selectedProject == null ? "" : getStringSelectedProjectCoordinates())));
+//                .set("pplhelper.selected_project.name", () -> Value.string(selectedProject == null ? "" : selectedProject.title))
+//                .set("pplhelper.selected_project.description", () -> Value.string(selectedProject == null ? "" : selectedProject.description))
+//                .set("pplhelper.selected_project.creators", () -> Value.string(selectedProject == null ? "" : selectedProject.creators))
+//                .set("pplhelper.selected_project.id", () -> Value.number(selectedProject == null ? 0 : selectedProject.id))
+//                .set("pplhelper.selected_project.coordinates", () -> Value.string(selectedProject == null ? "" : getStringSelectedProjectCoordinates()))
+                );
     }
 
     public static boolean isAprilFool(){
 //        return true;
-        return AlinLib.isAprilFool();
+        return AlinLib.isAprilFool() || PepelandHelper.config.getBoolean("IM_A_TEST_SUBJECT.APRIL", false);
     }
 
     public static boolean isPWGood(){
 //        return true;
-        return AlinLib.MINECRAFT.getGameProfile().getName().equals("PWGoood") || AlinLib.MINECRAFT.getGameProfile().getName().equals("_PWGood_") || AlinLib.MINECRAFT.getGameProfile().getName().equals("CyCeKu");
+        return AlinLib.MINECRAFT.getGameProfile().getName().equals("PWGoood") || AlinLib.MINECRAFT.getGameProfile().getName().equals("_PWGood_") || AlinLib.MINECRAFT.getGameProfile().getName().equals("CyCeKu") || PepelandHelper.config.getBoolean("IM_A_TEST_SUBJECT.PWGOOD", false);
     }
 
     public static void loadStaticInformation() {
@@ -319,45 +321,6 @@ public class PepelandHelper implements ClientModInitializer {
                 new ToastBuilder().setTitle(Component.literal("Ошибка загрузки информации")).setMessage(Component.literal(ex.getMessage())).setIcon(WHITE_PEPE).setType(ToastBuilder.Type.ERROR).buildAndShow();
             }
         }).start();
-    }
-
-    public static @NotNull String getStringSelectedProjectCoordinates() {
-        String coordinates = "";
-        if (World.getCodeName().equals("minecraft:overworld") && PepelandHelper.selectedProject.coordinates$overworld != null && !PepelandHelper.selectedProject.coordinates$overworld.isEmpty())
-            coordinates = PepelandHelper.selectedProject.coordinates$overworld;
-        else if (World.getCodeName().equals("minecraft:the_nether") && PepelandHelper.selectedProject.coordinates$nether != null && !PepelandHelper.selectedProject.coordinates$nether.isEmpty())
-            coordinates = PepelandHelper.selectedProject.coordinates$nether;
-        else if (World.getCodeName().equals("minecraft:the_end") && PepelandHelper.selectedProject.coordinates$end != null && !PepelandHelper.selectedProject.coordinates$end.isEmpty())
-            coordinates = PepelandHelper.selectedProject.coordinates$end;
-        return coordinates.replaceAll("[^0-9 \\-.]", "");
-    }
-
-    public static @NotNull String getStringSelectedProjectCoordinatesButWithRofls() {
-        String coordinates = "";
-        if (PepelandHelper.selectedProject.coordinates$overworld != null && !PepelandHelper.selectedProject.coordinates$overworld.isEmpty())
-            coordinates = PepelandHelper.selectedProject.coordinates$overworld;
-        else if (PepelandHelper.selectedProject.coordinates$nether != null && !PepelandHelper.selectedProject.coordinates$nether.isEmpty())
-            coordinates = PepelandHelper.selectedProject.coordinates$nether;
-        else if (PepelandHelper.selectedProject.coordinates$end != null && !PepelandHelper.selectedProject.coordinates$end.isEmpty())
-            coordinates = PepelandHelper.selectedProject.coordinates$end;
-        return coordinates.replaceAll("[^0-9 \\-.]", "");
-    }
-
-    public static @NotNull String getWorldStringSelectedProjectCoordinatesButWithRofls() {
-        String coordinates = "";
-        if (PepelandHelper.selectedProject.coordinates$overworld != null && !PepelandHelper.selectedProject.coordinates$overworld.isEmpty())
-            coordinates = AlinLib.localization.getLocalization("world.overworld");
-        else if (PepelandHelper.selectedProject.coordinates$nether != null && !PepelandHelper.selectedProject.coordinates$nether.isEmpty())
-            coordinates = AlinLib.localization.getLocalization("world.nether");
-        else if (PepelandHelper.selectedProject.coordinates$end != null && !PepelandHelper.selectedProject.coordinates$end.isEmpty())
-            coordinates = AlinLib.localization.getLocalization("world.the_end");
-        return coordinates;
-    }
-
-    public static float dist(int i, int j, int k, int l) {
-        int m = k - i;
-        int n = l - j;
-        return Mth.sqrt((float) (m * m + n * n));
     }
 
     public static long restartTime = 0;
@@ -420,7 +383,8 @@ public class PepelandHelper implements ClientModInitializer {
     private static long lastMaxNear = 0;
 
     public static void updateCoordinatesBB() {
-        if (selectedProject == null || !playerInPPL() || (PepelandHelper.config.getBoolean("SPROJECT.ABI", true) && isInstalledABI)) {
+        FollowManager.Coordinates coordinates = FollowManager.getCurrentCoordinates();
+        if (coordinates == null || !playerInPPL() || (PepelandHelper.config.getBoolean("SPROJECT.ABI", true) && isInstalledABI)) {
             if (spBossBar != null) {
                 spBossBar = null;
                 lastMaxNear = 0;
@@ -428,25 +392,26 @@ public class PepelandHelper implements ClientModInitializer {
             }
         } else {
             if (TabHelper.getWorld() == null) return;
-            String parsedCoordinates = getStringSelectedProjectCoordinates();
-            if (parsedCoordinates.isEmpty()) return;
+            String parsedCoordinates = coordinates.getStringCoordinates();
             LocalPlayer p = AlinLib.MINECRAFT.player;
             long near = 0;
             String huy = "";
-            if (p != null && PepelandHelper.selectedProject.world.equalsIgnoreCase(TabHelper.getWorld().shortName)) {
-                String[] args = parsedCoordinates.split(" ");
-                near = (long) dist(parseInt(args[0]), parseInt(args[args.length - 1]), p.getBlockX(), p.getBlockZ());
+            if(!FollowManager.playerInCurrentLevel()) huy += " ("+FollowManager.getLevelName(coordinates.level())+")";
+            if (p != null && FollowManager.playerInCurrentWorld() && FollowManager.playerInCurrentLevel()) {
+                near = (long) FollowManager.dist(coordinates.coordinates()[0], coordinates.coordinates()[coordinates.coordinates().length-1], p.getBlockX(), p.getBlockZ());
                 if (near <= PepelandHelper.config.getNumber("SELECTED_PROJECT.AUTO_HIDE", 5).longValue()) {
-                    PepelandHelper.selectedProject = null;
+                    FollowManager.resetCoordinates();
                     lastMaxNear = 0;
                     return;
                 } else huy = String.format(" (%s блоков от вас)", near);
             }
             lastMaxNear = Math.max(lastMaxNear, near);
-            spBossBar = new LerpingBossEvent(spUUID, Component.translatable("pplhelper.selected_project", PepelandHelper.selectedProject.world, parsedCoordinates, huy), (float) near / lastMaxNear,
-                    BossEvent.BossBarColor.GREEN,
-                    BossEvent.BossBarOverlay.PROGRESS, false, false, false);
-            AlinLib.MINECRAFT.gui.getBossOverlay().update(ClientboundBossEventPacket.createAddPacket(spBossBar));
+            if(coordinates.world() != null) {
+                spBossBar = new LerpingBossEvent(spUUID, Component.translatable("pplhelper.selected_project", coordinates.world().shortName, parsedCoordinates, huy), (float) near / lastMaxNear,
+                        BossEvent.BossBarColor.GREEN,
+                        BossEvent.BossBarOverlay.PROGRESS, false, false, false);
+                AlinLib.MINECRAFT.gui.getBossOverlay().update(ClientboundBossEventPacket.createAddPacket(spBossBar));
+            }
         }
     }
 

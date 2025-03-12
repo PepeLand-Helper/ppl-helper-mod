@@ -7,9 +7,12 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
 import ru.kelcuprum.alinlib.AlinLib;
+import ru.kelcuprum.alinlib.gui.GuiUtils;
+import ru.kelcuprum.alinlib.gui.components.ImageWidget;
 import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.editbox.EditBoxBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.selector.SelectorBuilder;
+import ru.kelcuprum.alinlib.gui.components.builder.text.HorizontalRuleBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.text.TextBuilder;
 import ru.kelcuprum.pplhelper.PepelandHelper;
 import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
@@ -17,10 +20,11 @@ import ru.kelcuprum.pplhelper.api.components.Project;
 import ru.kelcuprum.pplhelper.gui.components.ProjectButton;
 import ru.kelcuprum.pplhelper.gui.screens.builder.AbstractPPLScreen;
 import ru.kelcuprum.pplhelper.gui.screens.builder.ScreenBuilder;
+import ru.kelcuprum.pplhelper.utils.FollowManager;
 
 import java.util.List;
 
-import static ru.kelcuprum.alinlib.gui.Colors.GROUPIE;
+import static ru.kelcuprum.alinlib.gui.Colors.*;
 import static ru.kelcuprum.alinlib.gui.Icons.SEARCH;
 
 public class ProjectsScreen extends AbstractPPLScreen {
@@ -54,6 +58,15 @@ public class ProjectsScreen extends AbstractPPLScreen {
             search();
         }).setList(PepelandHelper.pc).setValue(category).setPosition(getX() + 5 + searchSize, y[0]).setWidth(searchSize).setActive(apiAvailable).build());
         y[0] += 25;
+        if(FollowManager.project != null){
+            builder.addWidget(new HorizontalRuleBuilder(Component.translatable("pplhelper.project.selected")));
+            builder.addWidget(new ProjectButton(getX(), -40, searchSize, FollowManager.project, this));
+            builder.addWidget(new ButtonBuilder(Component.translatable("pplhelper.project.unfollow_project"), (s) -> {
+                FollowManager.resetCoordinates();
+                rebuildWidgets();
+            }).setPosition(getX(), -20).setWidth(searchSize).build());
+            builder.addWidget(new HorizontalRuleBuilder());
+        }
         if (apiAvailable) {
             if(!PepelandHelper.worldsLoaded){
                 try {
@@ -73,9 +86,10 @@ public class ProjectsScreen extends AbstractPPLScreen {
             loadInfo = new Thread(() -> {
                 List<Project> projects = lastProjects == null ? PepeLandHelperAPI.getProjects(query, PepelandHelper.worlds[world], PepelandHelper.pct[category]) : lastProjects;
                 lastProjects = projects;
-                if (projects.isEmpty())
+                if (projects.isEmpty()) {
                     builder.addWidget(new TextBuilder(Component.translatable("pplhelper.news.not_found")).setType(TextBuilder.TYPE.BLOCKQUOTE).setColor(GROUPIE).setPosition(getX(), 55).setSize(getContentWidth(), 20).build());
-                else for (Project project : projects)
+                    builder.addWidget(new ImageWidget(getX(), 55, getContentWidth(), 20, GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/amogus.png"), 256, 32, true, Component.empty()));
+                } else for (Project project : projects)
                     builder.addWidget(new ProjectButton(getX(), -40, getContentWidth(), project, this));
                 int heigthScroller = builder.contentY;
                 for (AbstractWidget widget : builder.widgets) {

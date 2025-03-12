@@ -5,7 +5,6 @@ import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.pplhelper.api.components.Project;
 
 import static java.lang.Integer.parseInt;
-import static ru.kelcuprum.pplhelper.PepelandHelper.dist;
 
 public class FollowProject extends Project {
     public FollowProject(String world, String coordinates, String mcWorld) {

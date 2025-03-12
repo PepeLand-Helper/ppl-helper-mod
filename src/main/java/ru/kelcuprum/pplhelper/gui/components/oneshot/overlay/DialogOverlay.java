@@ -21,7 +21,7 @@ public class DialogOverlay extends Screen {
     public DialogOverlay(Screen screen, String[] dialog, Runnable runnable, int timeShot) {
         super(Component.empty());
         this.screen = screen;
-        this.dialog = dialog.length == 0 ? new String[]{"[ГОЙДА]", "[ZOV]"} : dialog;
+        this.dialog = dialog.length == 0 ? new String[]{"[...]", "[...]"} : dialog;
         this.runnable = runnable;
         this.timeShow = timeShot;
         startTimeText = startTime + timeShow;

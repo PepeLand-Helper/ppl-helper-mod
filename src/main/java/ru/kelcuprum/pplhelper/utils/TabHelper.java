@@ -41,7 +41,11 @@ public class TabHelper {
             }
         }
 
-        return switch (world.toString()) {
+        return getWorldByName(world.toString());
+    }
+
+    public static Worlds getWorldByName(String name){
+        return switch (name) {
             case "Лобби" -> Worlds.LOBBY;
             case "Постройки #1" -> Worlds.CONSTRUCTIONS_1;
             case "Постройки #2" -> Worlds.CONSTRUCTIONS_2;
@@ -49,6 +53,18 @@ public class TabHelper {
             case "Фермы" -> Worlds.FARM;
             case "Торговая Зона" -> Worlds.TRADE;
             case "Энд" -> Worlds.END;
+            default -> null;
+        };
+    }
+    public static Worlds getWorldByShortName(String name){
+        return switch (name.toLowerCase()) {
+            case "лобби" -> Worlds.LOBBY;
+            case "мп1" -> Worlds.CONSTRUCTIONS_1;
+            case "мп2" -> Worlds.CONSTRUCTIONS_2;
+            case "мр" -> Worlds.RESOURCE;
+            case "мф" -> Worlds.FARM;
+            case "тз" -> Worlds.TRADE;
+            case "знд" -> Worlds.END;
             default -> null;
         };
     }
