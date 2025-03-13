@@ -22,7 +22,10 @@ public class FollowManager {
             int[] coordinatesProject;
             String[] coordinatesArgs = getStringProjectCoordinates(project).split(" ");
             coordinatesProject = new int[coordinatesArgs.length];
-            for(int i = 0; i < coordinatesArgs.length; i++) coordinatesProject[i] = parseInt(coordinatesArgs[i]);
+            for(int i = 0; i < coordinatesArgs.length; i++) {
+                if(!coordinatesArgs[i].isBlank()) coordinatesProject[i] = parseInt(coordinatesArgs[i]);
+                else coordinatesProject[i] = 0;
+            }
             return new Coordinates(project.title, getWorldProjectWithoutWorld(project), TabHelper.getWorldByShortName(project.world), coordinatesProject);
         } else if(coordinates != null){
             return new Coordinates(name, level, world, coordinates);
@@ -118,7 +121,7 @@ public class FollowManager {
     public record Coordinates(String name, String level, TabHelper.Worlds world, int[] coordinates) {
         public String getStringCoordinates() {
                 StringBuilder builder = new StringBuilder().append(this.coordinates()[0]);
-                for (int i = 1; i < this.coordinates().length; i++) builder.append(" ").append(this.coordinates()[i]);
+                builder.append(" ").append(this.coordinates()[this.coordinates().length-1]);
                 return builder.toString();
             }
         }
