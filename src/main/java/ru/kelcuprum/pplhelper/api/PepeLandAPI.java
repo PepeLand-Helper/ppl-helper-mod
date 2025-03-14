@@ -63,7 +63,7 @@ public class PepeLandAPI {
             outputStream.close();
             inputStream.close();
 
-            PepelandHelper.LOG.log("Resourcepack downloaded successfully.", Level.DEBUG);
+            PepelandHelper.LOG.log("File downloaded successfully.", Level.DEBUG);
         } else {
             PepelandHelper.LOG.log("No file to download. Server replied HTTP code: " + responseCode, Level.ERROR);
         }

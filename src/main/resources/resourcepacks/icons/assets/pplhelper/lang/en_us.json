@@ -7,5 +7,10 @@
   "abi.info.pplhelper": "\\n&6\uE699&r &6{pplhelper.world}&r {pplhelper.tps}TPS &6{pplhelper.online}/{pplhelper.max_online}&r",
 
   "pplhelper.project.author": "\uE699 Проект опубликовал \uE699",
-  "pplhelper.news.author": "\uE699 Новость написал \uE699"
+  "pplhelper.news.author": "\uE699 Новость написал \uE699",
+
+  "pplhelper.project.state.build": "\uE702 Строится",
+  "pplhelper.project.state.planned": "\uE703 В процессе планировки",
+
+  "pplhelper.project.schematic": "\uE704 Схематика \uE704"
 }

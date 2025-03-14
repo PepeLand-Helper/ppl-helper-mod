@@ -97,6 +97,25 @@
   "pplhelper.project.unfollow_project": "Открепить проект",
   "pplhelper.project.web": "Открыть страницу сайта",
   "pplhelper.project.author": "Проект опубликовал",
+
+  "pplhelper.project.state": "Статус: %s",
+  "pplhelper.project.state.built": "Построен",
+  "pplhelper.project.state.build": "Строится",
+  "pplhelper.project.state.planned": "В процессе планировки",
+
+
+  "pplhelper.project.schematic": "Схематика",
+  "pplhelper.project.schematic.download": "Загрузить схематику",
+  "pplhelper.project.schematic.upload": "Загрузка схематики для проекта \"%s\"",
+  "pplhelper.project.schematic.upload_short": "Опубликовать схематику",
+  "pplhelper.project.schematic.upload_to_api": "Опубликовать",
+  "pplhelper.project.schematic.selected_file": "Файл схематики: %s\nЗагрузив схематику, его смогут загрузить другие пользователи PepeLand Helper с установленной Litematic'ой",
+  "pplhelper.project.schematic.rotate": "Поворот",
+  "pplhelper.project.schematic.mirror": "Отражение",
+  "pplhelper.project.schematic.x": "X",
+  "pplhelper.project.schematic.y": "Y",
+  "pplhelper.project.schematic.z": "Z",
+
   "pplhelper.news.author": "Новость написал",
 
   "pplhelper.schematics": "Схематики (Скоро...)",

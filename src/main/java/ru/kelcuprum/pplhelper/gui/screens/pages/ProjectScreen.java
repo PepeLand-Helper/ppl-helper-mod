@@ -1,5 +1,7 @@
 package ru.kelcuprum.pplhelper.gui.screens.pages;
 
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -19,11 +21,13 @@ import ru.kelcuprum.pplhelper.api.components.Project;
 import ru.kelcuprum.pplhelper.gui.components.BannerWidget;
 import ru.kelcuprum.pplhelper.gui.components.ScaledTextBox;
 import ru.kelcuprum.pplhelper.gui.components.UserCard;
+import ru.kelcuprum.pplhelper.gui.screens.pages.schematic.UploadSchematicScreen;
 import ru.kelcuprum.pplhelper.utils.FollowManager;
 import ru.kelcuprum.pplhelper.utils.MarkdownParser;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.WEB;
 
@@ -72,6 +76,7 @@ public class ProjectScreen extends Screen {
         widgets.add(new ScaledTextBox(x, -40, size, 12, Component.literal(project.title), true, 1.5f));
         widgets.add(new TextBuilder(Component.literal(project.description)).setType(TextBuilder.TYPE.MESSAGE).setAlign(TextBuilder.ALIGN.CENTER).setPosition(x, -40).setSize(size, 20).build());
         widgets.add(new TextBuilder(Component.translatable("pplhelper.project.creators", project.creators)).setType(TextBuilder.TYPE.BLOCKQUOTE).setPosition(x, -40).setSize(size, 20).build());
+        widgets.add(new TextBuilder(Component.translatable("pplhelper.project.state", project.state == Project.State.BUILT ? Component.translatable("pplhelper.project.state.built") : project.state == Project.State.BUILD ? Component.translatable("pplhelper.project.state.build") : Component.translatable("pplhelper.project.state.planned"))).setType(TextBuilder.TYPE.BLOCKQUOTE).setPosition(x, -40).setSize(size, 20).build());
         MutableComponent coord = Component.empty().append(Component.translatable("pplhelper.project.coordinates", project.world));
         if (project.coordinates$overworld != null && !project.coordinates$overworld.isEmpty())
             coord.append("\n").append(Component.translatable("pplhelper.project.coordinates.overworld")).append(": ").append(project.coordinates$overworld);
@@ -85,6 +90,19 @@ public class ProjectScreen extends Screen {
             if(FollowManager.project == null || FollowManager.project.id != project.id) FollowManager.setCoordinates(project); else FollowManager.resetCoordinates();
             s.builder.setTitle(Component.translatable(FollowManager.project == null ? "pplhelper.project.follow" : "pplhelper.project.unfollow"));
         }).setPosition(x, y).setWidth(size).build());
+        if(FabricLoader.getInstance().isModLoaded("litematica") && ((project.schematicEnable  && PepelandHelper.playerInPPL()) || (PepelandHelper.user != null && Objects.equals(PepelandHelper.user.id, project.author)))){
+            widgets.add(new HorizontalRuleBuilder(Component.translatable("pplhelper.project.schematic")).setPosition(x, y).build());
+            if(project.schematicEnable && PepelandHelper.playerInPPL()){
+                widgets.add(new ButtonBuilder(Component.translatable("pplhelper.project.schematic.download"), (s) -> {
+                    project.loadSchematic();
+                }).setPosition(x, y).setWidth(size).build());
+            }
+            if(PepelandHelper.user != null && Objects.equals(PepelandHelper.user.id, project.author)){
+                widgets.add(new ButtonBuilder(Component.translatable("pplhelper.project.schematic.upload_short"), (s) -> {
+                    PepelandHelper.confirmLinkNow(this, String.format("https://l.pplh.ru/projects/%s/schematic", project.id));
+                }).setPosition(x, y).setWidth(size).build());
+            }
+        }
         widgets.add(new HorizontalRuleBuilder().setPosition(x, y).build());
         widgets.addAll(MarkdownParser.parse(project.getContent(), x, size, String.format("project_%s_", project.id) + "%s", this));
         widgets.add(new HorizontalRuleBuilder().setTitle(Component.translatable("pplhelper.project.author")).build());

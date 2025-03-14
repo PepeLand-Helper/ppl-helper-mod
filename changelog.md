@@ -1,1 +1,8 @@
-- Исправлена ошибка [#6](https://github.com/PepeLand-Helper/ppl-helper-mod/issues/6)
+- Добавлены статусы проектов
+- Добавлена поддержка мода Litematica и схематик проектов
+- Изменена работа команды /pplhelper follow
+  - /pplhelper follow create <name> <x> <z> [world] [dimension] - создание координат
+  - /pplhelper follow remove <name> - Удаление координат
+  - /pplhelper follow <name> - Отслеживать созданные координаты
+  - /pplhelper follow reset - Сброс координат/проекта
+  - /pplhelper unfollow ----/

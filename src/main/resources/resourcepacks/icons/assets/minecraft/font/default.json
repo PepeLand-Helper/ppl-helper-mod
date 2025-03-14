@@ -26,6 +26,33 @@
          "chars": [
             "\uE701"
          ]
+      },
+      {
+         "type": "bitmap",
+         "file": "pplhelper:gui/sprites/status/build.png",
+         "ascent": 10,
+         "height": 12,
+         "chars": [
+            "\uE702"
+         ]
+      },
+      {
+         "type": "bitmap",
+         "file": "pplhelper:gui/sprites/status/planned.png",
+         "ascent": 10,
+         "height": 12,
+         "chars": [
+            "\uE703"
+         ]
+      },
+      {
+         "type": "bitmap",
+         "file": "pplhelper:gui/sprites/projects.png",
+         "ascent": 10,
+         "height": 12,
+         "chars": [
+            "\uE704"
+         ]
       }
    ]
 }

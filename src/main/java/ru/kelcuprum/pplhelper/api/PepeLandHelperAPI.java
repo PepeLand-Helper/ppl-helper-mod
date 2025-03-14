@@ -4,15 +4,21 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.network.chat.Component;
+import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.WebAPI;
+import ru.kelcuprum.alinlib.utils.GsonHelper;
 import ru.kelcuprum.pplhelper.PepelandHelper;
 import ru.kelcuprum.pplhelper.api.components.News;
 import ru.kelcuprum.pplhelper.api.components.Project;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpRequest;
 import java.util.ArrayList;
 import java.util.List;
 
 import static ru.kelcuprum.alinlib.utils.GsonHelper.jsonElementIsNull;
+import static ru.kelcuprum.pplhelper.api.PepeLandAPI.downloadFile;
 import static ru.kelcuprum.pplhelper.api.PepeLandAPI.uriEncode;
 import static ru.kelcuprum.alinlib.utils.GsonHelper.getStringInJSON;
 
@@ -181,6 +187,34 @@ public class PepeLandHelperAPI {
         } catch (Exception ex){
             ex.printStackTrace();
             return "";
+        }
+    }
+    public static void uploadProjectSchematicFile(byte[] file, int id) throws IOException, InterruptedException {
+        if(PepelandHelper.user == null) return;
+        HttpRequest.Builder builder = HttpRequest.newBuilder(URI.create(getURI(String.format("projects/%s?schematic=true", id))));
+        builder.header("Authorization", "Bearer "+ PepelandHelper.config.getString("oauth.access_token", ""));
+        builder.POST(HttpRequest.BodyPublishers.ofString("hehehe"));
+        JsonObject object = net.minecraft.util.GsonHelper.parse(WebAPI.getString(builder));
+
+        if(isError(object)) throw new RuntimeException(object.getAsJsonObject("error").get("message").getAsString());
+        else PepelandHelper.LOG.log(object.get("message").getAsString());
+    }
+    public static void updateProject(Project project) throws IOException, InterruptedException {
+        if(PepelandHelper.user == null) return;
+        JsonObject data = new JsonObject();
+        data.add("data", project.toJSON());
+        data.addProperty("content", getProjectContent(project.id));
+        JsonObject object = WebAPI.getJsonObject(HttpRequest.newBuilder(URI.create(getURI(String.format("projects/%s", project.id))))
+                .header("Authorization", "Bearer "+ PepelandHelper.config.getString("oauth.access_token", ""))
+                .POST(HttpRequest.BodyPublishers.ofString(data.toString())));
+        if(isError(object)) throw new RuntimeException(object.getAsJsonObject("error").get("message").getAsString());
+        else PepelandHelper.LOG.log(object.get("message").getAsString());
+    }
+    public static void downlaodProjectSchematic(int id){
+        try {
+            downloadFile(getURI(String.format("projects/%s/schematic", id), false), AlinLib.MINECRAFT.gameDirectory.toPath() + "/schematics", String.format("pplhelper-%s.litematic", id));
+        } catch (Exception ex){
+            ex.printStackTrace();
         }
     }
 

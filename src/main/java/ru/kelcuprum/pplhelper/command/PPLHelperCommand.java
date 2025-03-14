@@ -8,9 +8,13 @@ import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.Util;
 import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.arguments.DimensionArgument;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.commands.ExecuteCommand;
+import net.minecraft.server.commands.TeleportCommand;
 import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.info.Player;
+import ru.kelcuprum.alinlib.info.World;
 import ru.kelcuprum.pplhelper.PepelandHelper;
 import ru.kelcuprum.pplhelper.api.components.projects.FollowProject;
 import ru.kelcuprum.pplhelper.utils.FollowManager;
@@ -27,6 +31,7 @@ import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
 import static com.mojang.brigadier.arguments.StringArgumentType.*;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static ru.kelcuprum.pplhelper.api.PepeLandAPI.getPacksInfo;
 import static ru.kelcuprum.pplhelper.api.PepeLandAPI.uriEncode;
 
 public class PPLHelperCommand {
@@ -37,36 +42,97 @@ public class PPLHelperCommand {
                 .then(literal("follow")
                         .then(argument("x", integer())
                                 .then(argument("z", integer()).executes((s) -> {
-                                    if(!PepelandHelper.playerInPPL() || TabHelper.getWorld() == null) sendFeedback(s, Component.literal("Вы не можете использовать команду вне сервера"));
+                                    if (!PepelandHelper.playerInPPL() || TabHelper.getWorld() == null)
+                                        sendFeedback(s, Component.literal("Вы не можете использовать команду вне сервера"));
                                     else {
-//                                        PepelandHelper.selectedProject = new FollowProject(TabHelper.getWorld().shortName, String.format("%s %s", getInteger(s, "x"), getInteger(s, "z")), AlinLib.MINECRAFT.player.level().dimension().location().toString());
                                         FollowManager.setCoordinates("followed", TabHelper.getWorld(), AlinLib.MINECRAFT.player.level().dimension().location().toString(), getInteger(s, "x"), getInteger(s, "z"));
                                     }
                                     return 0;
+                                }).then(argument("world", new WorldArgumentType()).executes((s) -> {
+                                    if (!PepelandHelper.playerInPPL() || TabHelper.getWorld() == null)
+                                        sendFeedback(s, Component.literal("Вы не можете использовать команду вне сервера"));
+                                    else
+                                        FollowManager.setCoordinates("followed", TabHelper.getWorldByShortName(getString(s, "world")), AlinLib.MINECRAFT.player.level().dimension().location().toString(), getInteger(s, "x"), getInteger(s, "z"));
+                                    return 0;
                                 })))
-
-                        .then(argument("x", integer())
-                                .then(argument("z", integer())
-                                        .then(argument("world", new WorldArgumentType()).executes((s) -> {
-                                            if(!PepelandHelper.playerInPPL() || TabHelper.getWorld() == null) sendFeedback(s, Component.literal("Вы не можете использовать команду вне сервера"));
-                                            else FollowManager.setCoordinates("followed", TabHelper.getWorldByShortName(getString(s, "world")), AlinLib.MINECRAFT.player.level().dimension().location().toString(), getInteger(s, "x"), getInteger(s, "z"));
-                                            return 0;
-                                        }))
+                        )
+                        .then(literal("create")
+                                .then(argument("name", new FollowsArgumentType())
+                                        .then(argument("x", integer())
+                                                .then(argument("z", integer())
+                                                        .executes((s) -> {
+                                                            if(TabHelper.getWorld() == null) sendFeedback(s, Component.literal("Вы не находитесь на сервере"));
+                                                            createFollowedCoordinate(s, getString(s, "name"), TabHelper.getWorld().shortName, World.getCodeName(), getInteger(s, "x"), getInteger(s, "z"));
+                                                            return 0;
+                                                        }).then(argument("world", new WorldArgumentType())
+                                                                .executes((s) -> {
+                                                                    createFollowedCoordinate(s, getString(s, "name"), getString(s, "world"), World.getCodeName(), getInteger(s, "x"), getInteger(s, "z"));
+                                                                    return 0;
+                                                                }).then(argument("level", new LevelArgumentType())
+                                                                        .executes((s) -> {
+                                                                            createFollowedCoordinate(s, getString(s, "name"), getString(s, "world"), getString(s, "level"), getInteger(s, "x"), getInteger(s, "z"));
+                                                                            return 0;
+                                                                        })
+                                                                )
+                                                        )
+                                                )
+                                        )
                                 )
                         )
-                ).then(literal("ie_gradient")
+                        .then(literal("remove")
+                                .then(argument("name", new FollowsArgumentType()).executes((s) -> {
+                                    String id = getString(s, "name");
+                                    if((PepelandHelper.config.toJSON().has("coordinates") ? PepelandHelper.config.toJSON().getAsJsonObject("coordinates") : new JsonObject()).has(id)){
+                                        JsonObject js = (PepelandHelper.config.toJSON().has("coordinates") ? PepelandHelper.config.toJSON().getAsJsonObject("coordinates") : new JsonObject());
+                                        js.remove(id);
+                                        PepelandHelper.config.setJsonObject("coordinates", js);
+                                        sendFeedback(s, Component.literal(String.format("%s был удален", id)));
+                                        return 0;
+                                    } else {
+                                        sendFeedback(s, Component.literal("Таких координат, к счастью, нет :)"));
+                                        return 1;
+                                    }
+                                }))
+                        )
+                        .then(argument("followed", new FollowsArgumentType()).executes((s) -> {
+                            String id = getString(s, "followed");
+                            if((PepelandHelper.config.toJSON().has("coordinates") ? PepelandHelper.config.toJSON().getAsJsonObject("coordinates") : new JsonObject()).has(id)){
+                                JsonObject jsonObject = (PepelandHelper.config.toJSON().has("coordinates") ? PepelandHelper.config.toJSON().getAsJsonObject("coordinates") : new JsonObject()).getAsJsonObject(id);
+                                FollowManager.setCoordinates(
+                                        id,
+                                        TabHelper.getWorldByShortName(jsonObject.has("world") ? jsonObject.get("world").getAsString() : TabHelper.getWorld().shortName),
+                                        jsonObject.has("level") ? jsonObject.get("level").getAsString() : World.getCodeName(),
+                                        jsonObject.get("x").getAsInt(),
+                                        jsonObject.get("z").getAsInt()
+                                );
+                                return 0;
+                            } else {
+                                sendFeedback(s, Component.literal("Таких координат, к сожалению, нет :("));
+                                return 1;
+                            }
+                        }))
+                        .then(literal("reset").executes((s) -> {
+                            FollowManager.resetCoordinates();
+                            return 0;
+                        }))
+                )
+                .then(literal("unfollow").executes((s) -> {
+                    FollowManager.resetCoordinates();
+                    return 0;
+                }))
+                .then(literal("ie_gradient")
                         .then(argument("colors", StringArgumentType.string()).then(argument("name", greedyString())
                                 .executes((s) -> {
                                     String name = getString(s, "name");
                                     String[] argsColors = getString(s, "colors").split(",");
                                     JsonArray colorsArray = new JsonArray();
-                                    for(int j = 0; j<argsColors.length; j++) {
+                                    for (int j = 0; j < argsColors.length; j++) {
                                         JsonObject object = new JsonObject();
-                                        object.addProperty("pos", ((float) j /(argsColors.length-1)) * 100);
-                                        object.addProperty("hex", "#"+argsColors[j]);
+                                        object.addProperty("pos", ((float) j / (argsColors.length - 1)) * 100);
+                                        object.addProperty("hex", "#" + argsColors[j]);
                                         colorsArray.add(object);
                                     }
-                                    Util.getPlatform().openUri("https://www.birdflop.com/resources/rgb/?colors="+uriEncode(colorsArray.toString())+"&text="+uriEncode(name));
+                                    Util.getPlatform().openUri("https://www.birdflop.com/resources/rgb/?colors=" + uriEncode(colorsArray.toString()) + "&text=" + uriEncode(name));
 
                                     return 0;
                                 })))
@@ -82,9 +148,21 @@ public class PPLHelperCommand {
                 }));
     }
 
+    public static void createFollowedCoordinate(CommandContext<FabricClientCommandSource> s, String id, String world, String level, int x, int z){
+        JsonObject coordinates = PepelandHelper.config.toJSON().has("coordinates") ? PepelandHelper.config.toJSON().getAsJsonObject("coordinates") : new JsonObject();
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("world", world);
+        jsonObject.addProperty("level", level);
+        jsonObject.addProperty("x", x);
+        jsonObject.addProperty("z", z);
+        sendFeedback(s, Component.literal(String.format(coordinates.has(id) ? "%s был отредактирован" : "%s был добавлен", id)));
+        coordinates.add(id, jsonObject);
+        PepelandHelper.config.setJsonObject("coordinates", coordinates);
+    }
+
     public static String fixFormatCodes(String text) {
         for (String formatCode : formatCodes.keySet())
-            if(formatCode.equalsIgnoreCase(text)) return formatCodes.get(formatCode);
+            if (formatCode.equalsIgnoreCase(text)) return formatCodes.get(formatCode);
         return "";
     }
 
@@ -92,9 +170,9 @@ public class PPLHelperCommand {
     private static final Map<String, String> formatCodes = IntStream.range(0, codes)
             .boxed()
             .collect(Collectors.toMap(List.of(new String[]{
-                    "a","b","c","d","e","f","0","1","2","3","4","5","6","7","8","9"
+                    "a", "b", "c", "d", "e", "f", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"
             })::get, List.of(new String[]{
-                    "55FF55","55FFFF","FF5555","FF55FF","FFFF55","FFFFFF","000000","0000AA","00AA00","00AAAA","AA0000","AA00AA","FFAA00","AAAAAA","555555","5555FF"
+                    "55FF55", "55FFFF", "FF5555", "FF55FF", "FFFF55", "FFFFFF", "000000", "0000AA", "00AA00", "00AAAA", "AA0000", "AA00AA", "FFAA00", "AAAAAA", "555555", "5555FF"
             })::get));
 
     public static void sendFeedback(CommandContext<FabricClientCommandSource> s, Component component) {
