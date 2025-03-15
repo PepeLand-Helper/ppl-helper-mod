@@ -16,7 +16,7 @@ import ru.kelcuprum.pplhelper.gui.screens.builder.ScreenBuilder;
 public class UpdaterScreen {
     public Screen parent;
     public static boolean isEmotes = PepelandHelper.config.getBoolean("PACK_UPDATES.ONLY_EMOTE", false);
-    public static String packVersion = PepelandHelper.getInstalledPack();
+    public static String packVersion = PepelandHelper.getInstalledPackVersion();
 
     public Screen build(Screen parent) {
         this.parent = parent;
@@ -26,8 +26,8 @@ public class UpdaterScreen {
                         isEmotes = PepelandHelper.config.getBoolean("PACK_UPDATES.ONLY_EMOTE", false);
                         AlinLib.MINECRAFT.setScreen(build(parent));
                     }
-                    if (!packVersion.contains(PepelandHelper.getInstalledPack())) {
-                        packVersion = PepelandHelper.getInstalledPack();
+                    if (!packVersion.contains(PepelandHelper.getInstalledPackVersion())) {
+                        packVersion = PepelandHelper.getInstalledPackVersion();
                         AlinLib.MINECRAFT.setScreen(build(parent));
                     }
                 })

@@ -16,6 +16,7 @@ import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.info.Player;
 import ru.kelcuprum.alinlib.info.World;
 import ru.kelcuprum.pplhelper.PepelandHelper;
+import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
 import ru.kelcuprum.pplhelper.api.components.projects.FollowProject;
 import ru.kelcuprum.pplhelper.utils.FollowManager;
 import ru.kelcuprum.pplhelper.utils.TabHelper;
@@ -31,7 +32,6 @@ import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
 import static com.mojang.brigadier.arguments.StringArgumentType.*;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
-import static ru.kelcuprum.pplhelper.api.PepeLandAPI.getPacksInfo;
 import static ru.kelcuprum.pplhelper.api.PepeLandAPI.uriEncode;
 
 public class PPLHelperCommand {
@@ -39,6 +39,16 @@ public class PPLHelperCommand {
         dispatcher.register(literal("pplhelper").then(literal("report")
                         .then(argument("description", greedyString()).executes((s) -> sendReport(s, getString(s, "description"))))
                         .executes((s) -> sendReport(s, "<описание>")))
+                .then(literal("emotes").then(argument("emote", new EmotesArgumentType()).executes((s) -> {
+                    sendFeedback(s, Component.literal("Эмоут был скопирован\n"+getString(s, "emote")));
+                    s.getSource().getClient().keyboardHandler.setClipboard(getString(s, "emote"));
+                    return 0;
+                }))
+                        .then(literal("update").executes((s) -> {
+                            PepelandHelper.emotes = null;
+                            sendFeedback(s, Component.literal("Эмоуты были обновлены"));
+                            return 0;
+                        })))
                 .then(literal("follow")
                         .then(argument("x", integer())
                                 .then(argument("z", integer()).executes((s) -> {

@@ -1,6 +1,7 @@
 package ru.kelcuprum.pplhelper;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import net.fabricmc.api.ClientModInitializer;
@@ -16,11 +17,11 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBossEventPacket;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
-import net.minecraft.util.Mth;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.world.BossEvent;
 import org.apache.logging.log4j.Level;
-import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 import org.meteordev.starscript.value.Value;
 import ru.kelcuprum.alinlib.AlinLib;
@@ -36,11 +37,9 @@ import ru.kelcuprum.alinlib.gui.components.builder.AbstractBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
 import ru.kelcuprum.alinlib.gui.screens.ConfirmScreen;
 import ru.kelcuprum.alinlib.gui.toast.ToastBuilder;
-import ru.kelcuprum.alinlib.info.World;
 import ru.kelcuprum.pplhelper.api.OAuth;
 import ru.kelcuprum.pplhelper.api.PepeLandAPI;
 import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
-import ru.kelcuprum.pplhelper.api.components.Project;
 import ru.kelcuprum.pplhelper.api.components.VersionInfo;
 import ru.kelcuprum.pplhelper.api.components.user.User;
 import ru.kelcuprum.pplhelper.command.PPLHelperCommand;
@@ -55,10 +54,12 @@ import ru.kelcuprum.pplhelper.utils.TabHelper;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -89,8 +90,8 @@ public class PepelandHelper implements ClientModInitializer {
         return new AbstractBuilder[]{
                 new ButtonBuilder(Component.translatable("pplhelper.news")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new NewsListScreen(current))).setIcon(WIKI).setCentered(false),
                 new ButtonBuilder(Component.translatable("pplhelper.projects")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ProjectsScreen(current))).setIcon(PROJECTS).setCentered(false),
-//                new ButtonBuilder(Component.translatable("pplhelper.schematics")).setIcon(OPTIONS).setCentered(false).setActive(false),
                 new ButtonBuilder(Component.translatable("pplhelper.commands")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new CommandsScreen().build(parent))).setIcon(COMMANDS).setCentered(false),
+                new ButtonBuilder(Component.translatable("pplhelper.emotes")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new EmotesScreen().build(parent))).setIcon(CLOWNFISH).setCentered(false),
                 new ButtonBuilder(Component.translatable("pplhelper.mods")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ModsScreen().build(parent))).setIcon(Icons.MODS).setCentered(false),
                 new ButtonBuilder(Component.translatable("pplhelper.pack")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new UpdaterScreen().build(parent))).setIcon(Icons.PACK_INFO).setCentered(false),
                 getProfileButton(parent)
@@ -157,6 +158,8 @@ public class PepelandHelper implements ClientModInitializer {
     private static boolean gameStarted = false;
     private static boolean loginAval = false;
 
+    public static String[] emotes = new String[]{};
+
     @Override
     public void onInitializeClient() {
         LOG.log("-=-=-=-=-=-=-=-", Level.WARN);
@@ -207,7 +210,7 @@ public class PepelandHelper implements ClientModInitializer {
                 }
             }
             try {
-                String packVersion = getInstalledPack();
+                String packVersion = getInstalledPackVersion();
                 boolean modrinth = config.getBoolean("PACK.MODRINTH", true);
                 if ((config.getBoolean("PACK_UPDATES.NOTICE", true) || config.getBoolean("PACK_UPDATES.AUTO_UPDATE", true)) && !packVersion.isEmpty()) {
                     JsonObject packInfo = PepeLandAPI.getPackInfo(onlyEmotesCheck(), modrinth);
@@ -448,12 +451,65 @@ public class PepelandHelper implements ClientModInitializer {
         return config.getBoolean("PACK_UPDATES.ONLY_EMOTE", false); // !FabricLoader.getInstance().isModLoaded("citresewn") ||
     }
 
-    public static String getInstalledPack() {
+
+
+    public static String getInstalledPackVersion() {
         String packVersion = "";
         for (Pack pack : AlinLib.MINECRAFT.getResourcePackRepository().getAvailablePacks()) {
             if (Localization.clearFormatCodes(pack.getDescription().getString()).contains("PepeLand Pack") && AlinLib.MINECRAFT.getResourcePackRepository().getSelectedPacks().contains(pack)) {
                 String[] info = Localization.clearFormatCodes(pack.getDescription().getString()).split("v");
                 if (info.length > 1) packVersion = info[1];
+            }
+        }
+        return packVersion;
+    }
+
+    public static String[] getEmotes() throws IOException {
+        String[] emotes = new String[]{};
+        if(getInstalledPack() == null) return emotes;
+        InputStream is = getInstalledPack().open().getResource(PackType.CLIENT_RESOURCES, ResourceLocation.withDefaultNamespace("font/uniform.json")).get();
+        JsonObject font = GsonHelper.parse(isToString(is));
+        JsonArray provider = font.getAsJsonArray("providers");
+        emotes = new String[provider.size()];
+        int i = 0;
+        for(JsonElement element : provider){
+            JsonObject emote = (JsonObject) element;
+            emotes[i] = emote.getAsJsonArray("chars").get(0).getAsString();
+            LOG.log(emotes[i]);
+            i++;
+        }
+        return emotes;
+    }
+    private static HashMap<String, String> lastEmotes = null;
+    public static HashMap<String, String> getEmotesPath() throws IOException {
+        HashMap<String, String> emotes = new HashMap<>();
+        if(getInstalledPack() == null) return emotes;
+        if(lastEmotes == null){
+            InputStream is = getInstalledPack().open().getResource(PackType.CLIENT_RESOURCES, ResourceLocation.withDefaultNamespace("font/uniform.json")).get();
+            JsonObject font = GsonHelper.parse(isToString(is));
+            JsonArray provider = font.getAsJsonArray("providers");
+            for(JsonElement element : provider){
+                JsonObject emote = (JsonObject) element;
+                emotes.put(emote.get("file").getAsString(), emote.getAsJsonArray("chars").get(0).getAsString());
+            }
+            lastEmotes = emotes;
+        } else emotes = lastEmotes;
+        return emotes;
+    }
+
+    public static String isToString(InputStream is) throws IOException {
+        byte[] requestBodyBytes = is.readAllBytes();
+//        String s =  new String(requestBodyBytes);
+//        LOG.log(s);
+        return new String(requestBodyBytes);
+    }
+
+    public static Pack getInstalledPack() {
+        Pack packVersion = null;
+        for (Pack pack : AlinLib.MINECRAFT.getResourcePackRepository().getAvailablePacks()) {
+            if (Localization.clearFormatCodes(pack.getDescription().getString()).contains("PepeLand Pack") && AlinLib.MINECRAFT.getResourcePackRepository().getSelectedPacks().contains(pack)) {
+                String[] info = Localization.clearFormatCodes(pack.getDescription().getString()).split("v");
+                if (info.length > 1) packVersion = pack;
             }
         }
         return packVersion;
