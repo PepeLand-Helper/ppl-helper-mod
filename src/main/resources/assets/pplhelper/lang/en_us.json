@@ -105,6 +105,8 @@
 
 
   "pplhelper.project.schematic": "Схематика",
+  "pplhelper.project.schematic.total_blocks": "Макс. обьем схематики (n^3)",
+  "pplhelper.project.schematic.sub_regions_warn": "Саб-регионы были автоматически отключены, в целях уменьшения нагрузки на клиент",
   "pplhelper.project.schematic.download": "Загрузить схематику",
   "pplhelper.project.schematic.upload": "Загрузка схематики для проекта \"%s\"",
   "pplhelper.project.schematic.upload_short": "Опубликовать схематику",

@@ -12,12 +12,16 @@ import fi.dy.masa.malilib.gui.Message;
 import fi.dy.masa.malilib.gui.interfaces.IMessageConsumer;
 import fi.dy.masa.malilib.interfaces.IStringConsumer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
+import ru.kelcuprum.alinlib.gui.toast.ToastBuilder;
 import ru.kelcuprum.pplhelper.PepelandHelper;
 import ru.kelcuprum.pplhelper.api.components.Project;
 
 import java.io.File;
+
+import static ru.kelcuprum.alinlib.gui.Icons.WARN;
 
 public class LitematicaManager {
     public static IMessageConsumer lol = new IMessageConsumer() {
@@ -54,9 +58,17 @@ public class LitematicaManager {
         if(DataManager.getCreatePlacementOnLoad()){
             BlockPos pos = new BlockPos(project.schematicX, project.schematicY, project.schematicZ);
             SchematicPlacementManager manager = DataManager.getSchematicPlacementManager();
-            SchematicPlacement placement = SchematicPlacement.createFor(schematic, pos, String.format("Схематика %s", project.title), true, true);
+            SchematicPlacement placement = SchematicPlacement.createFor(schematic, pos, String.format("Схематика \"%s\"", project.title), true, true);
             placement = placement.setRotation(getRotation(project.schematicRotate), lol)
                     .setMirror(getMirror(project.schematicMirror), lol);
+            if(placement.getSubRegionCount() > 1 || schematic.getMetadata().getTotalBlocks() > (PepelandHelper.config.getNumber("SCHEMATIC.MAX_SIZE", 50).intValue() ^ 3)){
+                placement.setSubRegionsEnabledState(false, placement.getAllSubRegionsPlacements(), lol);
+                new ToastBuilder().setIcon(WARN)
+                        .setTitle(Component.literal("§lВнимание!§r"))
+                        .setMessage(Component.translatable("pplhelper.project.schematic.sub_regions_warn"))
+                        .setType(ToastBuilder.Type.WARN)
+                        .buildAndShow();
+            }
             manager.addSchematicPlacement(placement, true);
             manager.setSelectedSchematicPlacement(placement);
         }
