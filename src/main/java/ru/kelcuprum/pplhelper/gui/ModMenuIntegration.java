@@ -1,10 +1,13 @@
 package ru.kelcuprum.pplhelper.gui;
 
-import com.terraformersmc.modmenu.api.ConfigScreenFactory;
-import com.terraformersmc.modmenu.api.ModMenuApi;
+import com.terraformersmc.modmenu.api.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.Nullable;
+import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
+import ru.kelcuprum.pplhelper.api.components.VersionInfo;
 import ru.kelcuprum.pplhelper.gui.screens.NewsListScreen;
 
 @Environment(EnvType.CLIENT)
@@ -13,5 +16,37 @@ public class ModMenuIntegration implements ModMenuApi {
     @Override
     public ConfigScreenFactory<Screen> getModConfigScreenFactory() {
         return NewsListScreen::new;
+    }
+
+    @Override
+    public UpdateChecker getUpdateChecker() {
+        return new UpdateChecker() {
+            @Override
+            public UpdateInfo checkForUpdates() {
+                VersionInfo versionInfo = PepeLandHelperAPI.getAutoUpdate();
+
+                return new UpdateInfo() {
+                    @Override
+                    public @Nullable Component getUpdateMessage() {
+                        return versionInfo.state == VersionInfo.State.NEW_UPDATE ? Component.translatable("pplhelper.update", versionInfo.latestVersion) : null;
+                    }
+
+                    @Override
+                    public boolean isUpdateAvailable() {
+                        return versionInfo.state == VersionInfo.State.NEW_UPDATE;
+                    }
+
+                    @Override
+                    public String getDownloadLink() {
+                        return versionInfo.page;
+                    }
+
+                    @Override
+                    public UpdateChannel getUpdateChannel() {
+                        return versionInfo.latestVersion.contains("alpha") ? UpdateChannel.ALPHA : versionInfo.latestVersion.contains("beta") || versionInfo.latestVersion.contains("rc") ? UpdateChannel.BETA : UpdateChannel.RELEASE;
+                    }
+                };
+            }
+        };
     }
 }

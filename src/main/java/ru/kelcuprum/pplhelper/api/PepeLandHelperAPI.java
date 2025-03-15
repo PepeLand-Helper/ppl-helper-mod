@@ -3,13 +3,14 @@ package ru.kelcuprum.pplhelper.api;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.network.chat.Component;
 import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.WebAPI;
-import ru.kelcuprum.alinlib.utils.GsonHelper;
 import ru.kelcuprum.pplhelper.PepelandHelper;
 import ru.kelcuprum.pplhelper.api.components.News;
 import ru.kelcuprum.pplhelper.api.components.Project;
+import ru.kelcuprum.pplhelper.api.components.VersionInfo;
 
 import java.io.IOException;
 import java.net.URI;
@@ -155,6 +156,19 @@ public class PepeLandHelperAPI {
             return new String[]{
                     ""
             };
+        }
+    }
+    // -=-=-=-
+    public static VersionInfo getAutoUpdate(){
+        String ver = FabricLoader.getInstance().getModContainer("pplhelper").get().getMetadata().getVersion().getFriendlyString();
+        if(ver.contains("+")) ver = ver.split("\\+")[0];
+        try {
+            JsonObject jsonObject = WebAPI.getJsonObject(getURI("versions?version="+uriEncode(ver), false));
+            if(isError(jsonObject)) throw new RuntimeException(jsonObject.getAsJsonObject("error").get("message").getAsString());
+            return new VersionInfo(jsonObject);
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return new VersionInfo(ver);
         }
     }
     // -=-=-=-

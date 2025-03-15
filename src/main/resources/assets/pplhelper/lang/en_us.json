@@ -103,6 +103,7 @@
   "pplhelper.project.state.build": "Строится",
   "pplhelper.project.state.planned": "В процессе планировки",
 
+  "pplhelper.update": "Скачай эту версию -> %s :)",
 
   "pplhelper.project.schematic": "Схематика",
   "pplhelper.project.schematic.total_blocks": "Макс. обьем схематики (n^3)",

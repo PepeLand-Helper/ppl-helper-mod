@@ -41,6 +41,7 @@ import ru.kelcuprum.pplhelper.api.OAuth;
 import ru.kelcuprum.pplhelper.api.PepeLandAPI;
 import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
 import ru.kelcuprum.pplhelper.api.components.Project;
+import ru.kelcuprum.pplhelper.api.components.VersionInfo;
 import ru.kelcuprum.pplhelper.api.components.user.User;
 import ru.kelcuprum.pplhelper.command.PPLHelperCommand;
 import ru.kelcuprum.pplhelper.gui.components.oneshot.overlay.DialogOverlay;
@@ -178,6 +179,23 @@ public class PepelandHelper implements ClientModInitializer {
         ClientLifecycleEvents.CLIENT_FULL_STARTED.register((s) -> {
             gameStarted = true;
             loadStaticInformation();
+            VersionInfo versionInfo = PepeLandHelperAPI.getAutoUpdate();
+            if(versionInfo.state != VersionInfo.State.LATEST){
+                if(versionInfo.state == VersionInfo.State.NEW_UPDATE){
+                    new ToastBuilder()
+                            .setTitle(Component.literal("PepeLand Helper"))
+                            .setMessage(Component.literal(String.format("Доступно новое обновление!\n%s > %s", versionInfo.version, versionInfo.latestVersion)))
+                            .setIcon(WHITE_PEPE)
+                            .buildAndShow();
+                } else {
+                    new ToastBuilder()
+                            .setTitle(Component.literal("PepeLand Helper"))
+                            .setMessage(Component.literal("У вас не опубликованная версия!"))
+                            .setIcon(WARNING)
+                            .setType(ToastBuilder.Type.ERROR)
+                            .buildAndShow();
+                }
+            }
             if(isAprilFool()){
                 if(isPWGood()) {
                     AlinLib.MINECRAFT.getLanguageManager().setSelected("ru_ru");
