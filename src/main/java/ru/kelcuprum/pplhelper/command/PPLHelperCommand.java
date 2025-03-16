@@ -40,10 +40,20 @@ public class PPLHelperCommand {
                         .then(argument("description", greedyString()).executes((s) -> sendReport(s, getString(s, "description"))))
                         .executes((s) -> sendReport(s, "<описание>")))
                 .then(literal("emotes").then(argument("emote", new EmotesArgumentType()).executes((s) -> {
-                    sendFeedback(s, Component.literal("Эмоут был скопирован\n"+getString(s, "emote")));
-                    s.getSource().getClient().keyboardHandler.setClipboard(getString(s, "emote"));
-                    return 0;
-                }))
+                            sendFeedback(s, Component.literal("Эмоут был скопирован\n"+getString(s, "emote")));
+                            s.getSource().getClient().keyboardHandler.setClipboard(getString(s, "emote"));
+                            return 0;
+                        }))
+                        .then(literal("update").executes((s) -> {
+                            PepelandHelper.emotes = null;
+                            sendFeedback(s, Component.literal("Эмоуты были обновлены"));
+                            return 0;
+                        })))
+                .then(literal("e").then(argument("emote", new EmotesArgumentType()).executes((s) -> {
+                            sendFeedback(s, Component.literal("Эмоут был скопирован\n"+getString(s, "emote")));
+                            s.getSource().getClient().keyboardHandler.setClipboard(getString(s, "emote"));
+                            return 0;
+                        }))
                         .then(literal("update").executes((s) -> {
                             PepelandHelper.emotes = null;
                             sendFeedback(s, Component.literal("Эмоуты были обновлены"));

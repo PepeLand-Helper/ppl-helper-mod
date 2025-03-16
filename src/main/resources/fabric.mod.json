@@ -19,6 +19,9 @@
   "license": "GPL-3.0",
   "environment": "client",
   "entrypoints": {
+    "preLaunch": [
+      "ru.kelcuprum.pplhelper.PepeLandHelperPreLaunch"
+    ],
     "client": [
       "ru.kelcuprum.pplhelper.PepelandHelper"
     ],

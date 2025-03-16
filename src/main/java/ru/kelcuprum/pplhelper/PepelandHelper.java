@@ -48,6 +48,7 @@ import ru.kelcuprum.pplhelper.gui.components.oneshot.overlay.PasswordScreen;
 import ru.kelcuprum.pplhelper.gui.screens.*;
 import ru.kelcuprum.pplhelper.gui.screens.configs.ConfigScreen;
 import ru.kelcuprum.pplhelper.gui.screens.message.NewUpdateScreen;
+import ru.kelcuprum.pplhelper.gui.screens.message.NewUpdateScreen$Helper;
 import ru.kelcuprum.pplhelper.utils.FollowManager;
 import ru.kelcuprum.pplhelper.utils.TabHelper;
 
@@ -183,14 +184,11 @@ public class PepelandHelper implements ClientModInitializer {
             gameStarted = true;
             loadStaticInformation();
             VersionInfo versionInfo = PepeLandHelperAPI.getAutoUpdate();
-            if(versionInfo.state != VersionInfo.State.LATEST){
+            if(versionInfo.state != VersionInfo.State.LATEST && PepelandHelper.config.getBoolean("PPLH.NOTICE", true)){
                 if(versionInfo.state == VersionInfo.State.NEW_UPDATE){
-                    new ToastBuilder()
-                            .setTitle(Component.literal("PepeLand Helper"))
-                            .setMessage(Component.literal(String.format("Доступно новое обновление!\n%s > %s", versionInfo.version, versionInfo.latestVersion)))
-                            .setIcon(WHITE_PEPE)
-                            .buildAndShow();
+                    s.setScreen(new NewUpdateScreen$Helper(s.screen, versionInfo));
                 } else {
+                    checkPackUpdates();
                     new ToastBuilder()
                             .setTitle(Component.literal("PepeLand Helper"))
                             .setMessage(Component.literal("У вас не опубликованная версия!"))
@@ -198,7 +196,7 @@ public class PepelandHelper implements ClientModInitializer {
                             .setType(ToastBuilder.Type.ERROR)
                             .buildAndShow();
                 }
-            }
+            } else checkPackUpdates();
             if(isAprilFool()){
                 if(isPWGood()) {
                     AlinLib.MINECRAFT.getLanguageManager().setSelected("ru_ru");
@@ -208,43 +206,6 @@ public class PepelandHelper implements ClientModInitializer {
                     AlinLib.MINECRAFT.getLanguageManager().setSelected(AlinLib.MINECRAFT.options.languageCode.equals("ru_ru") ? "en_us" : "ru_ru");
                     AlinLib.MINECRAFT.getLanguageManager().onResourceManagerReload(AlinLib.MINECRAFT.getResourceManager());
                 }
-            }
-            try {
-                String packVersion = getInstalledPackVersion();
-                boolean modrinth = config.getBoolean("PACK.MODRINTH", true);
-                if ((config.getBoolean("PACK_UPDATES.NOTICE", true) || config.getBoolean("PACK_UPDATES.AUTO_UPDATE", true)) && !packVersion.isEmpty()) {
-                    JsonObject packInfo = PepeLandAPI.getPackInfo(onlyEmotesCheck(), modrinth);
-                    if (config.getBoolean("PACK_UPDATES.NOTICE", true) && !config.getBoolean("PACK_UPDATES.AUTO_UPDATE", false)) {
-                        if (!packInfo.get("version").getAsString().equals(packVersion))
-                            AlinLib.MINECRAFT.setScreen(new NewUpdateScreen(s.screen, packVersion, packInfo, modrinth));
-                    } else if (config.getBoolean("PACK_UPDATES.AUTO_UPDATE", false)) {
-                        if (!packInfo.get("version").getAsString().equals(packVersion)) {
-                            PepelandHelper.downloadPack(packInfo, onlyEmotesCheck(), (ss) -> {
-                                if (ss) {
-                                    String fileName = String.format("pepeland-%1$s-v%2$s.zip", onlyEmotesCheck() ? "emotes" : "main", packInfo.get("version").getAsString());
-                                    AlinLib.MINECRAFT.getResourcePackRepository().reload();
-                                    for (Pack pack : AlinLib.MINECRAFT.getResourcePackRepository().getSelectedPacks()) {
-                                        if (pack.getDescription().getString().contains("PepeLand Pack"))
-                                            AlinLib.MINECRAFT.getResourcePackRepository().removePack(pack.getId());
-                                    }
-                                    for (Pack pack : AlinLib.MINECRAFT.getResourcePackRepository().getAvailablePacks()) {
-                                        if (pack.getId().contains(fileName))
-                                            AlinLib.MINECRAFT.getResourcePackRepository().addPack(pack.getId());
-                                    }
-                                    AlinLib.MINECRAFT.options.updateResourcePacks(AlinLib.MINECRAFT.getResourcePackRepository());
-
-                                    new ToastBuilder().setTitle(Component.translatable("pplhelper"))
-                                            .setIcon(PepelandHelper.Icons.WHITE_PEPE)
-                                            .setMessage(Component.translatable("pplhelper.pack.downloaded", packInfo.get("version").getAsString())).buildAndShow();
-                                } else
-                                    new ToastBuilder().setTitle(Component.translatable("pplhelper")).setMessage(Component.translatable("pplhelper.pack.file_broken")).setIcon(DONT).buildAndShow();
-                            }, modrinth);
-                        }
-                    }
-                }
-            } catch (Exception ex){
-                new ToastBuilder().setTitle(Component.translatable("pplhelper")).setMessage(Component.literal("Произошла ошибка авто-обновления, загляните в логи!")).setType(ToastBuilder.Type.ERROR).setIcon(DONT).buildAndShow();
-                ex.printStackTrace();
             }
         });
         ClientLifecycleEvents.CLIENT_STOPPING.register((s) -> {
@@ -303,6 +264,46 @@ public class PepelandHelper implements ClientModInitializer {
 //                .set("pplhelper.selected_project.id", () -> Value.number(selectedProject == null ? 0 : selectedProject.id))
 //                .set("pplhelper.selected_project.coordinates", () -> Value.string(selectedProject == null ? "" : getStringSelectedProjectCoordinates()))
                 );
+    }
+
+    public static void checkPackUpdates(){
+        try {
+            String packVersion = getInstalledPackVersion();
+            boolean modrinth = config.getBoolean("PACK.MODRINTH", true);
+            if ((config.getBoolean("PACK_UPDATES.NOTICE", true) || config.getBoolean("PACK_UPDATES.AUTO_UPDATE", true)) && !packVersion.isEmpty()) {
+                JsonObject packInfo = PepeLandAPI.getPackInfo(onlyEmotesCheck(), modrinth);
+                if (config.getBoolean("PACK_UPDATES.NOTICE", true) && !config.getBoolean("PACK_UPDATES.AUTO_UPDATE", false)) {
+                    if (!packInfo.get("version").getAsString().equals(packVersion))
+                        AlinLib.MINECRAFT.setScreen(new NewUpdateScreen(AlinLib.MINECRAFT.screen, packVersion, packInfo, modrinth));
+                } else if (config.getBoolean("PACK_UPDATES.AUTO_UPDATE", false)) {
+                    if (!packInfo.get("version").getAsString().equals(packVersion)) {
+                        PepelandHelper.downloadPack(packInfo, onlyEmotesCheck(), (ss) -> {
+                            if (ss) {
+                                String fileName = String.format("pepeland-%1$s-v%2$s.zip", onlyEmotesCheck() ? "emotes" : "main", packInfo.get("version").getAsString());
+                                AlinLib.MINECRAFT.getResourcePackRepository().reload();
+                                for (Pack pack : AlinLib.MINECRAFT.getResourcePackRepository().getSelectedPacks()) {
+                                    if (pack.getDescription().getString().contains("PepeLand Pack"))
+                                        AlinLib.MINECRAFT.getResourcePackRepository().removePack(pack.getId());
+                                }
+                                for (Pack pack : AlinLib.MINECRAFT.getResourcePackRepository().getAvailablePacks()) {
+                                    if (pack.getId().contains(fileName))
+                                        AlinLib.MINECRAFT.getResourcePackRepository().addPack(pack.getId());
+                                }
+                                AlinLib.MINECRAFT.options.updateResourcePacks(AlinLib.MINECRAFT.getResourcePackRepository());
+
+                                new ToastBuilder().setTitle(Component.translatable("pplhelper"))
+                                        .setIcon(PepelandHelper.Icons.WHITE_PEPE)
+                                        .setMessage(Component.translatable("pplhelper.pack.downloaded", packInfo.get("version").getAsString())).buildAndShow();
+                            } else
+                                new ToastBuilder().setTitle(Component.translatable("pplhelper")).setMessage(Component.translatable("pplhelper.pack.file_broken")).setIcon(DONT).buildAndShow();
+                        }, modrinth);
+                    }
+                }
+            }
+        } catch (Exception ex){
+            new ToastBuilder().setTitle(Component.translatable("pplhelper")).setMessage(Component.literal("Произошла ошибка авто-обновления, загляните в логи!")).setType(ToastBuilder.Type.ERROR).setIcon(DONT).buildAndShow();
+            ex.printStackTrace();
+        }
     }
 
     public static boolean isAprilFool(){

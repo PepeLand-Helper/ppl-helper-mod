@@ -62,6 +62,10 @@
   "pplhelper.pack.download_update": "Установить обновление?",
   "pplhelper.pack.installed": "Установленная версия пака:",
 
+
+  "pplhelper.update.avalible": "Доступно обновление PepeLand Helper!",
+  "pplhelper.update.avalible.description": "У вас старая версия мода v%1$s!\nВы можете обновиться на v%2$s и получить новый функционал и исправление проблем или же отказаться от обновления и быть чиловым парнем или чиловой девушкой",
+
   "pplhelper.pack.download_screen": "Идет загрузка пака",
   "pplhelper.pack.download_screen.wait": "Пожалуйста, подождите",
   "pplhelper.pack.downloaded": "Ресурс-пак загружен!",
