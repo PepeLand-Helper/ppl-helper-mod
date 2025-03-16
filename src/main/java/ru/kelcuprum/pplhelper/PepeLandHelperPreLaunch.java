@@ -38,16 +38,16 @@ public class PepeLandHelperPreLaunch implements PreLaunchEntrypoint  {
     public static void installUpdates(VersionInfo versionInfo) throws IOException {
         PepeLandAPI.downloadFile(versionInfo.file,  "./mods", String.format("pplhelper-%s.jar", versionInfo.latestVersion));
         boolean removed = true;
-        if(FabricLoader.getInstance().isDevelopmentEnvironment()) LOG.log("не понимаю, не удаляю");
+        if(FabricLoader.getInstance().isDevelopmentEnvironment()) LOG.log("не быкую, не блокирую");
         else {
             Path path = FabricLoaderImpl.INSTANCE.getModContainer("pplhelper").get().getOrigin().getPaths().getFirst();
             removed = path.toFile().delete();
             LOG.log(removed ? "Старая версия была удалена" : "Чет старая версия не удалилась, не понимаю, блокирую!");
         }
 
-        String message = "Обновление "+versionInfo.latestVersion+" было успешно загружено!\nБудьте добры, перезагрузите игру";
-        TinyFileDialogs.tinyfd_messageBox("PepeLand Helper | Авто-обновление", message, "ok", "info", false);
-        if(!removed) TinyFileDialogs.tinyfd_messageBox("PepeLand Helper | Авто-обновление", "Нам не удалось удалить старую версию мода.\nТак-что будьте еще добры удалить старую версию.", "ok", "error", false);
+        String message = "Обновление "+versionInfo.latestVersion+" было успешно загружено!\nБудьте добры, перезагрузите игру.";
+        TinyFileDialogs.tinyfd_messageBox("PepeLand Helper | Автообновление", message, "ok", "info", false);
+        if(!removed) TinyFileDialogs.tinyfd_messageBox("PepeLand Helper | Автообновление", "Нам не удалось удалить старую версию мода.\nТак что будьте еще добры удалить старую версию.", "ok", "error", false);
         System.exit(0);
     }
 }

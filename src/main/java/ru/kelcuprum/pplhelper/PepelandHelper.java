@@ -49,6 +49,7 @@ import ru.kelcuprum.pplhelper.gui.screens.*;
 import ru.kelcuprum.pplhelper.gui.screens.configs.ConfigScreen;
 import ru.kelcuprum.pplhelper.gui.screens.message.NewUpdateScreen;
 import ru.kelcuprum.pplhelper.gui.screens.message.NewUpdateScreen$Helper;
+import ru.kelcuprum.pplhelper.gui.style.VanillaLikeStyle;
 import ru.kelcuprum.pplhelper.utils.FollowManager;
 import ru.kelcuprum.pplhelper.utils.TabHelper;
 
@@ -84,6 +85,7 @@ public class PepelandHelper implements ClientModInitializer {
     public static String[] pct = new String[]{":("};
     public static String[] nc = new String[]{":("};
     public static String[] nct = new String[]{":("};
+    public static VanillaLikeStyle vanillaLikeStyle = new VanillaLikeStyle();
     //
 //    public static Project selectedProject;
 
@@ -92,7 +94,7 @@ public class PepelandHelper implements ClientModInitializer {
                 new ButtonBuilder(Component.translatable("pplhelper.news")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new NewsListScreen(current))).setIcon(WIKI).setCentered(false),
                 new ButtonBuilder(Component.translatable("pplhelper.projects")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ProjectsScreen(current))).setIcon(PROJECTS).setCentered(false),
                 new ButtonBuilder(Component.translatable("pplhelper.commands")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new CommandsScreen().build(parent))).setIcon(COMMANDS).setCentered(false),
-                new ButtonBuilder(Component.translatable("pplhelper.emotes")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new EmotesScreen().build(parent))).setIcon(CLOWNFISH).setCentered(false),
+                new ButtonBuilder(Component.translatable("pplhelper.emotes")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new EmotesScreen().build(parent))).setIcon(CLOWNFISH).setCentered(false).setActive(getInstalledPack() != null),
                 new ButtonBuilder(Component.translatable("pplhelper.mods")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ModsScreen().build(parent))).setIcon(Icons.MODS).setCentered(false),
                 new ButtonBuilder(Component.translatable("pplhelper.pack")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new UpdaterScreen().build(parent))).setIcon(Icons.PACK_INFO).setCentered(false),
                 getProfileButton(parent)

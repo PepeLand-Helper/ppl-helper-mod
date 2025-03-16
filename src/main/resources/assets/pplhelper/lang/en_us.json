@@ -27,6 +27,7 @@
   "pplhelper.key.unfollow_project": "Открепить проект",
   "pplhelper.configs.enable_toast": "Включить уведомления",
   "pplhelper.configs.menu.lobby": "Кнопка лобби",
+  "pplhelper.configs.menu.lobby.alinlib": "Кнопка лобби в стиле AlinLib",
   "pplhelper.configs.selected_project.auto_hide": "Радиус скрытия закрепленного проекта",
   "pplhelper.configs.abi.title": "Action Bar Info",
   "pplhelper.configs.abi": "Интеграция с ABI",
@@ -109,7 +110,7 @@
 
   "pplhelper.update": "Скачай эту версию -> %s :)",
   "pplhelper.emotes": "Эмоуты",
-  "pplhelper.emotes.description": "Список эмоутов, которые присутствуют в установленном ресурс паке\nЧтобы скопировать эмоут, нажмите на него",
+  "pplhelper.emotes.description": "Список эмоутов, которые присутствуют в установленном ресурс-паке\nЧтобы скопировать эмоут, нажмите на него",
   "pplhelper.emotes.copy": "Эмоут \"%s\" был скопирован в буфер обмена",
 
   "pplhelper.project.schematic": "Схематика",
