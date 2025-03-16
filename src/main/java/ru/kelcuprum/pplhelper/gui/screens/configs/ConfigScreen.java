@@ -21,7 +21,8 @@ public class ConfigScreen {
     public Screen build(Screen parent){
         this.parent = parent;
         ConfigScreenBuilder builder = new ConfigScreenBuilder(parent, Component.translatable("pplhelper"))
-                .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.configs")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ConfigScreen().build(parent))).setIcon(OPTIONS));
+                .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.configs")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ConfigScreen().build(parent))).setIcon(OPTIONS))
+                .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.chat_filters")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ChatFiltersScreen().build(parent))).setIcon(LIST));
         if(PepelandHelper.config.getBoolean("IM_A_TEST_SUBJECT", false))
             builder.addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.test"), (s) ->AlinLib.MINECRAFT.setScreen(new TestConfigScreen().build(parent))).setIcon(CLOWNFISH));
 

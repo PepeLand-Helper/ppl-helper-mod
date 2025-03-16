@@ -50,6 +50,17 @@
   "pplhelper.configs.pack_updates.modrinth": "Загружать информацию с Modrinth (API PPL Helper)",
   "pplhelper.configs.pack_updates.only_emote.citresewn_not_installed": "У вас не установлен CIT Resewn, поэтому мод будет загружать только эмоуты",
 
+  "pplhelper.chat_filters": "Фильтры чата",
+
+  "pplhelper.chat_filters.global": "Отключить глобальный чат",
+  "pplhelper.chat_filters.mystery_box": "Отключить сообщения Mystery Box",
+  "pplhelper.chat_filters.worlds": "Сообщение из миров",
+  "pplhelper.chat_filters.leave": "[-] Сообщение выхода",
+  "pplhelper.chat_filters.join": "[-] Сообщение входа",
+  "pplhelper.chat_filters.friends": "Друзья (исключения)",
+  "pplhelper.chat_filters.words": "Фильтры слов",
+  "pplhelper.chat_filters.nwords": "Слова",
+
   "pplhelper.test": "Тестовый объект",
   "pplhelper.test.im_a_test_subject": "Я подопытный",
   "pplhelper.test.im_a_test_subject.enable_world": "Замена мира",
