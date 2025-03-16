@@ -54,7 +54,7 @@
 
   "pplhelper.chat_filters.global": "Отключить глобальный чат",
   "pplhelper.chat_filters.mystery_box": "Отключить сообщения Mystery Box",
-  "pplhelper.chat_filters.worlds": "Сообщение из миров",
+  "pplhelper.chat_filters.worlds": "Сообщения из отдельных миров",
   "pplhelper.chat_filters.leave": "[-] Сообщение выхода",
   "pplhelper.chat_filters.join": "[-] Сообщение входа",
   "pplhelper.chat_filters.friends": "Друзья (исключения)",
