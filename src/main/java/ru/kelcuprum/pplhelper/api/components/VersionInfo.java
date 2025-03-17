@@ -9,6 +9,7 @@ public class VersionInfo {
     public String latestVersion = "";
     public String page = "";
     public String file = "";
+    public String changelog = "";
     public VersionInfo(JsonObject object){
         if(object.get("status").getAsString().equals("new_update")) state = State.NEW_UPDATE;
         else if(object.get("status").getAsString().equals("unpublished")) state = State.UNPUBLISHED;
@@ -17,6 +18,7 @@ public class VersionInfo {
         if(state == State.NEW_UPDATE){
             JsonObject update = object.getAsJsonObject("update");
             latestVersion = update.get("version").getAsString();
+            changelog = update.get("changelog").getAsString();
             page = update.get("page").getAsString();
             file = update.get("url").getAsString();
         } else{

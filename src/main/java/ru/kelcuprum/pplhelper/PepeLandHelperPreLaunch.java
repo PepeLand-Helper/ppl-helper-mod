@@ -41,7 +41,7 @@ public class PepeLandHelperPreLaunch implements PreLaunchEntrypoint  {
             LOG.log("Файл загружен");
         }
 
-        String message = "Обновление "+versionInfo.latestVersion+" было успешно загружено!\nБудьте добры, перезагрузите игру.";
+        String message = "Обновление "+versionInfo.latestVersion+" было успешно загружено!\nБудьте добры, перезагрузите игру.\n\nChange-log:\n"+versionInfo.changelog;
         TinyFileDialogs.tinyfd_messageBox("PepeLand Helper | Автообновление", message, "ok", "info", false);
         System.exit(0);
     }
