@@ -42,6 +42,12 @@
   "pplhelper.configs.timer": "Таймеры",
   "pplhelper.configs.timer.restart": "Рестарт",
   "pplhelper.configs.timer.join": "До возможности зайти на сервер",
+
+  "pplhelper.configs.updater": "Обновления проекта",
+  "pplhelper.configs.updater.notice": "Оповещения о новых версиях",
+  "pplhelper.configs.updater.auto_update": "Автообновление мода",
+  "pplhelper.configs.updater.auto_update.file_system_warning": "У вас стоит операционная система Windows, в которой файловая система не позволяет удалить предыдущую версию мода. Так что не удивляйтесь ошибке о неудаче удаления файла, это норма для Windows",
+
   "pplhelper.configs.urls": "Адреса",
   "pplhelper.configs.modrinth_url": "Modrinth",
   "pplhelper.configs.pack_updates.notice": "Оповещения о новой версии пака",

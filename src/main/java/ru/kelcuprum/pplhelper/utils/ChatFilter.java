@@ -56,7 +56,7 @@ public class ChatFilter {
     public static boolean isContainsNWords(String message){
         boolean response = false;
         String[] args = message.split(" ");
-        String[] words = PepelandHelper.config.getString("CHAT.FILTER.WORDS", "").replaceAll("[ ]", "").split(",");
+        String[] words = PepelandHelper.config.getString("CHAT.FILTER.NWORDS", "").replaceAll("[ ]", "").split(",");
         for(String arg : args) {
             for(String word : words) {
                 if(arg.equals(word)){

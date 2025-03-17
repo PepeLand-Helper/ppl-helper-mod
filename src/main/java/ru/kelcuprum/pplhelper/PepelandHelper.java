@@ -94,7 +94,10 @@ public class PepelandHelper implements ClientModInitializer {
                 new ButtonBuilder(Component.translatable("pplhelper.news")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new NewsListScreen(current))).setIcon(WIKI).setCentered(false),
                 new ButtonBuilder(Component.translatable("pplhelper.projects")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ProjectsScreen(current))).setIcon(PROJECTS).setCentered(false),
                 new ButtonBuilder(Component.translatable("pplhelper.commands")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new CommandsScreen().build(parent))).setIcon(COMMANDS).setCentered(false),
-                new ButtonBuilder(Component.translatable("pplhelper.emotes")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new EmotesScreen().build(parent))).setIcon(CLOWNFISH).setCentered(false).setActive(getInstalledPack() != null),
+                new ButtonBuilder(Component.translatable("pplhelper.emotes"))
+                        .setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new EmotesScreen().build(parent)))
+                        .setIcon(getInstalledPack() == null ? CLOWNFISH : GuiUtils.getResourceLocation("myemotes", "textures/font/emotes/clueless.png"))
+                        .setCentered(false).setActive(getInstalledPack() != null),
                 new ButtonBuilder(Component.translatable("pplhelper.mods")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ModsScreen().build(parent))).setIcon(Icons.MODS).setCentered(false),
                 new ButtonBuilder(Component.translatable("pplhelper.pack")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new UpdaterScreen().build(parent))).setIcon(Icons.PACK_INFO).setCentered(false),
                 getProfileButton(parent)
@@ -191,7 +194,7 @@ public class PepelandHelper implements ClientModInitializer {
                     s.setScreen(new NewUpdateScreen$Helper(s.screen, versionInfo));
                 } else {
                     checkPackUpdates();
-                    new ToastBuilder()
+                    if(!FabricLoader.getInstance().isDevelopmentEnvironment()) new ToastBuilder()
                             .setTitle(Component.literal("PepeLand Helper"))
                             .setMessage(Component.literal("У вас не опубликованная версия!"))
                             .setIcon(WARNING)
@@ -294,7 +297,7 @@ public class PepelandHelper implements ClientModInitializer {
                                 AlinLib.MINECRAFT.options.updateResourcePacks(AlinLib.MINECRAFT.getResourcePackRepository());
 
                                 new ToastBuilder().setTitle(Component.translatable("pplhelper"))
-                                        .setIcon(PepelandHelper.Icons.WHITE_PEPE)
+                                        .setIcon(Icons.WHITE_PEPE)
                                         .setMessage(Component.translatable("pplhelper.pack.downloaded", packInfo.get("version").getAsString())).buildAndShow();
                             } else
                                 new ToastBuilder().setTitle(Component.translatable("pplhelper")).setMessage(Component.translatable("pplhelper.pack.file_broken")).setIcon(DONT).buildAndShow();

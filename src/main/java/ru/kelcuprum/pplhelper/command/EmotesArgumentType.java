@@ -18,7 +18,11 @@ public class EmotesArgumentType implements ArgumentType<String> {
     }
     @Override
     public String parse(StringReader reader) throws CommandSyntaxException {
-        return reader.readString();
+        final int start = reader.getCursor();
+        while (reader.canRead()) {
+            reader.skip();
+        }
+        return reader.getString().substring(start, reader.getCursor());
     }
 
     @Override
@@ -30,7 +34,7 @@ public class EmotesArgumentType implements ArgumentType<String> {
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
         try {
             for(String world : PepelandHelper.getEmotesPath().keySet())
-                if(!world.contains("black.png")) builder.suggest(String.format("\"%s\"", PepelandHelper.getEmotesPath().get(world)));
+                if(!world.contains("black.png")) builder.suggest(String.format("%s", PepelandHelper.getEmotesPath().get(world)));
         } catch (Exception e) {
 
         }
