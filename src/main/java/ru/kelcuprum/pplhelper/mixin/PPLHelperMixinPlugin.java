@@ -30,8 +30,8 @@ public class PPLHelperMixinPlugin implements IMixinConfigPlugin {
         if(!mixinClassName.startsWith("ru.kelcuprum.pplhelper.mixin."))
             return false;
         if(mixinClassName.startsWith("ru.kelcuprum.pplhelper.mixin.ABIMixin")){
-            if(isInstalledABI) LOG.warn("Mixin %s for %s loaded, %s", mixinClassName, targetClassName, "Action Bar Info installed");
-            return isInstalledABI;
+            if(isInstalledABI && FabricLoader.getInstance().getModContainer("actionbarinfo").get().getMetadata().getVersion().getFriendlyString().startsWith("1.")) LOG.warn("Mixin %s for %s loaded, %s", mixinClassName, targetClassName, "Action Bar Info installed");
+            return isInstalledABI && FabricLoader.getInstance().getModContainer("actionbarinfo").get().getMetadata().getVersion().getFriendlyString().startsWith("1.");
         }
         if(mixinClassName.startsWith("ru.kelcuprum.pplhelper.mixin.april")){
             return (LocalDate.now().getMonthValue() == 4 && LocalDate.now().getDayOfMonth() == 1) || config.getBoolean("IM_A_TEST_SUBJECT.APRIL", false);

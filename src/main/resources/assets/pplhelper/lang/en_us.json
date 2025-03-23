@@ -25,12 +25,17 @@
   "pplhelper.key.open.projects": "Открыть проекты",
   "pplhelper.key.open.config": "Открыть настройки",
   "pplhelper.key.unfollow_project": "Открепить проект",
+  "pplhelper.key.stealth": "Режим стелса на сервере",
+  "pplhelper.key.stealth.world": "Переключение стелса в текущем мире",
+  "pplhelper.key.stealth.common_world": "Переключение стелса во всех мирах",
+
   "pplhelper.configs.enable_toast": "Включить уведомления",
   "pplhelper.configs.menu.lobby": "Кнопка лобби",
   "pplhelper.configs.menu.lobby.alinlib": "Кнопка лобби в стиле AlinLib",
   "pplhelper.configs.selected_project.auto_hide": "Радиус скрытия закрепленного проекта",
   "pplhelper.configs.abi.title": "Action Bar Info",
   "pplhelper.configs.abi": "Интеграция с ABI",
+  "pplhelper.configs.abi.legacy": "У Вас установлена старая версия Action Bar Info, в скором времени поддержка данной версии прекратится в PepeLand Helper. Рекомендуем обновится до последней версии",
   "pplhelper.configs.abi.info": "Информация",
   "pplhelper.configs.sproject.abi": "Показ закрепленного проекта в ABI",
   "pplhelper.configs.api": "PepeLand Helper API",
@@ -74,7 +79,7 @@
   "pplhelper.test.im_a_test_subject.project": "Тестовый проект",
 
 
-  "pplhelper.pack": "Ресурс-пак",
+  "pplhelper.pack": "Обновление ресурс-пака ППЛ",
   "pplhelper.pack.not_installed": "У вас не установлен официальный пак!",
   "pplhelper.pack.download": "Скачать?",
   "pplhelper.pack.download_update": "Установить обновление?",
@@ -181,11 +186,15 @@
   "pplhelper.mods.description": "Список модов и ресурс-паков, которые могут улучшить игру на сервере.",
   "pplhelper.mods.packs": "Ресурс-паки",
 
-  "abi.info.pplhelper": "\\n&6PPL:&r &6{pplhelper.world}&r {pplhelper.tps}TPS &6{pplhelper.online}/{pplhelper.max_online}&r",
+  "abi.info.pplhelper": "&6PPL:&r &6{pplhelper.world}&r {pplhelper.tps}TPS &6{pplhelper.online}/{pplhelper.max_online}&r",
 
   "resourcePack.pplhelper.icons": "Иконки PPL Helper",
   "resourcePack.pplhelper.icons.description": "Иконки для игрового интерфейса\nТаймер, ABI и т.д.",
 
+  "pplhelper.configs.stealth.title": "Стелс",
+  "pplhelper.configs.stealth": "Стелс на сервере",
+  "pplhelper.configs.stealth.current_world": "Стелс в определенных мирах",
+  "pplhelper.configs.stealth.worlds": "Стелс в определенных мирах",
 
 
 

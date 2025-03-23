@@ -78,10 +78,11 @@ dependencies {
         modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
         modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
         modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
-        modImplementation "maven.modrinth:abi:${rootProject.abi}"
+//        modImplementation "maven.modrinth:abi:${rootProject.abi}"
         modImplementation "maven.modrinth:litematica:${rootProject.litematica}"
         modImplementation "maven.modrinth:malilib:${rootProject.malilib}"
         modImplementation "ru.kelcuprum:AlinLib-fabric:${rootProject.alinlib}+mc${project.alinlib_minecraft_version == null ? project.minecraft_version : project.alinlib_minecraft_version}"
+        modImplementation "ru.kelcuprum:ActionBarInfo-fabric:${rootProject.abi}+mc${project.abi_minecraft_version == null ? project.minecraft_version : project.abi_minecraft_version}"
     }
 
 
@@ -162,7 +163,7 @@ modrinth {
     else loaders = [mod_brand]
     dependencies {
 //        required.project "alinlib"
-        required.version "UOwp73RE"
+        required.version "AUF5Pygs"
         if(mod_brand == "fabric"){
             required.project "fabric-api"
             optional.project "modmenu"

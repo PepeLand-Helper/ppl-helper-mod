@@ -37,6 +37,7 @@ import ru.kelcuprum.alinlib.gui.components.builder.AbstractBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
 import ru.kelcuprum.alinlib.gui.screens.ConfirmScreen;
 import ru.kelcuprum.alinlib.gui.toast.ToastBuilder;
+import ru.kelcuprum.pplhelper.abi.ABIManager;
 import ru.kelcuprum.pplhelper.api.OAuth;
 import ru.kelcuprum.pplhelper.api.PepeLandAPI;
 import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
@@ -166,9 +167,24 @@ public class PepelandHelper implements ClientModInitializer {
 
     public static String[] emotes = new String[]{};
 
+    public static boolean isABILegacy(){
+        return FabricLoader.getInstance().getModContainer("actionbarinfo").get().getMetadata().getVersion().getFriendlyString().startsWith("1.");
+    }
+
     @Override
     public void onInitializeClient() {
         LOG.log("-=-=-=-=-=-=-=-", Level.WARN);
+        if(!FabricLoader.getInstance().getModContainer("alinlib").get().getMetadata().getVersion().getFriendlyString().startsWith("2.1.0-alpha")){
+            ru.kelcuprum.alinlib.utils.StealthManager.registerActiveManager(() -> {
+                boolean isActive = false;
+                if(config.getBoolean("STEALTH", false) && playerInPPL() && TabHelper.getWorld() != null){
+                    if(config.getBoolean("STEALTH.CURRENT_WORLD", true)){
+                        if(config.getBoolean(String.format("STEALTH.WORLD.%s", TabHelper.getWorld().shortName.toUpperCase()), true)) isActive = true;
+                    } else isActive = true;
+                }
+                return isActive;
+            });
+        }
         if(isAprilFool()){
             if(isPWGood()) LOG.log("The World Machine is starting...", Level.WARN);
             LOG.log("Данная версия OneShot не является официальной частью сети серверов The World Machine", Level.WARN);
@@ -176,6 +192,7 @@ public class PepelandHelper implements ClientModInitializer {
             LOG.log("Данный проект не является официальной частью сети серверов PepeLand", Level.WARN);
         }
         LOG.log("-=-=-=-=-=-=-=-", Level.WARN);
+        if(isInstalledABI && !isABILegacy()) ABIManager.register();
         loadUser(false);
         // -=-=-=- -=-=-=-
         // -=-=-=- Ресурс пак -=-=-=-
@@ -234,6 +251,21 @@ public class PepelandHelper implements ClientModInitializer {
                 GLFW.GLFW_KEY_UNKNOWN, // The keycode of the key
                 "pplhelper"
         ));
+        KeyMapping key4 = KeyMappingHelper.register(new KeyMapping(
+                "pplhelper.key.stealth",
+                GLFW.GLFW_KEY_UNKNOWN, // The keycode of the key
+                "pplhelper"
+        ));
+        KeyMapping key5 = KeyMappingHelper.register(new KeyMapping(
+                "pplhelper.key.stealth.world",
+                GLFW.GLFW_KEY_UNKNOWN, // The keycode of the key
+                "pplhelper"
+        ));
+        KeyMapping key6 = KeyMappingHelper.register(new KeyMapping(
+                "pplhelper.key.stealth.common_world",
+                GLFW.GLFW_KEY_UNKNOWN, // The keycode of the key
+                "pplhelper"
+        ));
         ClientTickEvents.START_CLIENT_TICK.register((s) -> {
             if(gameStarted && loginAval != (user == null)){
                 loginAval = user == null;
@@ -250,7 +282,11 @@ public class PepelandHelper implements ClientModInitializer {
             updateCoordinatesBB();
             if (key1.consumeClick()) AlinLib.MINECRAFT.setScreen(new ProjectsScreen(AlinLib.MINECRAFT.screen));
             if (key2.consumeClick()) AlinLib.MINECRAFT.setScreen(new ConfigScreen().build(AlinLib.MINECRAFT.screen));
-//            if (key3.consumeClick() && selectedProject != null) selectedProject = null;
+            if (key3.consumeClick() && FollowManager.getCurrentCoordinates() != null) FollowManager.resetCoordinates();
+            if (key4.consumeClick()) config.setBoolean("STEALTH", !config.getBoolean("STEALTH", false));
+            if (key5.consumeClick() && TabHelper.getWorld() != null && config.getBoolean("STEALTH.CURRENT_WORLD", true))
+                config.setBoolean(String.format("STEALTH.WORLD.%s", TabHelper.getWorld().shortName.toUpperCase()), !config.getBoolean(String.format("STEALTH.WORLD.%s", TabHelper.getWorld().shortName.toUpperCase()), true));
+            if (key6.consumeClick()) config.setBoolean("STEALTH.CURRENT_WORLD", !config.getBoolean("STEALTH.CURRENT_WORLD", true));
         });
         // -=-=-=- Локализация -=-=-=-
         LocalizationEvents.DEFAULT_PARSER_INIT.register(starScript -> starScript.ss.set("pplhelper.world", () -> {

@@ -16,6 +16,7 @@ import static java.lang.Integer.parseInt;
 import static ru.kelcuprum.pplhelper.PepelandHelper.*;
 import static ru.kelcuprum.pplhelper.utils.FollowManager.dist;
 
+@Deprecated
 @Mixin(ActionBarInfo.class)
 public class ABIMixin {
     @Inject(method = "getMessage", at = @At("RETURN"), remap = false, cancellable = true)
@@ -23,7 +24,7 @@ public class ABIMixin {
         if (!PepelandHelper.playerInPPL()) return;
         String msg = cir.getReturnValue();
         if (PepelandHelper.config.getBoolean("ABI", false)) {
-            msg += AlinLib.localization.getParsedText(Localization.fixFormatCodes(PepelandHelper.config.getString("INFO.PPLHELPER", ActionBarInfo.localization.getLocalization("info.pplhelper", false, false, false))));
+            msg += "\\n" + AlinLib.localization.getParsedText(Localization.fixFormatCodes(PepelandHelper.config.getString("INFO.PPLHELPER", ActionBarInfo.localization.getLocalization("info.pplhelper", false, false, false))));
         }
         FollowManager.Coordinates coordinates = FollowManager.getCurrentCoordinates();
         if (coordinates != null && TabHelper.getWorld() != null && PepelandHelper.config.getBoolean("SPROJECT.ABI", true)) {
