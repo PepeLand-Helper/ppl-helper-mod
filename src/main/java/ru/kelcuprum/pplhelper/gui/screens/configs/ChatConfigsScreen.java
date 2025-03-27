@@ -10,7 +10,7 @@ import ru.kelcuprum.alinlib.gui.components.builder.editbox.EditBoxBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.text.HorizontalRuleBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.text.TextBuilder;
 import ru.kelcuprum.alinlib.gui.screens.ConfigScreenBuilder;
-import ru.kelcuprum.pplhelper.PepelandHelper;
+import ru.kelcuprum.pplhelper.PepeLandHelper;
 import ru.kelcuprum.pplhelper.utils.TabHelper;
 
 import static ru.kelcuprum.alinlib.gui.Icons.*;
@@ -24,32 +24,32 @@ public class ChatConfigsScreen {
                 .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.configs.chat")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ChatConfigsScreen().build(parent))).setIcon(LIST));
         if(!FabricLoader.getInstance().getModContainer("alinlib").get().getMetadata().getVersion().getFriendlyString().startsWith("2.1.0-alpha"))
             builder.addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.configs.stealth.title")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new StealthScreen().build(parent))).setIcon(INVISIBILITY));
-        if(PepelandHelper.config.getBoolean("IM_A_TEST_SUBJECT", false))
+        if(PepeLandHelper.config.getBoolean("IM_A_TEST_SUBJECT", false))
             builder.addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.test"), (s) ->AlinLib.MINECRAFT.setScreen(new TestConfigScreen().build(parent))).setIcon(CLOWNFISH));
 
         builder.addWidget(new TextBuilder(Component.translatable("pplhelper.configs.chat")))
-                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.chat.global"), false).setConfig(PepelandHelper.config,"CHAT.GLOBAL"))
-                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.chat.global.toggle"), true).setConfig(PepelandHelper.config,"CHAT.GLOBAL.TOGGLE"))
+                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.chat.global"), false).setConfig(PepeLandHelper.config,"CHAT.GLOBAL"))
+                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.chat.global.toggle"), true).setConfig(PepeLandHelper.config,"CHAT.GLOBAL.TOGGLE"))
                 .addWidget(new TextBuilder(Component.translatable("pplhelper.configs.chat.global.description")).setType(TextBuilder.TYPE.BLOCKQUOTE))
                 // Фильтры чата
                 .addWidget(new HorizontalRuleBuilder(Component.translatable("pplhelper.chat_filters")))
-                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.chat_filters"), false).setConfig(PepelandHelper.config,"CHAT.FILTER"))
-                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.chat_filters.global"), false).setConfig(PepelandHelper.config,"CHAT.FILTER.GLOBAL"));
+                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.chat_filters"), false).setConfig(PepeLandHelper.config,"CHAT.FILTER"))
+                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.chat_filters.global"), false).setConfig(PepeLandHelper.config,"CHAT.FILTER.GLOBAL"));
 
-                if(PepelandHelper.worldsLoaded) {
+                if(PepeLandHelper.worldsLoaded) {
                     builder.addWidget(new HorizontalRuleBuilder(Component.translatable("pplhelper.chat_filters.worlds")));
-                    for(String world : PepelandHelper.worlds){
+                    for(String world : PepeLandHelper.worlds){
                         TabHelper.Worlds worldObject = TabHelper.getWorldByShortName(world);
-                        if(worldObject != null) builder.addWidget(new ButtonBooleanBuilder(worldObject.title, false).setConfig(PepelandHelper.config,String.format("CHAT.FILTER.WORLD.%s", worldObject.shortName.toUpperCase())));
+                        if(worldObject != null) builder.addWidget(new ButtonBooleanBuilder(worldObject.title, false).setConfig(PepeLandHelper.config,String.format("CHAT.FILTER.WORLD.%s", worldObject.shortName.toUpperCase())));
                     }
                     builder.addWidget(new HorizontalRuleBuilder());
                 }
-                builder.addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.chat_filters.mystery_box"), true).setConfig(PepelandHelper.config,"CHAT.FILTER.MYSTERY_BOX"))
-                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.chat_filters.leave"), false).setConfig(PepelandHelper.config,"CHAT.FILTER.LEAVE"))
-                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.chat_filters.join"), false).setConfig(PepelandHelper.config,"CHAT.FILTER.JOIN"))
-                .addWidget(new EditBoxBuilder(Component.translatable("pplhelper.chat_filters.friends")).setValue("PWGoood, Gwinsen, Pooshka").setConfig(PepelandHelper.config, "CHAT.FILTER.FRIENDS"))
-                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.chat_filters.words"), false).setConfig(PepelandHelper.config,"CHAT.FILTER.WORDS"))
-                .addWidget(new EditBoxBuilder(Component.translatable("pplhelper.chat_filters.nwords")).setValue("").setConfig(PepelandHelper.config, "CHAT.FILTER.NWORDS"));
+                builder.addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.chat_filters.mystery_box"), true).setConfig(PepeLandHelper.config,"CHAT.FILTER.MYSTERY_BOX"))
+                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.chat_filters.leave"), false).setConfig(PepeLandHelper.config,"CHAT.FILTER.LEAVE"))
+                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.chat_filters.join"), false).setConfig(PepeLandHelper.config,"CHAT.FILTER.JOIN"))
+                .addWidget(new EditBoxBuilder(Component.translatable("pplhelper.chat_filters.friends")).setValue("PWGoood, Gwinsen, Pooshka").setConfig(PepeLandHelper.config, "CHAT.FILTER.FRIENDS"))
+                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.chat_filters.words"), false).setConfig(PepeLandHelper.config,"CHAT.FILTER.WORDS"))
+                .addWidget(new EditBoxBuilder(Component.translatable("pplhelper.chat_filters.nwords")).setValue("").setConfig(PepeLandHelper.config, "CHAT.FILTER.NWORDS"));
 
         return builder.build();
     }

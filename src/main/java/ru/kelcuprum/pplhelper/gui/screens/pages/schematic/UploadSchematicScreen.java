@@ -20,7 +20,7 @@ import java.io.File;
 import java.nio.file.Files;
 
 import static java.lang.Integer.parseInt;
-import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.WHITE_PEPE;
+import static ru.kelcuprum.pplhelper.PepeLandHelper.Icons.WHITE_PEPE;
 
 public class UploadSchematicScreen extends Screen {
     public final Screen screen;

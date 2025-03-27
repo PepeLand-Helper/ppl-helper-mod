@@ -5,7 +5,7 @@ import ru.kelcuprum.abi.ActionBarInfo;
 import ru.kelcuprum.abi.modules.abstracts.AbstractModule;
 import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.config.Localization;
-import ru.kelcuprum.pplhelper.PepelandHelper;
+import ru.kelcuprum.pplhelper.PepeLandHelper;
 
 public class PepeLandHelperModule extends AbstractModule {
     public PepeLandHelperModule() {
@@ -14,12 +14,12 @@ public class PepeLandHelperModule extends AbstractModule {
 
     @Override
     public Component getMessage() {
-        String msg = AlinLib.localization.getParsedText(Localization.fixFormatCodes(PepelandHelper.config.getString("INFO.PPLHELPER", ActionBarInfo.localization.getLocalization("info.pplhelper", false, false, false))));
+        String msg = AlinLib.localization.getParsedText(Localization.fixFormatCodes(PepeLandHelper.config.getString("INFO.PPLHELPER", ActionBarInfo.localization.getLocalization("info.pplhelper", false, false, false))));
         return Component.literal(msg);
     }
 
     @Override
     public boolean isEnabled() {
-        return PepelandHelper.playerInPPL();
+        return PepeLandHelper.playerInPPL();
     }
 }

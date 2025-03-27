@@ -22,14 +22,14 @@ import ru.kelcuprum.alinlib.gui.components.text.DescriptionBox;
 import ru.kelcuprum.alinlib.gui.screens.ConfirmScreen;
 import ru.kelcuprum.alinlib.gui.screens.ThanksScreen;
 import ru.kelcuprum.alinlib.gui.toast.ToastBuilder;
-import ru.kelcuprum.pplhelper.PepelandHelper;
+import ru.kelcuprum.pplhelper.PepeLandHelper;
 import ru.kelcuprum.pplhelper.gui.screens.configs.ConfigScreen;
 import ru.kelcuprum.pplhelper.gui.screens.configs.TestConfigScreen;
 
 import java.util.List;
 
 import static ru.kelcuprum.alinlib.gui.Icons.*;
-import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.WHITE_PEPE;
+import static ru.kelcuprum.pplhelper.PepeLandHelper.Icons.WHITE_PEPE;
 
 public class AbstractPPLScreen extends Screen {
     public ConfigureScrolWidget scroller;
@@ -328,7 +328,7 @@ public class AbstractPPLScreen extends Screen {
             if (scroller != null) for (AbstractWidget widget : scroller.widgets) widget.render(guiGraphics, mouseX, mouseY, partialTicks);
             guiGraphics.disableScissor();
         } catch (Exception ex) {
-            PepelandHelper.LOG.error(ex.getMessage());
+            PepeLandHelper.LOG.error(ex.getMessage());
         }
     }
     // ------------------------

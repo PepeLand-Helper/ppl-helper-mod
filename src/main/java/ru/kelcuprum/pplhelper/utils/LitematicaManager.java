@@ -16,7 +16,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import ru.kelcuprum.alinlib.gui.toast.ToastBuilder;
-import ru.kelcuprum.pplhelper.PepelandHelper;
+import ru.kelcuprum.pplhelper.PepeLandHelper;
 import ru.kelcuprum.pplhelper.api.components.Project;
 
 import java.io.File;
@@ -27,12 +27,12 @@ public class LitematicaManager {
     public static IMessageConsumer lol = new IMessageConsumer() {
         @Override
         public void addMessage(Message.MessageType messageType, String s, Object... objects) {
-            PepelandHelper.LOG.log(s);
+            PepeLandHelper.LOG.log(s);
         }
 
         @Override
         public void addMessage(Message.MessageType messageType, int i, String s, Object... objects) {
-            PepelandHelper.LOG.log(s);
+            PepeLandHelper.LOG.log(s);
         }
     };
 
@@ -61,7 +61,7 @@ public class LitematicaManager {
             SchematicPlacement placement = SchematicPlacement.createFor(schematic, pos, String.format("Схематика \"%s\"", project.title), true, true);
             placement = placement.setRotation(getRotation(project.schematicRotate), lol)
                     .setMirror(getMirror(project.schematicMirror), lol);
-            if(placement.getSubRegionCount() > 1 || schematic.getMetadata().getTotalBlocks() > (PepelandHelper.config.getNumber("SCHEMATIC.MAX_SIZE", 50).intValue() ^ 3)){
+            if(placement.getSubRegionCount() > 1 || schematic.getMetadata().getTotalBlocks() > (PepeLandHelper.config.getNumber("SCHEMATIC.MAX_SIZE", 50).intValue() ^ 3)){
                 placement.setSubRegionsEnabledState(false, placement.getAllSubRegionsPlacements(), lol);
                 new ToastBuilder().setIcon(WARN)
                         .setTitle(Component.literal("§lВнимание!§r"))

@@ -8,7 +8,7 @@ import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.text.TextBuilder;
 import ru.kelcuprum.alinlib.gui.components.text.TextBox;
-import ru.kelcuprum.pplhelper.PepelandHelper;
+import ru.kelcuprum.pplhelper.PepeLandHelper;
 
 public class NewUpdateScreen extends Screen {
     public final Screen parent;
@@ -29,18 +29,18 @@ public class NewUpdateScreen extends Screen {
         msg = (TextBox) addRenderableOnly(new TextBuilder( Component.translatable("pplhelper.pack.update.avalible.description", oldVer, pack.get("version").getAsString()))
                 .setType(TextBuilder.TYPE.MESSAGE).setAlign(TextBuilder.ALIGN.CENTER).setPosition(width/2-125, 40).setSize(250, 40).build());
         addRenderableWidget(new ButtonBuilder(Component.translatable("pplhelper.pack.update.avalible.accept"))
-                .setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new DownloadScreen(parent, pack, PepelandHelper.onlyEmotesCheck(), modrinth)))
+                .setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new DownloadScreen(parent, pack, PepeLandHelper.onlyEmotesCheck(), modrinth)))
                 .setPosition(width/2-150, height-50).setWidth(148).build());
         addRenderableWidget(new ButtonBuilder(Component.translatable("pplhelper.pack.update.avalible.auto"))
                 .setOnPress((s) -> {
-                    AlinLib.MINECRAFT.setScreen(new DownloadScreen(parent, pack, PepelandHelper.config.getBoolean("PACK_UPDATES.ONLY_EMOTE", false), modrinth));
-                    PepelandHelper.config.setBoolean("PACK_UPDATES.AUTO_UPDATE", true);
+                    AlinLib.MINECRAFT.setScreen(new DownloadScreen(parent, pack, PepeLandHelper.config.getBoolean("PACK_UPDATES.ONLY_EMOTE", false), modrinth));
+                    PepeLandHelper.config.setBoolean("PACK_UPDATES.AUTO_UPDATE", true);
                 })
                 .setPosition(width/2-150, height-25).setWidth(148).build());
         addRenderableWidget(new ButtonBuilder(Component.translatable("pplhelper.pack.update.avalible.later")).setOnPress((s) -> onClose()).setPosition(width/2+2, height-50).setWidth(148).build());
         addRenderableWidget(new ButtonBuilder(Component.translatable("pplhelper.pack.update.avalible.unfollow")).setOnPress((s) -> {
-            PepelandHelper.config.setBoolean("PACK_UPDATES.NOTICE", false);
-            PepelandHelper.config.setBoolean("PACK_UPDATES.AUTO_UPDATE", false);
+            PepeLandHelper.config.setBoolean("PACK_UPDATES.NOTICE", false);
+            PepeLandHelper.config.setBoolean("PACK_UPDATES.AUTO_UPDATE", false);
             onClose();
         }).setPosition(width/2+2, height-25).setWidth(148).build());
     }

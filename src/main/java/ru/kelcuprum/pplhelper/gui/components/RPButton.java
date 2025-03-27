@@ -1,6 +1,5 @@
 package ru.kelcuprum.pplhelper.gui.components;
 
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -12,19 +11,18 @@ import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.gui.GuiUtils;
 import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
 import ru.kelcuprum.alinlib.gui.components.buttons.Button;
-import ru.kelcuprum.pplhelper.PepelandHelper;
-import ru.kelcuprum.pplhelper.api.components.Mod;
+import ru.kelcuprum.pplhelper.PepeLandHelper;
 import ru.kelcuprum.pplhelper.api.components.ResourcePack;
 import ru.kelcuprum.pplhelper.gui.TextureHelper;
 import ru.kelcuprum.pplhelper.gui.screens.ModsScreen;
 
-import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.PEPE;
+import static ru.kelcuprum.pplhelper.PepeLandHelper.Icons.PEPE;
 
 public class RPButton extends Button {
     protected ResourcePack track;
 
     public RPButton(int x, int y, int width, ResourcePack track, Screen screen) {
-        super(new ButtonBuilder().setOnPress((s) -> PepelandHelper.confirmLinkNow(new ModsScreen().build(screen), track.url)).setTitle(Component.empty()).setStyle(GuiUtils.getSelected()).setSize(width, 40).setPosition(x, y));
+        super(new ButtonBuilder().setOnPress((s) -> PepeLandHelper.confirmLinkNow(new ModsScreen().build(screen), track.url)).setTitle(Component.empty()).setStyle(GuiUtils.getSelected()).setSize(width, 40).setPosition(x, y));
         this.track = track;
     }
 

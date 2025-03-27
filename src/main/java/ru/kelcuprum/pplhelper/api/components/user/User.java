@@ -2,9 +2,8 @@ package ru.kelcuprum.pplhelper.api.components.user;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.network.chat.Component;
 import ru.kelcuprum.alinlib.WebAPI;
-import ru.kelcuprum.pplhelper.PepelandHelper;
+import ru.kelcuprum.pplhelper.PepeLandHelper;
 import ru.kelcuprum.pplhelper.api.components.News;
 import ru.kelcuprum.pplhelper.api.components.Project;
 
@@ -36,7 +35,7 @@ public class User {
             for(JsonElement element : projects.getAsJsonArray("items")) list.add(new Project(element.getAsJsonObject()));
             return list;
         } catch (Exception ex){
-            PepelandHelper.LOG.error(ex.getMessage() == null ? ex.getClass().getName() : ex.getMessage());
+            PepeLandHelper.LOG.error(ex.getMessage() == null ? ex.getClass().getName() : ex.getMessage());
             return new ArrayList<>();
         }
     }
@@ -48,7 +47,7 @@ public class User {
             for(JsonElement element : projects.getAsJsonArray("items")) list.add(new News(element.getAsJsonObject()));
             return list;
         } catch (Exception ex){
-            PepelandHelper.LOG.error(ex.getMessage() == null ? ex.getClass().getName() : ex.getMessage());
+            PepeLandHelper.LOG.error(ex.getMessage() == null ? ex.getClass().getName() : ex.getMessage());
             return new ArrayList<>();
         }
     }

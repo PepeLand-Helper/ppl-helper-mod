@@ -3,7 +3,7 @@ package ru.kelcuprum.pplhelper.utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import ru.kelcuprum.alinlib.AlinLib;
-import ru.kelcuprum.pplhelper.PepelandHelper;
+import ru.kelcuprum.pplhelper.PepeLandHelper;
 
 import static java.lang.Double.parseDouble;
 import static java.lang.Integer.parseInt;
@@ -20,11 +20,11 @@ public class TabHelper {
     };
 
     public static Worlds getWorld() {
-        if (!PepelandHelper.playerInPPL()) return null;
+        if (!PepeLandHelper.playerInPPL()) return null;
         StringBuilder world = new StringBuilder();
         if (AlinLib.MINECRAFT.gui.getTabList().header == null) {
-            if (PepelandHelper.config.getBoolean("IM_A_TEST_SUBJECT", false) && PepelandHelper.config.getBoolean("IM_A_TEST_SUBJECT.ENABLE_WORLD", false))
-                world = new StringBuilder(PepelandHelper.config.getString("IM_A_TEST_SUBJECT.WORLD", worlds[0]));
+            if (PepeLandHelper.config.getBoolean("IM_A_TEST_SUBJECT", false) && PepeLandHelper.config.getBoolean("IM_A_TEST_SUBJECT.ENABLE_WORLD", false))
+                world = new StringBuilder(PepeLandHelper.config.getString("IM_A_TEST_SUBJECT.WORLD", worlds[0]));
         } else {
             String[] args = AlinLib.MINECRAFT.gui.getTabList().header.getString().split("\n");
             for (String arg : args) {
@@ -71,7 +71,7 @@ public class TabHelper {
 
     public static double getTPS() {
         double tps = 0;
-        if (!PepelandHelper.playerInPPL() || AlinLib.MINECRAFT.gui.getTabList().footer == null) return tps;
+        if (!PepeLandHelper.playerInPPL() || AlinLib.MINECRAFT.gui.getTabList().footer == null) return tps;
         String[] args = AlinLib.MINECRAFT.gui.getTabList().footer.getString().split("\n");
         for (String arg : args) {
             if (arg.contains("TPS:")) {
@@ -84,7 +84,7 @@ public class TabHelper {
 
     public static int getOnline() {
         int tps = 0;
-        if (!PepelandHelper.playerInPPL() || AlinLib.MINECRAFT.gui.getTabList().footer == null) return tps;
+        if (!PepeLandHelper.playerInPPL() || AlinLib.MINECRAFT.gui.getTabList().footer == null) return tps;
         String[] args = AlinLib.MINECRAFT.gui.getTabList().footer.getString().split("\n");
         for (String arg : args) {
             if (arg.contains("Онлайн:")) {

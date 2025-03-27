@@ -4,7 +4,7 @@ import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.info.World;
-import ru.kelcuprum.pplhelper.PepelandHelper;
+import ru.kelcuprum.pplhelper.PepeLandHelper;
 import ru.kelcuprum.pplhelper.api.components.Project;
 
 import static java.lang.Integer.parseInt;
@@ -33,10 +33,10 @@ public class FollowManager {
     }
 
     public static boolean playerInCurrentWorld(){
-        return (project != null || coordinates != null) && PepelandHelper.playerInPPL() && TabHelper.getWorld() == world;
+        return (project != null || coordinates != null) && PepeLandHelper.playerInPPL() && TabHelper.getWorld() == world;
     }
     public static boolean playerInCurrentLevel(){
-        return (project != null || coordinates != null) && PepelandHelper.playerInPPL() && (project == null ? level : getWorldProject(project)).equals(World.getCodeName());
+        return (project != null || coordinates != null) && PepeLandHelper.playerInPPL() && (project == null ? level : getWorldProject(project)).equals(World.getCodeName());
     }
 
     public static String getLevelName(String name){

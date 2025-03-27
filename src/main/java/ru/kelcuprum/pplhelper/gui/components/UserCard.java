@@ -15,7 +15,7 @@ import ru.kelcuprum.pplhelper.api.OAuth;
 import ru.kelcuprum.pplhelper.api.components.user.User;
 import ru.kelcuprum.pplhelper.gui.TextureHelper;
 
-import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.PEPE;
+import static ru.kelcuprum.pplhelper.PepeLandHelper.Icons.PEPE;
 
 public class UserCard extends Button {
     protected User track;

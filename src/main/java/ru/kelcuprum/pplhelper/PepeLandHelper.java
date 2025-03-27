@@ -69,9 +69,9 @@ import java.util.UUID;
 import static java.lang.Integer.parseInt;
 import static net.minecraft.world.item.Items.NETHER_STAR;
 import static ru.kelcuprum.alinlib.gui.Icons.*;
-import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.*;
+import static ru.kelcuprum.pplhelper.PepeLandHelper.Icons.*;
 
-public class PepelandHelper implements ClientModInitializer {
+public class PepeLandHelper implements ClientModInitializer {
     public static final AlinLogger LOG = new AlinLogger("PPL Helper");
     public static User user = null;
     public static Config config = new Config("config/pplhelper/config.json");
@@ -206,7 +206,7 @@ public class PepelandHelper implements ClientModInitializer {
             gameStarted = true;
             loadStaticInformation();
             VersionInfo versionInfo = PepeLandHelperAPI.getAutoUpdate();
-            if(versionInfo.state != VersionInfo.State.LATEST && PepelandHelper.config.getBoolean("PPLH.NOTICE", true)){
+            if(versionInfo.state != VersionInfo.State.LATEST && PepeLandHelper.config.getBoolean("PPLH.NOTICE", true)){
                 if(versionInfo.state == VersionInfo.State.NEW_UPDATE){
                     s.setScreen(new NewUpdateScreen$Helper(s.screen, versionInfo));
                 } else {
@@ -298,12 +298,6 @@ public class PepelandHelper implements ClientModInitializer {
                 }).set("pplhelper.tps", () -> Value.number(TabHelper.getTPS()))
                 .set("pplhelper.online", () -> Value.number(TabHelper.getOnline()))
                 .set("pplhelper.max_online", () -> Value.number(TabHelper.getMaxOnline()))
-
-//                .set("pplhelper.selected_project.name", () -> Value.string(selectedProject == null ? "" : selectedProject.title))
-//                .set("pplhelper.selected_project.description", () -> Value.string(selectedProject == null ? "" : selectedProject.description))
-//                .set("pplhelper.selected_project.creators", () -> Value.string(selectedProject == null ? "" : selectedProject.creators))
-//                .set("pplhelper.selected_project.id", () -> Value.number(selectedProject == null ? 0 : selectedProject.id))
-//                .set("pplhelper.selected_project.coordinates", () -> Value.string(selectedProject == null ? "" : getStringSelectedProjectCoordinates()))
                 );
     }
 
@@ -318,7 +312,7 @@ public class PepelandHelper implements ClientModInitializer {
                         AlinLib.MINECRAFT.setScreen(new NewUpdateScreen(AlinLib.MINECRAFT.screen, packVersion, packInfo, modrinth));
                 } else if (config.getBoolean("PACK_UPDATES.AUTO_UPDATE", false)) {
                     if (!packInfo.get("version").getAsString().equals(packVersion)) {
-                        PepelandHelper.downloadPack(packInfo, onlyEmotesCheck(), (ss) -> {
+                        PepeLandHelper.downloadPack(packInfo, onlyEmotesCheck(), (ss) -> {
                             if (ss) {
                                 String fileName = String.format("pepeland-%1$s-v%2$s.zip", onlyEmotesCheck() ? "emotes" : "main", packInfo.get("version").getAsString());
                                 AlinLib.MINECRAFT.getResourcePackRepository().reload();
@@ -349,12 +343,12 @@ public class PepelandHelper implements ClientModInitializer {
 
     public static boolean isAprilFool(){
 //        return true;
-        return AlinLib.isAprilFool() || PepelandHelper.config.getBoolean("IM_A_TEST_SUBJECT.APRIL", false);
+        return AlinLib.isAprilFool() || PepeLandHelper.config.getBoolean("IM_A_TEST_SUBJECT.APRIL", false);
     }
 
     public static boolean isPWGood(){
 //        return true;
-        return AlinLib.MINECRAFT.getGameProfile().getName().equals("PWGoood") || AlinLib.MINECRAFT.getGameProfile().getName().equals("_PWGood_") || AlinLib.MINECRAFT.getGameProfile().getName().equals("CyCeKu") || PepelandHelper.config.getBoolean("IM_A_TEST_SUBJECT.PWGOOD", false);
+        return AlinLib.MINECRAFT.getGameProfile().getName().equals("PWGoood") || AlinLib.MINECRAFT.getGameProfile().getName().equals("_PWGood_") || AlinLib.MINECRAFT.getGameProfile().getName().equals("CyCeKu") || PepeLandHelper.config.getBoolean("IM_A_TEST_SUBJECT.PWGOOD", false);
     }
 
     public static void loadStaticInformation() {
@@ -447,7 +441,7 @@ public class PepelandHelper implements ClientModInitializer {
 
     public static void updateCoordinatesBB() {
         FollowManager.Coordinates coordinates = FollowManager.getCurrentCoordinates();
-        if (coordinates == null || !playerInPPL() || (PepelandHelper.config.getBoolean("SPROJECT.ABI", true) && isInstalledABI)) {
+        if (coordinates == null || !playerInPPL() || (PepeLandHelper.config.getBoolean("SPROJECT.ABI", true) && isInstalledABI)) {
             if (spBossBar != null) {
                 spBossBar = null;
                 lastMaxNear = 0;
@@ -462,7 +456,7 @@ public class PepelandHelper implements ClientModInitializer {
             if(!FollowManager.playerInCurrentLevel()) huy += " ("+FollowManager.getLevelName(coordinates.level())+")";
             if (p != null && FollowManager.playerInCurrentWorld() && FollowManager.playerInCurrentLevel()) {
                 near = (long) FollowManager.dist(coordinates.coordinates()[0], coordinates.coordinates()[coordinates.coordinates().length-1], p.getBlockX(), p.getBlockZ());
-                if (near <= PepelandHelper.config.getNumber("SELECTED_PROJECT.AUTO_HIDE", 5).longValue()) {
+                if (near <= PepeLandHelper.config.getNumber("SELECTED_PROJECT.AUTO_HIDE", 5).longValue()) {
                     FollowManager.resetCoordinates();
                     lastMaxNear = 0;
                     return;

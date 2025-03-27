@@ -13,7 +13,7 @@ import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.editbox.EditBoxBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.selector.SelectorBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.text.TextBuilder;
-import ru.kelcuprum.pplhelper.PepelandHelper;
+import ru.kelcuprum.pplhelper.PepeLandHelper;
 import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
 import ru.kelcuprum.pplhelper.api.components.News;
 import ru.kelcuprum.pplhelper.gui.components.NewsButton;
@@ -28,7 +28,7 @@ import static ru.kelcuprum.alinlib.gui.Icons.SEARCH;
 
 public class NewsListScreen extends AbstractPPLScreen {
     public NewsListScreen(Screen screen) {
-        super(new ScreenBuilder(screen, Component.translatable("pplhelper.news")).addPanelWidgets(PepelandHelper.getPanelWidgets(screen, screen)));
+        super(new ScreenBuilder(screen, Component.translatable("pplhelper.news")).addPanelWidgets(PepeLandHelper.getPanelWidgets(screen, screen)));
         builder.contentY = 60;
     }
     private static String query = "";
@@ -46,21 +46,21 @@ public class NewsListScreen extends AbstractPPLScreen {
         addRenderableWidget(new SelectorBuilder(Component.translatable("pplhelper.project.category"), (s) -> {
             category = s.getPosition();
             search();
-        }).setList(PepelandHelper.nc).setValue(category).setPosition(getX() + 5 + searchSize, y[0]).setWidth(searchSize).setActive(apiAvailable).build());
+        }).setList(PepeLandHelper.nc).setValue(category).setPosition(getX() + 5 + searchSize, y[0]).setWidth(searchSize).setActive(apiAvailable).build());
         addRenderableWidget(new ButtonBuilder(Component.translatable("pplhelper.news.find"), (s) -> search()).setSprite(SEARCH).setPosition(getX()+getContentWidth()-20, y[0]).setWidth(20).setActive(apiAvailable).build());
         y[0] += 25;
         if(apiAvailable) {
-            if(!PepelandHelper.categoriesAndTags){
+            if(!PepeLandHelper.categoriesAndTags){
                 try {
-                    PepelandHelper.pc = PepeLandHelperAPI.getProjectCategories();
-                    PepelandHelper.pct = PepeLandHelperAPI.getProjectCategoriesTags();
-                    PepelandHelper.nc = PepeLandHelperAPI.getNewsCategories();
-                    PepelandHelper.nct = PepeLandHelperAPI.getNewsCategoriesTags();
-                    PepelandHelper.categoriesAndTags = true;
+                    PepeLandHelper.pc = PepeLandHelperAPI.getProjectCategories();
+                    PepeLandHelper.pct = PepeLandHelperAPI.getProjectCategoriesTags();
+                    PepeLandHelper.nc = PepeLandHelperAPI.getNewsCategories();
+                    PepeLandHelper.nct = PepeLandHelperAPI.getNewsCategoriesTags();
+                    PepeLandHelper.categoriesAndTags = true;
                 } catch (Exception ignored){}
             }
             loadInfo = new Thread(() -> {
-                List<News> projects = lastNews == null ? PepeLandHelperAPI.getNews(query, PepelandHelper.nct[category]) : lastNews;
+                List<News> projects = lastNews == null ? PepeLandHelperAPI.getNews(query, PepeLandHelper.nct[category]) : lastNews;
                 lastNews = projects;
                 if (projects.isEmpty()) {
                     builder.addWidget(new TextBuilder(Component.translatable("pplhelper.news.not_found")).setType(TextBuilder.TYPE.BLOCKQUOTE).setColor(GROUPIE).setPosition(getX(), 55).setSize(getContentWidth(), 20).build());

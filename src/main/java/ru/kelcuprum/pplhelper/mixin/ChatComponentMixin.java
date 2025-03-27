@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import ru.kelcuprum.alinlib.AlinLib;
-import ru.kelcuprum.pplhelper.PepelandHelper;
+import ru.kelcuprum.pplhelper.PepeLandHelper;
 import ru.kelcuprum.pplhelper.utils.ChatFilter;
 import ru.kelcuprum.pplhelper.utils.TabHelper;
 
@@ -27,8 +27,8 @@ public abstract class ChatComponentMixin {
     @Unique boolean isSended = false;
     @Inject(method = "addMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/MessageSignature;Lnet/minecraft/client/GuiMessageTag;)V", at = @At("HEAD"), cancellable = true)
     public void addMessage(Component component, MessageSignature messageSignature, GuiMessageTag guiMessageTag, CallbackInfo ci) {
-        if (!PepelandHelper.playerInPPL()) return;
-        if(PepelandHelper.isAprilFool() && PepelandHelper.isPWGood()){
+        if (!PepeLandHelper.playerInPPL()) return;
+        if(PepeLandHelper.isAprilFool() && PepeLandHelper.isPWGood()){
             if(Math.random() < 0.005 && !isSended){ // Math.random() < 0.005 && !isSended
                 isSended = true;
                 MutableComponent component1 = Component.empty();
@@ -48,23 +48,23 @@ public abstract class ChatComponentMixin {
 
         if (test.replaceAll("\\[PPL[0-9]]: ", "").length() != test.length()) {
             String parsed = test.replaceAll("\\[PPL[0-9]]: ", "");
-            if (parsed.contains("Рестарт через") && PepelandHelper.config.getBoolean("TIMER.RESTART", true)) {
+            if (parsed.contains("Рестарт через") && PepeLandHelper.config.getBoolean("TIMER.RESTART", true)) {
                 int time = parseInt(parsed.replaceAll("[^0-9]", ""));
-                PepelandHelper.restartTime = System.currentTimeMillis() + ((long) time * (parsed.contains("минут") ? 60 : 1) * 1000);
+                PepeLandHelper.restartTime = System.currentTimeMillis() + ((long) time * (parsed.contains("минут") ? 60 : 1) * 1000);
             }
-        } else if (test.contains("Вы еще не можете зайти на сервер") && TabHelper.getWorld() == TabHelper.Worlds.LOBBY && PepelandHelper.config.getBoolean("TIMER.JOIN", true)) {
+        } else if (test.contains("Вы еще не можете зайти на сервер") && TabHelper.getWorld() == TabHelper.Worlds.LOBBY && PepeLandHelper.config.getBoolean("TIMER.JOIN", true)) {
             int time = parseInt(test.replaceAll("[^0-9]", ""));
-            PepelandHelper.joinTime = System.currentTimeMillis() + ((long) time * (test.contains("минут") ? 60 : 1) * 1000);
+            PepeLandHelper.joinTime = System.currentTimeMillis() + ((long) time * (test.contains("минут") ? 60 : 1) * 1000);
         }
-        if(!ChatFilter.mention(test) && PepelandHelper.config.getBoolean("CHAT.FILTER", false)){
-            if(ChatFilter.isGlobalChat(test) && PepelandHelper.config.getBoolean("CHAT.FILTER.GLOBAL", false)) ci.cancel();
+        if(!ChatFilter.mention(test) && PepeLandHelper.config.getBoolean("CHAT.FILTER", false)){
+            if(ChatFilter.isGlobalChat(test) && PepeLandHelper.config.getBoolean("CHAT.FILTER.GLOBAL", false)) ci.cancel();
             else if (ChatFilter.isWorldEnabled(test)){
                 if(!ChatFilter.enableWorld(test)) ci.cancel();
-            } else if(ChatFilter.isMysteryBox(test) && PepelandHelper.config.getBoolean("CHAT.FILTER.MYSTERY_BOX", true)) ci.cancel();
-            else if((ChatFilter.isLeave(test) && PepelandHelper.config.getBoolean("CHAT.FILTER.LEAVE", false))
-                    || (ChatFilter.isJoin(test) && PepelandHelper.config.getBoolean("CHAT.FILTER.JOIN", false))){
+            } else if(ChatFilter.isMysteryBox(test) && PepeLandHelper.config.getBoolean("CHAT.FILTER.MYSTERY_BOX", true)) ci.cancel();
+            else if((ChatFilter.isLeave(test) && PepeLandHelper.config.getBoolean("CHAT.FILTER.LEAVE", false))
+                    || (ChatFilter.isJoin(test) && PepeLandHelper.config.getBoolean("CHAT.FILTER.JOIN", false))){
                 if(!ChatFilter.isFriend(test)) ci.cancel();
-            } else if(ChatFilter.isContainsNWords(test) && PepelandHelper.config.getBoolean("CHAT.FILTER.WORDS", false)) ci.cancel();
+            } else if(ChatFilter.isContainsNWords(test) && PepeLandHelper.config.getBoolean("CHAT.FILTER.WORDS", false)) ci.cancel();
         }
     }
 }

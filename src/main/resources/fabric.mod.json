@@ -23,7 +23,7 @@
       "ru.kelcuprum.pplhelper.PepeLandHelperPreLaunch"
     ],
     "client": [
-      "ru.kelcuprum.pplhelper.PepelandHelper"
+      "ru.kelcuprum.pplhelper.PepeLandHelper"
     ],
     "modmenu": [
       "ru.kelcuprum.pplhelper.gui.ModMenuIntegration"

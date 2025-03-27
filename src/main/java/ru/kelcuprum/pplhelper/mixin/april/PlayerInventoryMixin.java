@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import ru.kelcuprum.alinlib.AlinLib;
-import ru.kelcuprum.pplhelper.PepelandHelper;
+import ru.kelcuprum.pplhelper.PepeLandHelper;
 import ru.kelcuprum.pplhelper.gui.components.oneshot.overlay.DialogOverlay;
 
 @Mixin(ClientPacketListener.class)
@@ -24,7 +24,7 @@ public class PlayerInventoryMixin {
             target = "Lnet/minecraft/network/protocol/PacketUtils;ensureRunningOnSameThread(Lnet/minecraft/network/protocol/Packet;Lnet/minecraft/network/PacketListener;Lnet/minecraft/util/thread/BlockableEventLoop;)V",
             shift = At.Shift.AFTER))
     void p(ClientboundTakeItemEntityPacket clientboundTakeItemEntityPacket, CallbackInfo ci) {
-        if(!PepelandHelper.isAprilFool() || !PepelandHelper.isPWGood()) return;
+        if(!PepeLandHelper.isAprilFool() || !PepeLandHelper.isPWGood()) return;
         assert AlinLib.MINECRAFT.player != null;
         if (AlinLib.MINECRAFT.player.getId() != clientboundTakeItemEntityPacket.getPlayerId()) return;
         Entity e = AlinLib.MINECRAFT.player.level().getEntity(clientboundTakeItemEntityPacket.getItemId());

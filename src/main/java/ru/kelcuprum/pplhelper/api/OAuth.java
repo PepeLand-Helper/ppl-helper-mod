@@ -10,11 +10,9 @@ import net.minecraft.util.GsonHelper;
 import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.AlinLogger;
 import ru.kelcuprum.alinlib.WebAPI;
-import ru.kelcuprum.alinlib.info.Player;
-import ru.kelcuprum.pplhelper.PepelandHelper;
+import ru.kelcuprum.pplhelper.PepeLandHelper;
 import ru.kelcuprum.pplhelper.api.components.user.User;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -22,7 +20,7 @@ import java.net.http.HttpRequest;
 import java.nio.charset.StandardCharsets;
 
 import static java.lang.Integer.parseInt;
-import static ru.kelcuprum.pplhelper.PepelandHelper.config;
+import static ru.kelcuprum.pplhelper.PepeLandHelper.config;
 import static ru.kelcuprum.pplhelper.api.PepeLandAPI.uriEncode;
 import static ru.kelcuprum.alinlib.utils.GsonHelper.getStringInJSON;
 
@@ -37,7 +35,7 @@ public class OAuth {
         return getURI(url, true);
     }
     public static String getURI(String url, boolean uriEncode){
-        String api = PepelandHelper.config.getString("oauth.url", "https://auth.pplh.ru/");
+        String api = PepeLandHelper.config.getString("oauth.url", "https://auth.pplh.ru/");
         if(!api.endsWith("/")) api+="/";
         if(url.startsWith("/")) url=url.substring(1);
         return String.format("%1$s%2$s", api, uriEncode ? uriEncode(url) : url);
@@ -46,7 +44,7 @@ public class OAuth {
     public static void run() {
         app = new Express(config.getString("oauth.hostname", "127.0.0.1"));
         try {
-            InputStream releaseFile = PepelandHelper.class.getResourceAsStream("/www/auth.html");
+            InputStream releaseFile = PepeLandHelper.class.getResourceAsStream("/www/auth.html");
             if(releaseFile != null) htmlAuth = new String(releaseFile.readAllBytes(), StandardCharsets.UTF_8);
         } catch (IOException e) {
             logger.error(e.getMessage());
@@ -80,7 +78,7 @@ public class OAuth {
                         res.setStatus(parseInt(getStringInJSON("error.code", jsonObject, "500")));
                     else {
                         config.setString("oauth.access_token", getStringInJSON("access", jsonObject, ""));
-                        PepelandHelper.loadUser(true);
+                        PepeLandHelper.loadUser(true);
                     }
                     res.json(jsonObject);
                 } catch (Exception e) {

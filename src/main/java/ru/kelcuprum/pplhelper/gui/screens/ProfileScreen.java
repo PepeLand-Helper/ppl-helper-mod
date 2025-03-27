@@ -6,7 +6,7 @@ import net.minecraft.network.chat.Component;
 import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.text.TextBuilder;
-import ru.kelcuprum.pplhelper.PepelandHelper;
+import ru.kelcuprum.pplhelper.PepeLandHelper;
 import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
 import ru.kelcuprum.pplhelper.api.components.News;
 import ru.kelcuprum.pplhelper.api.components.Project;
@@ -25,12 +25,12 @@ import static ru.kelcuprum.alinlib.gui.Colors.GROUPIE;
 import static ru.kelcuprum.alinlib.gui.GuiUtils.DEFAULT_WIDTH;
 import static ru.kelcuprum.alinlib.gui.Icons.ADD;
 import static ru.kelcuprum.alinlib.gui.Icons.EXIT;
-import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.WEB;
+import static ru.kelcuprum.pplhelper.PepeLandHelper.Icons.WEB;
 import static ru.kelcuprum.pplhelper.api.PepeLandAPI.uriEncode;
 
 public class ProfileScreen extends AbstractPPLScreen {
     public static String getURI(String url, boolean uriEncode) {
-        String api = PepelandHelper.config.getString("SITE_URL", "https://pplh.ru/");
+        String api = PepeLandHelper.config.getString("SITE_URL", "https://pplh.ru/");
         if (!api.endsWith("/")) api += "/";
         return String.format("%1$s%2$s", api, uriEncode ? uriEncode(url) : url);
     }
@@ -42,11 +42,11 @@ public class ProfileScreen extends AbstractPPLScreen {
                 .addPanelWidget(new UserCard(0, 0, 20, user))
                 .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.oauth.open_browser"))
                         .setIcon(WEB).setCentered(false).setOnPress((s) ->
-                                PepelandHelper.confirmLinkNow(AlinLib.MINECRAFT.screen, getURI("me", false))))
+                                PepeLandHelper.confirmLinkNow(AlinLib.MINECRAFT.screen, getURI("me", false))))
                 .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.oauth.leave"))
                         .setIcon(EXIT).setCentered(false).setOnPress((s) -> {
-                            PepelandHelper.user = null;
-                            PepelandHelper.config.setString("oauth.access_token", "");
+                            PepeLandHelper.user = null;
+                            PepeLandHelper.config.setString("oauth.access_token", "");
                             AlinLib.MINECRAFT.setScreen(screen);
                         })));
         this.user = user;
@@ -67,7 +67,7 @@ public class ProfileScreen extends AbstractPPLScreen {
                         builder.addWidget(new ScaledTextBox(Component.translatable("pplhelper.oauth.news"), false, 1.2f));
                         if (user.role.CREATE_NEWS)
                             builder.addWidget(new ButtonBuilder(Component.translatable("pplhelper.oauth.news.create")).setIcon(ADD).setOnPress((s) ->
-                                    PepelandHelper.confirmLinkNow(AlinLib.MINECRAFT.screen, getURI("news/create", false))));
+                                    PepeLandHelper.confirmLinkNow(AlinLib.MINECRAFT.screen, getURI("news/create", false))));
                         List<News> news = user.getNews();
                         if (news.isEmpty()) {
                             builder.addWidget(new TextBuilder(Component.translatable("pplhelper.oauth.projects.empty")).setType(TextBuilder.TYPE.BLOCKQUOTE).setColor(GROUPIE).setPosition(getX(), 55).setSize(getContentWidth(), 20).build());
@@ -77,7 +77,7 @@ public class ProfileScreen extends AbstractPPLScreen {
                         builder.addWidget(new ScaledTextBox(Component.translatable("pplhelper.oauth.projects"), false, 1.2f));
                         if (user.role.CREATE_PROJECTS)
                             builder.addWidget(new ButtonBuilder(Component.translatable("pplhelper.oauth.projects.create")).setIcon(ADD).setOnPress((s) ->
-                                    PepelandHelper.confirmLinkNow(AlinLib.MINECRAFT.screen, getURI("projects/create", false))));
+                                    PepeLandHelper.confirmLinkNow(AlinLib.MINECRAFT.screen, getURI("projects/create", false))));
                         List<Project> projects = user.getProjects();
                         if (projects.isEmpty()) {
                             builder.addWidget(new TextBuilder(Component.translatable("pplhelper.oauth.projects.empty")).setType(TextBuilder.TYPE.BLOCKQUOTE).setColor(GROUPIE).setPosition(getX(), 55).setSize(getContentWidth(), 20).build());

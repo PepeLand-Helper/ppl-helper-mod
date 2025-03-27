@@ -1,12 +1,10 @@
 package ru.kelcuprum.pplhelper.api;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.apache.logging.log4j.Level;
 import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.WebAPI;
-import ru.kelcuprum.pplhelper.PepelandHelper;
+import ru.kelcuprum.pplhelper.PepeLandHelper;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -17,7 +15,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
-import static ru.kelcuprum.pplhelper.PepelandHelper.toSHA;
+import static ru.kelcuprum.pplhelper.PepeLandHelper.toSHA;
 
 
 public class PepeLandAPI {
@@ -63,16 +61,16 @@ public class PepeLandAPI {
             outputStream.close();
             inputStream.close();
 
-            PepelandHelper.LOG.log("File downloaded successfully.", Level.DEBUG);
+            PepeLandHelper.LOG.log("File downloaded successfully.", Level.DEBUG);
         } else {
-            PepelandHelper.LOG.log("No file to download. Server replied HTTP code: " + responseCode, Level.ERROR);
+            PepeLandHelper.LOG.log("No file to download. Server replied HTTP code: " + responseCode, Level.ERROR);
         }
         httpConn.disconnect();
     }
     public static void downloadFile$queue(String fileURL, String saveDir, String filename, String originalChecksum, boolean modrinth, int count){
         int position = 0;
         while (position < count){
-            PepelandHelper.LOG.log("Count: %s", position);
+            PepeLandHelper.LOG.log("Count: %s", position);
             try {
                 downloadFile(fileURL, saveDir, filename);
                 String path = AlinLib.MINECRAFT.getResourcePackDirectory().resolve(filename).toString();

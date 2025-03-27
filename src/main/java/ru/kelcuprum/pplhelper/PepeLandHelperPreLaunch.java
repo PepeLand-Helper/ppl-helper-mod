@@ -21,7 +21,7 @@ public class PepeLandHelperPreLaunch implements PreLaunchEntrypoint  {
     @Override
     public void onPreLaunch() {
         if(config.getBoolean("PPLH.AUTO_UPDATE", false)){
-            PepelandHelper.config = config;
+            PepeLandHelper.config = config;
             VersionInfo versionInfo = PepeLandHelperAPI.getAutoUpdate();
             if(versionInfo.state == VersionInfo.State.NEW_UPDATE){
                 try {

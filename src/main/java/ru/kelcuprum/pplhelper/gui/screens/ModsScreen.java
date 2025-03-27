@@ -7,7 +7,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import ru.kelcuprum.alinlib.gui.components.builder.text.HorizontalRuleBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.text.TextBuilder;
-import ru.kelcuprum.pplhelper.PepelandHelper;
+import ru.kelcuprum.pplhelper.PepeLandHelper;
 import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
 import ru.kelcuprum.pplhelper.api.components.Mod;
 import ru.kelcuprum.pplhelper.api.components.ResourcePack;
@@ -23,7 +23,7 @@ public class ModsScreen {
     public Screen build(Screen parent){
         this.parent = parent;
         ScreenBuilder builder = new ScreenBuilder(parent, Component.translatable("pplhelper.mods"))
-                .addPanelWidgets(PepelandHelper.getPanelWidgets(parent, parent));
+                .addPanelWidgets(PepeLandHelper.getPanelWidgets(parent, parent));
 
         try {
             JsonArray mods = PepeLandHelperAPI.getRecommendMods();

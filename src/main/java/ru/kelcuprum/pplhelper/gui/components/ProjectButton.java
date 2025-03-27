@@ -15,8 +15,7 @@ import ru.kelcuprum.pplhelper.api.components.Project;
 import ru.kelcuprum.pplhelper.gui.TextureHelper;
 import ru.kelcuprum.pplhelper.gui.screens.pages.ProjectScreen;
 
-import static net.minecraft.util.CommonColors.GRAY;
-import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.WHITE_PEPE;
+import static ru.kelcuprum.pplhelper.PepeLandHelper.Icons.WHITE_PEPE;
 
 public class ProjectButton extends Button {
     protected Project project;

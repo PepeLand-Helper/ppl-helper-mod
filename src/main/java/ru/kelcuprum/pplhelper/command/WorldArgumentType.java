@@ -7,7 +7,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.network.chat.Component;
-import ru.kelcuprum.pplhelper.PepelandHelper;
+import ru.kelcuprum.pplhelper.PepeLandHelper;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -27,7 +27,7 @@ public class WorldArgumentType implements ArgumentType<String> {
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        for(String world : PepelandHelper.worlds)
+        for(String world : PepeLandHelper.worlds)
             if(!world.contains(Component.translatable("pplhelper.project.world.all").getString())) builder.suggest(String.format("\"%s\"", world));
         return builder.buildFuture();
     }

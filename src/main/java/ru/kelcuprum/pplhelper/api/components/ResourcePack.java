@@ -2,7 +2,7 @@ package ru.kelcuprum.pplhelper.api.components;
 
 import com.google.gson.JsonObject;
 import ru.kelcuprum.alinlib.WebAPI;
-import ru.kelcuprum.pplhelper.PepelandHelper;
+import ru.kelcuprum.pplhelper.PepeLandHelper;
 
 import java.util.HashMap;
 
@@ -81,7 +81,7 @@ public class ResourcePack {
         }
         static String getServiceURL(Service service, String id){
             return switch (service){
-                case MODRINTH -> String.format("%sproject/%s", PepelandHelper.config.getString("MODRINTH_URL", "https://modrinth.com/"), id);
+                case MODRINTH -> String.format("%sproject/%s", PepeLandHelper.config.getString("MODRINTH_URL", "https://modrinth.com/"), id);
                 case GITHUB -> String.format("https://github.com/%s", id);
                 default -> id;
             };

@@ -1,8 +1,6 @@
 package ru.kelcuprum.pplhelper.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import com.terraformersmc.modmenu.ModMenu;
-import com.terraformersmc.modmenu.api.ModMenuApi;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.screens.PauseScreen;
@@ -13,9 +11,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import ru.kelcuprum.alinlib.AlinLib;
-import ru.kelcuprum.alinlib.gui.GuiUtils;
 import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
-import ru.kelcuprum.pplhelper.PepelandHelper;
+import ru.kelcuprum.pplhelper.PepeLandHelper;
 import ru.kelcuprum.pplhelper.utils.TabHelper;
 
 import java.util.List;
@@ -29,7 +26,7 @@ public class PauseScreenMixin extends Screen {
 
     @Inject(method = "createPauseMenu", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/layouts/GridLayout;visitWidgets(Ljava/util/function/Consumer;)V"))
     void createPauseMenu(CallbackInfo ci, @Local GridLayout gridLayout){
-        if(AlinLib.MINECRAFT.hasSingleplayerServer() || AlinLib.MINECRAFT.isLocalServer() || AlinLib.MINECRAFT.getCurrentServer() == null || !PepelandHelper.config.getBoolean("MENU.LOBBY", true)) return;
+        if(AlinLib.MINECRAFT.hasSingleplayerServer() || AlinLib.MINECRAFT.isLocalServer() || AlinLib.MINECRAFT.getCurrentServer() == null || !PepeLandHelper.config.getBoolean("MENU.LOBBY", true)) return;
         if(AlinLib.MINECRAFT.getCurrentServer().ip.contains("pepeland.net") && TabHelper.getWorld() != TabHelper.Worlds.LOBBY) {
             TabHelper.getWorld();
             if (gridLayout != null) {
@@ -42,9 +39,9 @@ public class PauseScreenMixin extends Screen {
                     }
                 }
                 buttons.add(new ButtonBuilder(Component.translatable("pplhelper.world.lobby"))
-                        .setOnPress((s) -> PepelandHelper.executeCommand(AlinLib.MINECRAFT.player, "/lobby"))
-                        .setSprite(PepelandHelper.Icons.PEPE)
-                        .setStyle(PepelandHelper.config.getBoolean("MENU.LOBBY.ALINLIB", false) ? null : PepelandHelper.vanillaLikeStyle)
+                        .setOnPress((s) -> PepeLandHelper.executeCommand(AlinLib.MINECRAFT.player, "/lobby"))
+                        .setSprite(PepeLandHelper.Icons.PEPE)
+                        .setStyle(PepeLandHelper.config.getBoolean("MENU.LOBBY.ALINLIB", false) ? null : PepeLandHelper.vanillaLikeStyle)
                         .setPosition(this.width / 2 - 4 - 100 - 2 - 20, vanillaButtonsY)
                         .setSize(20, 20)
                         .build());

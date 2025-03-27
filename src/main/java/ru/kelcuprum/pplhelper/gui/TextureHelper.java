@@ -8,7 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Async;
 import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.gui.GuiUtils;
-import ru.kelcuprum.pplhelper.PepelandHelper;
+import ru.kelcuprum.pplhelper.PepeLandHelper;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -16,8 +16,8 @@ import java.io.*;
 import java.net.URL;
 import java.util.HashMap;
 
-import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.PACK_INFO;
-import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.WHITE_PEPE;
+import static ru.kelcuprum.pplhelper.PepeLandHelper.Icons.PACK_INFO;
+import static ru.kelcuprum.pplhelper.PepeLandHelper.Icons.WHITE_PEPE;
 
 public class TextureHelper {
     public static HashMap<String, ResourceLocation> resourceLocationMap = new HashMap<>();
@@ -40,7 +40,7 @@ public class TextureHelper {
 
     @Async.Execute
     public static void registerTexture(String url, String id, TextureManager textureManager, ResourceLocation textureId) {
-        PepelandHelper.LOG.debug(String.format("REGISTER: %s %s", url, id));
+        PepeLandHelper.LOG.debug(String.format("REGISTER: %s %s", url, id));
         DynamicTexture texture;
         if (urlsTextures.containsKey(url)) {
             texture = urlsTextures.get(url);
@@ -56,7 +56,7 @@ public class TextureHelper {
                 urlsTextures.put(url, texture);
                 urlsImages.put(url, image);
             } catch (Exception e) {
-                PepelandHelper.LOG.error("Error loading image from URL: " + url + " - " + e.getMessage());
+                PepeLandHelper.LOG.error("Error loading image from URL: " + url + " - " + e.getMessage());
                 resourceLocationMap.put(id, PACK_INFO);
                 return;
             }
@@ -82,7 +82,7 @@ public class TextureHelper {
 
     @Async.Execute
     public static void registerBanner(String url, String id, TextureManager textureManager, ResourceLocation textureId) {
-        PepelandHelper.LOG.debug(String.format("REGISTER: %s %s", url, id));
+        PepeLandHelper.LOG.debug(String.format("REGISTER: %s %s", url, id));
         DynamicTexture texture;
         if (urlsTextures.containsKey(url))
             texture = urlsTextures.get(url);
@@ -106,7 +106,7 @@ public class TextureHelper {
                 urlsTextures.put(url, texture);
                 urlsImages.put(url, image);
             } catch (Exception e) {
-                PepelandHelper.LOG.error("Error loading image from URL: " + url + " - " + e.getMessage());
+                PepeLandHelper.LOG.error("Error loading image from URL: " + url + " - " + e.getMessage());
                 resourceLocationMap.put(id, PACK_INFO);
                 return;
             }

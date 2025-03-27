@@ -14,7 +14,7 @@ import ru.kelcuprum.alinlib.gui.components.builder.editbox.EditBoxBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.selector.SelectorBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.text.HorizontalRuleBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.text.TextBuilder;
-import ru.kelcuprum.pplhelper.PepelandHelper;
+import ru.kelcuprum.pplhelper.PepeLandHelper;
 import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
 import ru.kelcuprum.pplhelper.api.components.Project;
 import ru.kelcuprum.pplhelper.gui.components.ProjectButton;
@@ -29,7 +29,7 @@ import static ru.kelcuprum.alinlib.gui.Icons.SEARCH;
 
 public class ProjectsScreen extends AbstractPPLScreen {
     public ProjectsScreen(Screen screen) {
-        super(new ScreenBuilder(screen, Component.translatable("pplhelper.projects")).addPanelWidgets(PepelandHelper.getPanelWidgets(screen, screen)));
+        super(new ScreenBuilder(screen, Component.translatable("pplhelper.projects")).addPanelWidgets(PepeLandHelper.getPanelWidgets(screen, screen)));
         builder.contentY = 85;
     }
 
@@ -52,11 +52,11 @@ public class ProjectsScreen extends AbstractPPLScreen {
         addRenderableWidget(new SelectorBuilder(Component.translatable("pplhelper.project.world"), (s) -> {
             world = s.getPosition();
             search();
-        }).setList(PepelandHelper.worlds).setValue(world).setPosition(getX(), y[0]).setWidth(searchSize).setActive(apiAvailable).build());
+        }).setList(PepeLandHelper.worlds).setValue(world).setPosition(getX(), y[0]).setWidth(searchSize).setActive(apiAvailable).build());
         addRenderableWidget(new SelectorBuilder(Component.translatable("pplhelper.project.category"), (s) -> {
             category = s.getPosition();
             search();
-        }).setList(PepelandHelper.pc).setValue(category).setPosition(getX() + 5 + searchSize, y[0]).setWidth(searchSize).setActive(apiAvailable).build());
+        }).setList(PepeLandHelper.pc).setValue(category).setPosition(getX() + 5 + searchSize, y[0]).setWidth(searchSize).setActive(apiAvailable).build());
         y[0] += 25;
         if(FollowManager.project != null){
             builder.addWidget(new HorizontalRuleBuilder(Component.translatable("pplhelper.project.selected")));
@@ -68,23 +68,23 @@ public class ProjectsScreen extends AbstractPPLScreen {
             builder.addWidget(new HorizontalRuleBuilder());
         }
         if (apiAvailable) {
-            if(!PepelandHelper.worldsLoaded){
+            if(!PepeLandHelper.worldsLoaded){
                 try {
-                    PepelandHelper.worlds = PepeLandHelperAPI.getWorlds();
-                    PepelandHelper.worldsLoaded = true;
+                    PepeLandHelper.worlds = PepeLandHelperAPI.getWorlds();
+                    PepeLandHelper.worldsLoaded = true;
                 } catch (Exception ignored){}
             }
-            if(!PepelandHelper.categoriesAndTags){
+            if(!PepeLandHelper.categoriesAndTags){
                 try {
-                    PepelandHelper.pc = PepeLandHelperAPI.getProjectCategories();
-                    PepelandHelper.pct = PepeLandHelperAPI.getProjectCategoriesTags();
-                    PepelandHelper.nc = PepeLandHelperAPI.getNewsCategories();
-                    PepelandHelper.nct = PepeLandHelperAPI.getNewsCategoriesTags();
-                    PepelandHelper.categoriesAndTags = true;
+                    PepeLandHelper.pc = PepeLandHelperAPI.getProjectCategories();
+                    PepeLandHelper.pct = PepeLandHelperAPI.getProjectCategoriesTags();
+                    PepeLandHelper.nc = PepeLandHelperAPI.getNewsCategories();
+                    PepeLandHelper.nct = PepeLandHelperAPI.getNewsCategoriesTags();
+                    PepeLandHelper.categoriesAndTags = true;
                 } catch (Exception ignored){}
             }
             loadInfo = new Thread(() -> {
-                List<Project> projects = lastProjects == null ? PepeLandHelperAPI.getProjects(query, PepelandHelper.worlds[world], PepelandHelper.pct[category]) : lastProjects;
+                List<Project> projects = lastProjects == null ? PepeLandHelperAPI.getProjects(query, PepeLandHelper.worlds[world], PepeLandHelper.pct[category]) : lastProjects;
                 lastProjects = projects;
                 if (projects.isEmpty()) {
                     builder.addWidget(new TextBuilder(Component.translatable("pplhelper.news.not_found")).setType(TextBuilder.TYPE.BLOCKQUOTE).setColor(GROUPIE).setPosition(getX(), 55).setSize(getContentWidth(), 20).build());

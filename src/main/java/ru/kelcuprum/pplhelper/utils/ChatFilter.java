@@ -2,7 +2,7 @@ package ru.kelcuprum.pplhelper.utils;
 
 import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.info.Player;
-import ru.kelcuprum.pplhelper.PepelandHelper;
+import ru.kelcuprum.pplhelper.PepeLandHelper;
 
 public class ChatFilter {
 
@@ -14,7 +14,7 @@ public class ChatFilter {
                 AlinLib.LOG.log(world);
                 return true;
             }
-            return PepelandHelper.config.getBoolean(String.format("CHAT.FILTER.WORLD.%s", worlds.shortName.toUpperCase()), true);
+            return PepeLandHelper.config.getBoolean(String.format("CHAT.FILTER.WORLD.%s", worlds.shortName.toUpperCase()), true);
         }
         return true;
     }
@@ -44,7 +44,7 @@ public class ChatFilter {
     public static boolean isFriend(String message){
         boolean response = false;
         String nickname = message.replaceAll("\\[[+-]] (.+?)", "$1");
-        String[] nicknames = PepelandHelper.config.getString("CHAT.FILTER.FRIENDS", "PWGoood, Gwinsen, Pooshka").replaceAll("[^a-zA-Z0-9_,]", "").split(",");
+        String[] nicknames = PepeLandHelper.config.getString("CHAT.FILTER.FRIENDS", "PWGoood, Gwinsen, Pooshka").replaceAll("[^a-zA-Z0-9_,]", "").split(",");
         for(String friend : nicknames) {
             if(friend.equalsIgnoreCase(nickname)){
                 response = true;
@@ -56,7 +56,7 @@ public class ChatFilter {
     public static boolean isContainsNWords(String message){
         boolean response = false;
         String[] args = message.split(" ");
-        String[] words = PepelandHelper.config.getString("CHAT.FILTER.NWORDS", "").replaceAll("[ ]", "").split(",");
+        String[] words = PepeLandHelper.config.getString("CHAT.FILTER.NWORDS", "").replaceAll("[ ]", "").split(",");
         for(String arg : args) {
             for(String word : words) {
                 if(arg.equals(word)){

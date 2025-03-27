@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import ru.kelcuprum.pplhelper.PepelandHelper;
+import ru.kelcuprum.pplhelper.PepeLandHelper;
 import ru.kelcuprum.pplhelper.gui.components.oneshot.OneShotButton;
 
 @Mixin(value = TitleScreen.class, priority = -1)
@@ -29,7 +29,7 @@ public class TitleScreenMixin extends Screen {
 
     @Inject(method = "init", at = @At("RETURN"))
     void init(CallbackInfo cl) {
-        if(!PepelandHelper.isAprilFool() || !PepelandHelper.isPWGood()) return;
+        if(!PepeLandHelper.isAprilFool() || !PepeLandHelper.isPWGood()) return;
         clearWidgets();
         int bHeight = font.lineHeight + 4;
         int bHeight2 = (bHeight + 3);
@@ -85,7 +85,7 @@ public class TitleScreenMixin extends Screen {
 
     @Inject(method = "render", at = @At("HEAD"), cancellable = true)
     void render(GuiGraphics guiGraphics, int i, int j, float f, CallbackInfo cl) {
-        if(!PepelandHelper.isAprilFool() || !PepelandHelper.isPWGood()) return;
+        if(!PepeLandHelper.isAprilFool() || !PepeLandHelper.isPWGood()) return;
         if (this.fadeInStart == 0L && this.fading) {
             this.fadeInStart = Util.getMillis();
         }

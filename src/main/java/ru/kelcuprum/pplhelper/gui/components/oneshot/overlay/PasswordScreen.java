@@ -1,15 +1,13 @@
 package ru.kelcuprum.pplhelper.gui.components.oneshot.overlay;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
-import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.gui.components.builder.editbox.EditBoxBuilder;
 import ru.kelcuprum.alinlib.gui.components.editbox.EditBox;
 import ru.kelcuprum.alinlib.gui.styles.WMStyle;
-import ru.kelcuprum.pplhelper.PepelandHelper;
+import ru.kelcuprum.pplhelper.PepeLandHelper;
 
 import static ru.kelcuprum.alinlib.gui.Colors.GROUPIE;
 import static ru.kelcuprum.alinlib.gui.Colors.SEADRIVE;
@@ -46,7 +44,7 @@ public class PasswordScreen extends Screen {
             if(pos == 0){
                 if(i != GLFW.GLFW_KEY_ENTER) return super.keyPressed(i, j, k);
                 else {
-                    follow = String.valueOf(PepelandHelper.code).equals(value);
+                    follow = String.valueOf(PepeLandHelper.code).equals(value);
                     message = Component.literal(String.format("%s ...", value));
                     pos++;
                     removeWidget(box);
@@ -92,7 +90,7 @@ public class PasswordScreen extends Screen {
     @Override
     public void onClose() {
         if(pos == 2){
-            if(follow) PepelandHelper.config.setBoolean("april.fool.lobby_enable", true);
+            if(follow) PepeLandHelper.config.setBoolean("april.fool.lobby_enable", true);
             minecraft.setScreen(screen);
         }
     }

@@ -7,8 +7,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import net.minecraft.network.chat.Component;
-import ru.kelcuprum.pplhelper.PepelandHelper;
+import ru.kelcuprum.pplhelper.PepeLandHelper;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -28,7 +27,7 @@ public class FollowsArgumentType implements ArgumentType<String> {
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        for(String world : (PepelandHelper.config.toJSON().has("coordinates") ? PepelandHelper.config.toJSON().getAsJsonObject("coordinates") : new JsonObject()).keySet())
+        for(String world : (PepeLandHelper.config.toJSON().has("coordinates") ? PepeLandHelper.config.toJSON().getAsJsonObject("coordinates") : new JsonObject()).keySet())
             builder.suggest(String.format("\"%s\"", world));
         return builder.buildFuture();
     }

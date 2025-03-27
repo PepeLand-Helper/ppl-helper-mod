@@ -8,7 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.repository.Pack;
 import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.gui.toast.ToastBuilder;
-import ru.kelcuprum.pplhelper.PepelandHelper;
+import ru.kelcuprum.pplhelper.PepeLandHelper;
 
 public class DownloadScreen extends Screen {
     public Screen parent;
@@ -32,7 +32,7 @@ public class DownloadScreen extends Screen {
         if (!inited) {
             start = System.currentTimeMillis();
             inited = true;
-            thread = PepelandHelper.downloadPack(packData, onlyEmote, (s) -> {
+            thread = PepeLandHelper.downloadPack(packData, onlyEmote, (s) -> {
                 if(s) downloaded = true;
                 else exception = new Exception(Component.translatable("pplhelper.pack.file_broken").getString());
             }, modrinth);
@@ -44,7 +44,7 @@ public class DownloadScreen extends Screen {
         super.renderBackground(guiGraphics, i, j, f);
         guiGraphics.fillGradient(0, 0, this.width, this.height, 0x7F0A2725, 0x7F134E4A);
         guiGraphics.blit(
-                RenderType::guiTextured, PepelandHelper.Icons.WHITE_PEPE, guiGraphics.guiWidth() / 2 - 30, guiGraphics.guiHeight() / 2 - 30, 0, 0, 60, 60, 60, 60);
+                RenderType::guiTextured, PepeLandHelper.Icons.WHITE_PEPE, guiGraphics.guiWidth() / 2 - 30, guiGraphics.guiHeight() / 2 - 30, 0, 0, 60, 60, 60, 60);
     }
 
     @Override
@@ -78,7 +78,7 @@ public class DownloadScreen extends Screen {
             AlinLib.MINECRAFT.setScreen(parent);
 
             new ToastBuilder().setTitle(Component.translatable("pplhelper"))
-                    .setIcon(PepelandHelper.Icons.WHITE_PEPE)
+                    .setIcon(PepeLandHelper.Icons.WHITE_PEPE)
                     .setMessage(Component.translatable("pplhelper.pack.downloaded", packData.get("version").getAsString())).buildAndShow();
         }
     }

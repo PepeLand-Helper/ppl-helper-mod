@@ -14,7 +14,7 @@ import ru.kelcuprum.pplhelper.api.components.News;
 import ru.kelcuprum.pplhelper.gui.TextureHelper;
 import ru.kelcuprum.pplhelper.gui.screens.pages.NewsScreen;
 
-import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.WHITE_PEPE;
+import static ru.kelcuprum.pplhelper.PepeLandHelper.Icons.WHITE_PEPE;
 
 public class NewsButton extends Button {
     protected News news;

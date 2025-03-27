@@ -11,7 +11,7 @@ import ru.kelcuprum.alinlib.gui.components.builder.text.TextBuilder;
 import ru.kelcuprum.alinlib.gui.components.text.CategoryBox;
 import ru.kelcuprum.alinlib.gui.components.text.TextBox;
 import ru.kelcuprum.alinlib.gui.toast.ToastBuilder;
-import ru.kelcuprum.pplhelper.PepelandHelper;
+import ru.kelcuprum.pplhelper.PepeLandHelper;
 import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
 import ru.kelcuprum.pplhelper.gui.screens.message.ErrorScreen;
 import ru.kelcuprum.pplhelper.gui.screens.builder.ScreenBuilder;
@@ -21,7 +21,7 @@ public class CommandsScreen {
     public Screen build(Screen parent){
         this.parent = parent;
         ScreenBuilder builder = new ScreenBuilder(parent, Component.translatable("pplhelper.commands"))
-                .addPanelWidgets(PepelandHelper.getPanelWidgets(parent, parent))
+                .addPanelWidgets(PepeLandHelper.getPanelWidgets(parent, parent))
                 .addWidget(new TextBuilder(Component.translatable("pplhelper.commands.description")).setType(TextBuilder.TYPE.MESSAGE));
         try {
             JsonArray mods = PepeLandHelperAPI.getCommands();
@@ -35,7 +35,7 @@ public class CommandsScreen {
                     TextBox box = new TextBuilder(Component.literal(Localization.fixFormatCodes("&l/"+cmd.get("cmd").getAsString()+"&r - " + cmd.get("description").getAsString())), (s) -> {
                                 AlinLib.MINECRAFT.keyboardHandler.setClipboard("/" + cmd.get("cmd").getAsString());
                                 new ToastBuilder().setTitle(Component.translatable("pplhelper"))
-                                        .setIcon(PepelandHelper.Icons.WHITE_PEPE)
+                                        .setIcon(PepeLandHelper.Icons.WHITE_PEPE)
                                         .setMessage(Component.translatable("pplhelper.commands.notice.description")).buildAndShow();
                             }
                     ).setType(TextBuilder.TYPE.BLOCKQUOTE).setColor(0xFF13A10E).build();

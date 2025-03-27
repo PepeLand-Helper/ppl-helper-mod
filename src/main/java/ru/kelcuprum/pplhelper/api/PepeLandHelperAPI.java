@@ -7,7 +7,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.network.chat.Component;
 import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.WebAPI;
-import ru.kelcuprum.pplhelper.PepelandHelper;
+import ru.kelcuprum.pplhelper.PepeLandHelper;
 import ru.kelcuprum.pplhelper.api.components.News;
 import ru.kelcuprum.pplhelper.api.components.Project;
 import ru.kelcuprum.pplhelper.api.components.VersionInfo;
@@ -28,7 +28,7 @@ public class PepeLandHelperAPI {
         return getURI(url, true);
     }
     public static String getURI(String url, boolean uriEncode){
-        String api = PepelandHelper.config.getString("API_URL", "https://api.pplh.ru/");
+        String api = PepeLandHelper.config.getString("API_URL", "https://api.pplh.ru/");
         if(!api.endsWith("/")) api+="/";
         return String.format("%1$s%2$s", api, uriEncode ? uriEncode(url) : url);
     }
@@ -182,7 +182,7 @@ public class PepeLandHelperAPI {
             for(JsonElement element : projects.getAsJsonArray("items")) list.add(new Project(element.getAsJsonObject()));
             return list;
         } catch (Exception ex){
-            PepelandHelper.LOG.error(ex.getMessage() == null ? ex.getClass().getName() : ex.getMessage());
+            PepeLandHelper.LOG.error(ex.getMessage() == null ? ex.getClass().getName() : ex.getMessage());
             return new ArrayList<>();
         }
     }
@@ -204,25 +204,25 @@ public class PepeLandHelperAPI {
         }
     }
     public static void uploadProjectSchematicFile(byte[] file, int id) throws IOException, InterruptedException {
-        if(PepelandHelper.user == null) return;
+        if(PepeLandHelper.user == null) return;
         HttpRequest.Builder builder = HttpRequest.newBuilder(URI.create(getURI(String.format("projects/%s?schematic=true", id))));
-        builder.header("Authorization", "Bearer "+ PepelandHelper.config.getString("oauth.access_token", ""));
+        builder.header("Authorization", "Bearer "+ PepeLandHelper.config.getString("oauth.access_token", ""));
         builder.POST(HttpRequest.BodyPublishers.ofString("hehehe"));
         JsonObject object = net.minecraft.util.GsonHelper.parse(WebAPI.getString(builder));
 
         if(isError(object)) throw new RuntimeException(object.getAsJsonObject("error").get("message").getAsString());
-        else PepelandHelper.LOG.log(object.get("message").getAsString());
+        else PepeLandHelper.LOG.log(object.get("message").getAsString());
     }
     public static void updateProject(Project project) throws IOException, InterruptedException {
-        if(PepelandHelper.user == null) return;
+        if(PepeLandHelper.user == null) return;
         JsonObject data = new JsonObject();
         data.add("data", project.toJSON());
         data.addProperty("content", getProjectContent(project.id));
         JsonObject object = WebAPI.getJsonObject(HttpRequest.newBuilder(URI.create(getURI(String.format("projects/%s", project.id))))
-                .header("Authorization", "Bearer "+ PepelandHelper.config.getString("oauth.access_token", ""))
+                .header("Authorization", "Bearer "+ PepeLandHelper.config.getString("oauth.access_token", ""))
                 .POST(HttpRequest.BodyPublishers.ofString(data.toString())));
         if(isError(object)) throw new RuntimeException(object.getAsJsonObject("error").get("message").getAsString());
-        else PepelandHelper.LOG.log(object.get("message").getAsString());
+        else PepeLandHelper.LOG.log(object.get("message").getAsString());
     }
     public static void downlaodProjectSchematic(int id){
         try {
@@ -240,7 +240,7 @@ public class PepeLandHelperAPI {
             for(JsonElement element : projects.getAsJsonArray("items")) list.add(new News(element.getAsJsonObject()));
             return list;
         } catch (Exception ex){
-            PepelandHelper.LOG.error(ex.getMessage() == null ? ex.getClass().getName() : ex.getMessage());
+            PepeLandHelper.LOG.error(ex.getMessage() == null ? ex.getClass().getName() : ex.getMessage());
             return new ArrayList<>();
         }
     }

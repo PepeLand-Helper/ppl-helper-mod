@@ -1,18 +1,14 @@
 package ru.kelcuprum.pplhelper.gui.screens.message;
 
-import com.google.gson.JsonObject;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.packs.repository.Pack;
 import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.text.TextBuilder;
 import ru.kelcuprum.alinlib.gui.components.text.TextBox;
-import ru.kelcuprum.alinlib.gui.toast.ToastBuilder;
+import ru.kelcuprum.pplhelper.PepeLandHelper;
 import ru.kelcuprum.pplhelper.PepeLandHelperPreLaunch;
-import ru.kelcuprum.pplhelper.PepelandHelper;
 import ru.kelcuprum.pplhelper.api.components.VersionInfo;
 
 public class NewUpdateScreen$Helper extends Screen {
@@ -35,14 +31,14 @@ public class NewUpdateScreen$Helper extends Screen {
                 .setPosition(width/2-150, height-50).setWidth(148).build());
         addRenderableWidget(new ButtonBuilder(Component.translatable("pplhelper.pack.update.avalible.auto"))
                 .setOnPress((s) -> {
-                    PepelandHelper.config.setBoolean("PPLH.AUTO_UPDATE", true);
+                    PepeLandHelper.config.setBoolean("PPLH.AUTO_UPDATE", true);
                     install();
                 })
                 .setPosition(width/2-150, height-25).setWidth(148).build());
         addRenderableWidget(new ButtonBuilder(Component.translatable("pplhelper.pack.update.avalible.later")).setOnPress((s) -> onClose()).setPosition(width/2+2, height-50).setWidth(148).build());
         addRenderableWidget(new ButtonBuilder(Component.translatable("pplhelper.pack.update.avalible.unfollow")).setOnPress((s) -> {
-            PepelandHelper.config.setBoolean("PPLH.NOTICE", false);
-            PepelandHelper.config.setBoolean("PPLH.AUTO_UPDATE", false);
+            PepeLandHelper.config.setBoolean("PPLH.NOTICE", false);
+            PepeLandHelper.config.setBoolean("PPLH.AUTO_UPDATE", false);
             onClose();
         }).setPosition(width/2+2, height-25).setWidth(148).build());
     }
@@ -66,6 +62,6 @@ public class NewUpdateScreen$Helper extends Screen {
     public void onClose() {
         assert this.minecraft != null;
         this.minecraft.setScreen(parent);
-        PepelandHelper.checkPackUpdates();
+        PepeLandHelper.checkPackUpdates();
     }
 }

@@ -8,16 +8,11 @@ import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.Util;
 import net.minecraft.commands.CommandBuildContext;
-import net.minecraft.commands.arguments.DimensionArgument;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.commands.ExecuteCommand;
-import net.minecraft.server.commands.TeleportCommand;
 import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.info.Player;
 import ru.kelcuprum.alinlib.info.World;
-import ru.kelcuprum.pplhelper.PepelandHelper;
-import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
-import ru.kelcuprum.pplhelper.api.components.projects.FollowProject;
+import ru.kelcuprum.pplhelper.PepeLandHelper;
 import ru.kelcuprum.pplhelper.utils.FollowManager;
 import ru.kelcuprum.pplhelper.utils.TabHelper;
 
@@ -45,7 +40,7 @@ public class PPLHelperCommand {
                             return 0;
                         }))
                         .then(literal("update").executes((s) -> {
-                            PepelandHelper.emotes = null;
+                            PepeLandHelper.emotes = null;
                             sendFeedback(s, Component.literal("Эмоуты были обновлены"));
                             return 0;
                         })))
@@ -55,21 +50,21 @@ public class PPLHelperCommand {
                             return 0;
                         }))
                         .then(literal("update").executes((s) -> {
-                            PepelandHelper.emotes = null;
+                            PepeLandHelper.emotes = null;
                             sendFeedback(s, Component.literal("Эмоуты были обновлены"));
                             return 0;
                         })))
                 .then(literal("follow")
                         .then(argument("x", integer())
                                 .then(argument("z", integer()).executes((s) -> {
-                                    if (!PepelandHelper.playerInPPL() || TabHelper.getWorld() == null)
+                                    if (!PepeLandHelper.playerInPPL() || TabHelper.getWorld() == null)
                                         sendFeedback(s, Component.literal("Вы не можете использовать команду вне сервера"));
                                     else {
                                         FollowManager.setCoordinates("followed", TabHelper.getWorld(), AlinLib.MINECRAFT.player.level().dimension().location().toString(), getInteger(s, "x"), getInteger(s, "z"));
                                     }
                                     return 0;
                                 }).then(argument("world", new WorldArgumentType()).executes((s) -> {
-                                    if (!PepelandHelper.playerInPPL() || TabHelper.getWorld() == null)
+                                    if (!PepeLandHelper.playerInPPL() || TabHelper.getWorld() == null)
                                         sendFeedback(s, Component.literal("Вы не можете использовать команду вне сервера"));
                                     else
                                         FollowManager.setCoordinates("followed", TabHelper.getWorldByShortName(getString(s, "world")), AlinLib.MINECRAFT.player.level().dimension().location().toString(), getInteger(s, "x"), getInteger(s, "z"));
@@ -102,10 +97,10 @@ public class PPLHelperCommand {
                         .then(literal("remove")
                                 .then(argument("name", new FollowsArgumentType()).executes((s) -> {
                                     String id = getString(s, "name");
-                                    if((PepelandHelper.config.toJSON().has("coordinates") ? PepelandHelper.config.toJSON().getAsJsonObject("coordinates") : new JsonObject()).has(id)){
-                                        JsonObject js = (PepelandHelper.config.toJSON().has("coordinates") ? PepelandHelper.config.toJSON().getAsJsonObject("coordinates") : new JsonObject());
+                                    if((PepeLandHelper.config.toJSON().has("coordinates") ? PepeLandHelper.config.toJSON().getAsJsonObject("coordinates") : new JsonObject()).has(id)){
+                                        JsonObject js = (PepeLandHelper.config.toJSON().has("coordinates") ? PepeLandHelper.config.toJSON().getAsJsonObject("coordinates") : new JsonObject());
                                         js.remove(id);
-                                        PepelandHelper.config.setJsonObject("coordinates", js);
+                                        PepeLandHelper.config.setJsonObject("coordinates", js);
                                         sendFeedback(s, Component.literal(String.format("%s был удален", id)));
                                         return 0;
                                     } else {
@@ -116,8 +111,8 @@ public class PPLHelperCommand {
                         )
                         .then(argument("followed", new FollowsArgumentType()).executes((s) -> {
                             String id = getString(s, "followed");
-                            if((PepelandHelper.config.toJSON().has("coordinates") ? PepelandHelper.config.toJSON().getAsJsonObject("coordinates") : new JsonObject()).has(id)){
-                                JsonObject jsonObject = (PepelandHelper.config.toJSON().has("coordinates") ? PepelandHelper.config.toJSON().getAsJsonObject("coordinates") : new JsonObject()).getAsJsonObject(id);
+                            if((PepeLandHelper.config.toJSON().has("coordinates") ? PepeLandHelper.config.toJSON().getAsJsonObject("coordinates") : new JsonObject()).has(id)){
+                                JsonObject jsonObject = (PepeLandHelper.config.toJSON().has("coordinates") ? PepeLandHelper.config.toJSON().getAsJsonObject("coordinates") : new JsonObject()).getAsJsonObject(id);
                                 FollowManager.setCoordinates(
                                         id,
                                         TabHelper.getWorldByShortName(jsonObject.has("world") ? jsonObject.get("world").getAsString() : TabHelper.getWorld().shortName),
@@ -169,7 +164,7 @@ public class PPLHelperCommand {
     }
 
     public static void createFollowedCoordinate(CommandContext<FabricClientCommandSource> s, String id, String world, String level, int x, int z){
-        JsonObject coordinates = PepelandHelper.config.toJSON().has("coordinates") ? PepelandHelper.config.toJSON().getAsJsonObject("coordinates") : new JsonObject();
+        JsonObject coordinates = PepeLandHelper.config.toJSON().has("coordinates") ? PepeLandHelper.config.toJSON().getAsJsonObject("coordinates") : new JsonObject();
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("world", world);
         jsonObject.addProperty("level", level);
@@ -177,7 +172,7 @@ public class PPLHelperCommand {
         jsonObject.addProperty("z", z);
         sendFeedback(s, Component.literal(String.format(coordinates.has(id) ? "%s был отредактирован" : "%s был добавлен", id)));
         coordinates.add(id, jsonObject);
-        PepelandHelper.config.setJsonObject("coordinates", coordinates);
+        PepeLandHelper.config.setJsonObject("coordinates", coordinates);
     }
 
     public static String fixFormatCodes(String text) {
@@ -200,7 +195,7 @@ public class PPLHelperCommand {
     }
 
     public static int sendReport(CommandContext<FabricClientCommandSource> s, String reasons) {
-        if (PepelandHelper.playerInPPL() && TabHelper.getWorld() != null) {
+        if (PepeLandHelper.playerInPPL() && TabHelper.getWorld() != null) {
             String reportFormat = "1. %s\n2. `[%s]` %s\n3. %s";
             String playerName = Player.getName();
             if (playerName.replace("_", "").length() <= playerName.length() - 2)

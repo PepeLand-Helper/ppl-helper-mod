@@ -10,8 +10,8 @@ import net.minecraft.resources.ResourceLocation;
 import ru.kelcuprum.alinlib.gui.Colors;
 import ru.kelcuprum.pplhelper.gui.TextureHelper;
 
-import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.PACK_INFO;
-import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.WHITE_PEPE;
+import static ru.kelcuprum.pplhelper.PepeLandHelper.Icons.PACK_INFO;
+import static ru.kelcuprum.pplhelper.PepeLandHelper.Icons.WHITE_PEPE;
 
 public class BannerWidget extends AbstractWidget {
     public final String url;

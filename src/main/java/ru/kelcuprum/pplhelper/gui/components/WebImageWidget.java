@@ -11,14 +11,14 @@ import org.jetbrains.annotations.NotNull;
 import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.gui.GuiUtils;
 import ru.kelcuprum.alinlib.gui.components.Description;
-import ru.kelcuprum.pplhelper.PepelandHelper;
+import ru.kelcuprum.pplhelper.PepeLandHelper;
 import ru.kelcuprum.pplhelper.gui.TextureHelper;
 
 import static ru.kelcuprum.alinlib.gui.Colors.*;
 import static ru.kelcuprum.alinlib.gui.GuiUtils.DEFAULT_HEIGHT;
 import static ru.kelcuprum.alinlib.gui.GuiUtils.DEFAULT_WIDTH;
-import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.PACK_INFO;
-import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.WHITE_PEPE;
+import static ru.kelcuprum.pplhelper.PepeLandHelper.Icons.PACK_INFO;
+import static ru.kelcuprum.pplhelper.PepeLandHelper.Icons.WHITE_PEPE;
 
 public class WebImageWidget extends AbstractButton implements Description {
     public ResourceLocation image;
@@ -43,7 +43,7 @@ public class WebImageWidget extends AbstractButton implements Description {
         this.image = null;
         this.url = url;
         this.id = id;
-        this.onPress = (s) -> PepelandHelper.confirmLinkNow(AlinLib.MINECRAFT.screen, url);
+        this.onPress = (s) -> PepeLandHelper.confirmLinkNow(AlinLib.MINECRAFT.screen, url);
     }
 
     public ResourceLocation getImage(){

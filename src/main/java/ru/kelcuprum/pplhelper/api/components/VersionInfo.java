@@ -1,7 +1,6 @@
 package ru.kelcuprum.pplhelper.api.components;
 
 import com.google.gson.JsonObject;
-import ru.kelcuprum.pplhelper.PepelandHelper;
 
 public class VersionInfo {
     public State state;

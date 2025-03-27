@@ -1,7 +1,6 @@
 package ru.kelcuprum.pplhelper.gui.screens.pages;
 
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -16,12 +15,11 @@ import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.text.HorizontalRuleBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.text.TextBuilder;
 import ru.kelcuprum.alinlib.gui.components.text.TextBox;
-import ru.kelcuprum.pplhelper.PepelandHelper;
+import ru.kelcuprum.pplhelper.PepeLandHelper;
 import ru.kelcuprum.pplhelper.api.components.Project;
 import ru.kelcuprum.pplhelper.gui.components.BannerWidget;
 import ru.kelcuprum.pplhelper.gui.components.ScaledTextBox;
 import ru.kelcuprum.pplhelper.gui.components.UserCard;
-import ru.kelcuprum.pplhelper.gui.screens.pages.schematic.UploadSchematicScreen;
 import ru.kelcuprum.pplhelper.utils.FollowManager;
 import ru.kelcuprum.pplhelper.utils.MarkdownParser;
 
@@ -29,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static ru.kelcuprum.pplhelper.PepelandHelper.Icons.WEB;
+import static ru.kelcuprum.pplhelper.PepeLandHelper.Icons.WEB;
 
 public class ProjectScreen extends Screen {
     public final Project project;
@@ -57,7 +55,7 @@ public class ProjectScreen extends Screen {
         int x = (width - size) / 2;
         int y = 30;
         addRenderableWidget(new ButtonBuilder(Component.literal("x"), (s) -> onClose()).setPosition(x + size - 20, 5).setWidth(20).build()); //, 20, 20,
-        addRenderableWidget(new ButtonBuilder(Component.translatable("pplhelper.project.web"), (s) -> PepelandHelper.confirmLinkNow(this, String.format("https://pplh.ru/projects/%s", project.id))).setSprite(WEB).setPosition(x, 5).setWidth(20).build()); //, 20, 20,
+        addRenderableWidget(new ButtonBuilder(Component.translatable("pplhelper.project.web"), (s) -> PepeLandHelper.confirmLinkNow(this, String.format("https://pplh.ru/projects/%s", project.id))).setSprite(WEB).setPosition(x, 5).setWidth(20).build()); //, 20, 20,
         addRenderableWidget(new TextBuilder(title).setPosition(x + 25, 5).setSize(size - 50, 20).build());
         this.scroller = addRenderableWidget(new ConfigureScrolWidget(x + size + 1, y, 4, this.height - y, Component.empty(), scroller -> {
             scroller.innerHeight = 0;
@@ -90,16 +88,16 @@ public class ProjectScreen extends Screen {
             if(FollowManager.project == null || FollowManager.project.id != project.id) FollowManager.setCoordinates(project); else FollowManager.resetCoordinates();
             s.builder.setTitle(Component.translatable(FollowManager.project == null ? "pplhelper.project.follow" : "pplhelper.project.unfollow"));
         }).setPosition(x, y).setWidth(size).build());
-        if(FabricLoader.getInstance().isModLoaded("litematica") && ((project.schematicEnable  && PepelandHelper.playerInPPL()) || (PepelandHelper.user != null && Objects.equals(PepelandHelper.user.id, project.author)))){
+        if(FabricLoader.getInstance().isModLoaded("litematica") && ((project.schematicEnable  && PepeLandHelper.playerInPPL()) || (PepeLandHelper.user != null && Objects.equals(PepeLandHelper.user.id, project.author)))){
             widgets.add(new HorizontalRuleBuilder(Component.translatable("pplhelper.project.schematic")).setPosition(x, y).build());
-            if(project.schematicEnable && PepelandHelper.playerInPPL()){
+            if(project.schematicEnable && PepeLandHelper.playerInPPL()){
                 widgets.add(new ButtonBuilder(Component.translatable("pplhelper.project.schematic.download"), (s) -> {
                     project.loadSchematic();
                 }).setPosition(x, y).setWidth(size).build());
             }
-            if(PepelandHelper.user != null && Objects.equals(PepelandHelper.user.id, project.author)){
+            if(PepeLandHelper.user != null && Objects.equals(PepeLandHelper.user.id, project.author)){
                 widgets.add(new ButtonBuilder(Component.translatable("pplhelper.project.schematic.upload_short"), (s) -> {
-                    PepelandHelper.confirmLinkNow(this, String.format("https://l.pplh.ru/projects/%s/schematic", project.id));
+                    PepeLandHelper.confirmLinkNow(this, String.format("https://l.pplh.ru/projects/%s/schematic", project.id));
                 }).setPosition(x, y).setWidth(size).build());
             }
         }
