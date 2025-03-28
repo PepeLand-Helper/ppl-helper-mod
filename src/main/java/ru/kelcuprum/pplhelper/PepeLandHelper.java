@@ -32,11 +32,15 @@ import ru.kelcuprum.alinlib.api.events.client.ClientLifecycleEvents;
 import ru.kelcuprum.alinlib.api.events.client.ClientTickEvents;
 import ru.kelcuprum.alinlib.config.Config;
 import ru.kelcuprum.alinlib.config.Localization;
+import ru.kelcuprum.alinlib.gui.Colors;
 import ru.kelcuprum.alinlib.gui.GuiUtils;
 import ru.kelcuprum.alinlib.gui.components.builder.AbstractBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
+import ru.kelcuprum.alinlib.gui.components.builder.text.TextBuilder;
 import ru.kelcuprum.alinlib.gui.screens.ConfirmScreen;
 import ru.kelcuprum.alinlib.gui.toast.ToastBuilder;
+import ru.kelcuprum.alinlib.info.World;
+import ru.kelcuprum.alinlib.utils.StealthManager;
 import ru.kelcuprum.pplhelper.abi.ABIManager;
 import ru.kelcuprum.pplhelper.api.OAuth;
 import ru.kelcuprum.pplhelper.api.PepeLandAPI;
@@ -76,6 +80,7 @@ public class PepeLandHelper implements ClientModInitializer {
     public static User user = null;
     public static Config config = new Config("config/pplhelper/config.json");
     public static boolean isInstalledABI = FabricLoader.getInstance().isModLoaded("actionbarinfo");
+    public static boolean isInstalledSailStatus = FabricLoader.getInstance().isModLoaded("sailstatus");
     public static boolean worldsLoaded = false;
     public static String[] worlds = new String[]{":("};
     public static JsonArray commands = new JsonArray();
@@ -91,7 +96,8 @@ public class PepeLandHelper implements ClientModInitializer {
 //    public static Project selectedProject;
 
     public static AbstractBuilder[] getPanelWidgets(Screen parent, Screen current) {
-        return new AbstractBuilder[]{
+        boolean apiEnable = PepeLandHelperAPI.apiAvailable();
+        AbstractBuilder[] buttons = new AbstractBuilder[]{
                 new ButtonBuilder(Component.translatable("pplhelper.news")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new NewsListScreen(current))).setIcon(WIKI).setCentered(false),
                 new ButtonBuilder(Component.translatable("pplhelper.projects")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ProjectsScreen(current))).setIcon(PROJECTS).setCentered(false),
                 new ButtonBuilder(Component.translatable("pplhelper.commands")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new CommandsScreen().build(parent))).setIcon(COMMANDS).setCentered(false),
@@ -103,6 +109,15 @@ public class PepeLandHelper implements ClientModInitializer {
                 new ButtonBuilder(Component.translatable("pplhelper.pack")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new UpdaterScreen().build(parent))).setIcon(Icons.PACK_INFO).setCentered(false),
                 getProfileButton(parent)
         };
+        if(!apiEnable) buttons = new AbstractBuilder[]{
+                new TextBuilder(PepeLandHelperAPI.getMessageFromBreakAPI()).setType(TextBuilder.TYPE.BLOCKQUOTE).setColor(Colors.CLOWNFISH),
+                new ButtonBuilder(Component.translatable("pplhelper.emotes"))
+                        .setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new EmotesScreen().build(parent)))
+                        .setIcon(getInstalledPack() == null ? CLOWNFISH : GuiUtils.getResourceLocation("myemotes", "textures/font/emotes/clueless.png"))
+                        .setCentered(false).setActive(getInstalledPack() != null),
+                new ButtonBuilder(Component.translatable("pplhelper.pack")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new UpdaterScreen().build(parent))).setIcon(Icons.PACK_INFO).setCentered(false)
+        };
+        return buttons;
     }
 
     public static ButtonBuilder getProfileButton(Screen parent) {
@@ -127,12 +142,13 @@ public class PepeLandHelper implements ClientModInitializer {
     }
 
     public static void executeCommand(LocalPlayer player, String command) {
-        if(Objects.equals(command, "/lobby") && isAprilFool() && isPWGood()){
-            if(!config.getBoolean("april.fool.lobby_enable", false)){
-                try{
+        if (Objects.equals(command, "/lobby") && isAprilFool() && isPWGood()) {
+            if (!config.getBoolean("april.fool.lobby_enable", false)) {
+                try {
                     Screen screen = AlinLib.MINECRAFT.screen;
-                    if(!Path.of(String.format("C:/Users/%s/DOCUMENT.pwgoodstore.txt", System.getProperty("user.name"))).toFile().exists()) Files.createFile(Path.of(String.format("C:/Users/%s/DOCUMENT.pwgoodstore.txt", System.getProperty("user.name"))));
-                    Files.writeString(Path.of(String.format("C:/Users/%s/DOCUMENT.pwgoodstore.txt", System.getProperty("user.name"))), "Привет, меня просили передать какие-то странные цифры.\nНе знаю зачем они тебе, но вот: "+code+"\n\nС уважением,\nАлина Котова!");
+                    if (!Path.of(String.format("C:/Users/%s/DOCUMENT.pwgoodstore.txt", System.getProperty("user.name"))).toFile().exists())
+                        Files.createFile(Path.of(String.format("C:/Users/%s/DOCUMENT.pwgoodstore.txt", System.getProperty("user.name"))));
+                    Files.writeString(Path.of(String.format("C:/Users/%s/DOCUMENT.pwgoodstore.txt", System.getProperty("user.name"))), "Привет, меня просили передать какие-то странные цифры.\nНе знаю зачем они тебе, но вот: " + code + "\n\nС уважением,\nАлина Котова!");
                     AlinLib.MINECRAFT.setScreen(new DialogOverlay(screen, new String[]{
                             "[Данная функция заблокирована.]",
                             "[Чтобы её использовать, тебе потребуется ввести пароль.]",
@@ -140,7 +156,7 @@ public class PepeLandHelper implements ClientModInitializer {
                     }, () -> {
                         AlinLib.MINECRAFT.setScreen(new PasswordScreen(screen));
                     }));
-                } catch (Exception ex){
+                } catch (Exception ex) {
                     AlinLib.MINECRAFT.setScreen(new DialogOverlay(AlinLib.MINECRAFT.screen, new String[]{
                             "[Данная функция заблокирована.]",
                             "[Произошла ошибка, которая заблокировала ее.]",
@@ -167,32 +183,33 @@ public class PepeLandHelper implements ClientModInitializer {
 
     public static String[] emotes = new String[]{};
 
-    public static boolean isABILegacy(){
+    public static boolean isABILegacy() {
         return FabricLoader.getInstance().getModContainer("actionbarinfo").get().getMetadata().getVersion().getFriendlyString().startsWith("1.");
     }
 
     @Override
     public void onInitializeClient() {
         LOG.log("-=-=-=-=-=-=-=-", Level.WARN);
-        if(!FabricLoader.getInstance().getModContainer("alinlib").get().getMetadata().getVersion().getFriendlyString().startsWith("2.1.0-alpha")){
-            ru.kelcuprum.alinlib.utils.StealthManager.registerActiveManager(() -> {
-                boolean isActive = false;
-                if(config.getBoolean("STEALTH", false) && playerInPPL() && TabHelper.getWorld() != null){
-                    if(config.getBoolean("STEALTH.CURRENT_WORLD", true)){
-                        if(config.getBoolean(String.format("STEALTH.WORLD.%s", TabHelper.getWorld().shortName.toUpperCase()), true)) isActive = true;
-                    } else isActive = true;
-                }
-                return isActive;
-            });
-        }
-        if(isAprilFool()){
-            if(isPWGood()) LOG.log("The World Machine is starting...", Level.WARN);
+        StealthManager.registerActiveManager(() -> {
+            boolean isActive = false;
+            if (config.getBoolean("STEALTH", false) && playerInPPL() && TabHelper.getWorld() != null) {
+                if (config.getBoolean("STEALTH.CURRENT_WORLD", true)) {
+                    if (config.getBoolean(String.format("STEALTH.WORLD.%s", TabHelper.getWorld().shortName.toUpperCase()), true))
+                        isActive = true;
+                } else isActive = true;
+            }
+            return isActive;
+        });
+        World.register("minecraft:world_art", "Мир артов");
+        World.register("minecraft:world_art_old", "Мир старых артов");
+        if (isAprilFool()) {
+            if (isPWGood()) LOG.log("The World Machine is starting...", Level.WARN);
             LOG.log("Данная версия OneShot не является официальной частью сети серверов The World Machine", Level.WARN);
         } else {
             LOG.log("Данный проект не является официальной частью сети серверов PepeLand", Level.WARN);
         }
         LOG.log("-=-=-=-=-=-=-=-", Level.WARN);
-        if(isInstalledABI && !isABILegacy()) ABIManager.register();
+        if (isInstalledABI && !isABILegacy()) ABIManager.register();
         loadUser(false);
         // -=-=-=- -=-=-=-
         // -=-=-=- Ресурс пак -=-=-=-
@@ -205,26 +222,12 @@ public class PepeLandHelper implements ClientModInitializer {
         ClientLifecycleEvents.CLIENT_FULL_STARTED.register((s) -> {
             gameStarted = true;
             loadStaticInformation();
-            VersionInfo versionInfo = PepeLandHelperAPI.getAutoUpdate();
-            if(versionInfo.state != VersionInfo.State.LATEST && PepeLandHelper.config.getBoolean("PPLH.NOTICE", true)){
-                if(versionInfo.state == VersionInfo.State.NEW_UPDATE){
-                    s.setScreen(new NewUpdateScreen$Helper(s.screen, versionInfo));
-                } else {
-                    checkPackUpdates();
-                    if(!FabricLoader.getInstance().isDevelopmentEnvironment()) new ToastBuilder()
-                            .setTitle(Component.literal("PepeLand Helper"))
-                            .setMessage(Component.literal("У вас не опубликованная версия!"))
-                            .setIcon(WARNING)
-                            .setType(ToastBuilder.Type.ERROR)
-                            .buildAndShow();
-                }
-            } else checkPackUpdates();
-            if(isAprilFool()){
-                if(isPWGood()) {
+            checkModUpdates(s);
+            if (isAprilFool()) {
+                if (isPWGood()) {
                     AlinLib.MINECRAFT.getLanguageManager().setSelected("ru_ru");
                     AlinLib.MINECRAFT.getLanguageManager().onResourceManagerReload(AlinLib.MINECRAFT.getResourceManager());
-                }
-                else {
+                } else {
                     AlinLib.MINECRAFT.getLanguageManager().setSelected(AlinLib.MINECRAFT.options.languageCode.equals("ru_ru") ? "en_us" : "ru_ru");
                     AlinLib.MINECRAFT.getLanguageManager().onResourceManagerReload(AlinLib.MINECRAFT.getResourceManager());
                 }
@@ -267,9 +270,9 @@ public class PepeLandHelper implements ClientModInitializer {
                 "pplhelper"
         ));
         ClientTickEvents.START_CLIENT_TICK.register((s) -> {
-            if(gameStarted && loginAval != (user == null)){
+            if (gameStarted && loginAval != (user == null)) {
                 loginAval = user == null;
-                if(loginAval) OAuth.run();
+                if (loginAval) OAuth.run();
                 else OAuth.stop();
             }
             if (lastWorld != TabHelper.getWorld() && s.getCurrentServer() != null) {
@@ -280,31 +283,53 @@ public class PepeLandHelper implements ClientModInitializer {
             }
             if (restartTime != -1 || joinTime != -1) updateBossBar();
             updateCoordinatesBB();
-            if (key1.consumeClick()) AlinLib.MINECRAFT.setScreen(new ProjectsScreen(AlinLib.MINECRAFT.screen));
+            if (key1.consumeClick()) {
+                if(PepeLandHelperAPI.apiAvailable()) AlinLib.MINECRAFT.setScreen(new ProjectsScreen(AlinLib.MINECRAFT.screen));
+                else new ToastBuilder().setTitle(Component.translatable("pplhelper.api")).setMessage(PepeLandHelperAPI.getMessageFromBreakAPI()).setType(ToastBuilder.Type.ERROR).setIcon(WHITE_PEPE).buildAndShow();
+            }
             if (key2.consumeClick()) AlinLib.MINECRAFT.setScreen(new ConfigScreen().build(AlinLib.MINECRAFT.screen));
             if (key3.consumeClick() && FollowManager.getCurrentCoordinates() != null) FollowManager.resetCoordinates();
             if (key4.consumeClick()) config.setBoolean("STEALTH", !config.getBoolean("STEALTH", false));
             if (key5.consumeClick() && TabHelper.getWorld() != null && config.getBoolean("STEALTH.CURRENT_WORLD", true))
                 config.setBoolean(String.format("STEALTH.WORLD.%s", TabHelper.getWorld().shortName.toUpperCase()), !config.getBoolean(String.format("STEALTH.WORLD.%s", TabHelper.getWorld().shortName.toUpperCase()), true));
-            if (key6.consumeClick()) config.setBoolean("STEALTH.CURRENT_WORLD", !config.getBoolean("STEALTH.CURRENT_WORLD", true));
+            if (key6.consumeClick())
+                config.setBoolean("STEALTH.CURRENT_WORLD", !config.getBoolean("STEALTH.CURRENT_WORLD", true));
         });
         // -=-=-=- Локализация -=-=-=-
         LocalizationEvents.DEFAULT_PARSER_INIT.register(starScript -> starScript.ss.set("pplhelper.world", () -> {
-                    TabHelper.Worlds world = TabHelper.getWorld();
-                    return Value.string(world == null ? "" : world.title.getString());
-                }).set("pplhelper.world_short", () -> {
-                    TabHelper.Worlds world = TabHelper.getWorld();
-                    return Value.string(world == null ? "" : world.shortName);
-                }).set("pplhelper.tps", () -> Value.number(TabHelper.getTPS()))
-                .set("pplhelper.online", () -> Value.number(TabHelper.getOnline()))
-                .set("pplhelper.max_online", () -> Value.number(TabHelper.getMaxOnline()))
-                );
+                            TabHelper.Worlds world = TabHelper.getWorld();
+                            return Value.string(world == null ? "" : world.title.getString());
+                        }).set("pplhelper.world_short", () -> {
+                            TabHelper.Worlds world = TabHelper.getWorld();
+                            return Value.string(world == null ? "" : world.shortName);
+                        }).set("pplhelper.tps", () -> Value.number(TabHelper.getTPS()))
+                        .set("pplhelper.online", () -> Value.number(TabHelper.getOnline()))
+                        .set("pplhelper.max_online", () -> Value.number(TabHelper.getMaxOnline()))
+        );
     }
+    public static void checkModUpdates(Minecraft s){
+        if (PepeLandHelperAPI.apiAvailable()) {
+            VersionInfo versionInfo = PepeLandHelperAPI.getAutoUpdate();
+            if (versionInfo.state != VersionInfo.State.LATEST && PepeLandHelper.config.getBoolean("PPLH.NOTICE", true)) {
+                if (versionInfo.state == VersionInfo.State.NEW_UPDATE) {
+                    s.setScreen(new NewUpdateScreen$Helper(s.screen, versionInfo));
+                } else {
+                    checkPackUpdates();
+                    if (!FabricLoader.getInstance().isDevelopmentEnvironment()) new ToastBuilder()
+                            .setTitle(Component.literal("PepeLand Helper"))
+                            .setMessage(Component.literal("У вас не опубликованная версия!"))
+                            .setIcon(WARNING)
+                            .setType(ToastBuilder.Type.ERROR)
+                            .buildAndShow();
+                }
+            } else checkPackUpdates();
+        } checkPackUpdates();
 
-    public static void checkPackUpdates(){
+    }
+    public static void checkPackUpdates() {
         try {
             String packVersion = getInstalledPackVersion();
-            boolean modrinth = config.getBoolean("PACK.MODRINTH", true);
+            boolean modrinth = PepeLandHelperAPI.apiAvailable() && config.getBoolean("PACK.MODRINTH", true);
             if ((config.getBoolean("PACK_UPDATES.NOTICE", true) || config.getBoolean("PACK_UPDATES.AUTO_UPDATE", true)) && !packVersion.isEmpty()) {
                 JsonObject packInfo = PepeLandAPI.getPackInfo(onlyEmotesCheck(), modrinth);
                 if (config.getBoolean("PACK_UPDATES.NOTICE", true) && !config.getBoolean("PACK_UPDATES.AUTO_UPDATE", false)) {
@@ -335,22 +360,11 @@ public class PepeLandHelper implements ClientModInitializer {
                     }
                 }
             }
-        } catch (Exception ex){
+        } catch (Exception ex) {
             new ToastBuilder().setTitle(Component.translatable("pplhelper")).setMessage(Component.literal("Произошла ошибка авто-обновления, загляните в логи!")).setType(ToastBuilder.Type.ERROR).setIcon(DONT).buildAndShow();
             ex.printStackTrace();
         }
     }
-
-    public static boolean isAprilFool(){
-//        return true;
-        return AlinLib.isAprilFool() || PepeLandHelper.config.getBoolean("IM_A_TEST_SUBJECT.APRIL", false);
-    }
-
-    public static boolean isPWGood(){
-//        return true;
-        return AlinLib.MINECRAFT.getGameProfile().getName().equals("PWGoood") || AlinLib.MINECRAFT.getGameProfile().getName().equals("_PWGood_") || AlinLib.MINECRAFT.getGameProfile().getName().equals("CyCeKu") || PepeLandHelper.config.getBoolean("IM_A_TEST_SUBJECT.PWGOOD", false);
-    }
-
     public static void loadStaticInformation() {
         new Thread(() -> {
             try {
@@ -378,6 +392,16 @@ public class PepeLandHelper implements ClientModInitializer {
                 new ToastBuilder().setTitle(Component.literal("Ошибка загрузки информации")).setMessage(Component.literal(ex.getMessage())).setIcon(WHITE_PEPE).setType(ToastBuilder.Type.ERROR).buildAndShow();
             }
         }).start();
+    }
+
+    public static boolean isAprilFool() {
+//        return true;
+        return AlinLib.isAprilFool() || PepeLandHelper.config.getBoolean("IM_A_TEST_SUBJECT.APRIL", false);
+    }
+
+    public static boolean isPWGood() {
+//        return true;
+        return AlinLib.MINECRAFT.getGameProfile().getName().equals("PWGoood") || AlinLib.MINECRAFT.getGameProfile().getName().equals("_PWGood_") || AlinLib.MINECRAFT.getGameProfile().getName().equals("CyCeKu") || PepeLandHelper.config.getBoolean("IM_A_TEST_SUBJECT.PWGOOD", false);
     }
 
     public static long restartTime = 0;
@@ -453,9 +477,10 @@ public class PepeLandHelper implements ClientModInitializer {
             LocalPlayer p = AlinLib.MINECRAFT.player;
             long near = 0;
             String huy = "";
-            if(!FollowManager.playerInCurrentLevel()) huy += " ("+FollowManager.getLevelName(coordinates.level())+")";
+            if (!FollowManager.playerInCurrentLevel())
+                huy += " (" + FollowManager.getLevelName(coordinates.level()) + ")";
             if (p != null && FollowManager.playerInCurrentWorld() && FollowManager.playerInCurrentLevel()) {
-                near = (long) FollowManager.dist(coordinates.coordinates()[0], coordinates.coordinates()[coordinates.coordinates().length-1], p.getBlockX(), p.getBlockZ());
+                near = (long) FollowManager.dist(coordinates.coordinates()[0], coordinates.coordinates()[coordinates.coordinates().length - 1], p.getBlockX(), p.getBlockZ());
                 if (near <= PepeLandHelper.config.getNumber("SELECTED_PROJECT.AUTO_HIDE", 5).longValue()) {
                     FollowManager.resetCoordinates();
                     lastMaxNear = 0;
@@ -463,7 +488,7 @@ public class PepeLandHelper implements ClientModInitializer {
                 } else huy = String.format(" (%s блоков от вас)", near);
             }
             lastMaxNear = Math.max(lastMaxNear, near);
-            if(coordinates.world() != null) {
+            if (coordinates.world() != null) {
                 spBossBar = new LerpingBossEvent(spUUID, Component.translatable("pplhelper.selected_project", coordinates.world().shortName, parsedCoordinates, huy), (float) near / lastMaxNear,
                         BossEvent.BossBarColor.GREEN,
                         BossEvent.BossBarOverlay.PROGRESS, false, false, false);
@@ -488,7 +513,6 @@ public class PepeLandHelper implements ClientModInitializer {
     }
 
 
-
     public static String getInstalledPackVersion() {
         String packVersion = "";
         for (Pack pack : AlinLib.MINECRAFT.getResourcePackRepository().getAvailablePacks()) {
@@ -502,13 +526,13 @@ public class PepeLandHelper implements ClientModInitializer {
 
     public static String[] getEmotes() throws IOException {
         String[] emotes = new String[]{};
-        if(getInstalledPack() == null) return emotes;
+        if (getInstalledPack() == null) return emotes;
         InputStream is = getInstalledPack().open().getResource(PackType.CLIENT_RESOURCES, ResourceLocation.withDefaultNamespace("font/uniform.json")).get();
         JsonObject font = GsonHelper.parse(isToString(is));
         JsonArray provider = font.getAsJsonArray("providers");
         emotes = new String[provider.size()];
         int i = 0;
-        for(JsonElement element : provider){
+        for (JsonElement element : provider) {
             JsonObject emote = (JsonObject) element;
             emotes[i] = emote.getAsJsonArray("chars").get(0).getAsString();
             LOG.log(emotes[i]);
@@ -516,15 +540,17 @@ public class PepeLandHelper implements ClientModInitializer {
         }
         return emotes;
     }
+
     private static HashMap<String, String> lastEmotes = null;
+
     public static HashMap<String, String> getEmotesPath() throws IOException {
         HashMap<String, String> emotes = new HashMap<>();
-        if(getInstalledPack() == null) return emotes;
-        if(lastEmotes == null){
+        if (getInstalledPack() == null) return emotes;
+        if (lastEmotes == null) {
             InputStream is = getInstalledPack().open().getResource(PackType.CLIENT_RESOURCES, ResourceLocation.withDefaultNamespace("font/uniform.json")).get();
             JsonObject font = GsonHelper.parse(isToString(is));
             JsonArray provider = font.getAsJsonArray("providers");
-            for(JsonElement element : provider){
+            for (JsonElement element : provider) {
                 JsonObject emote = (JsonObject) element;
                 emotes.put(emote.get("file").getAsString(), emote.getAsJsonArray("chars").get(0).getAsString());
             }

@@ -39,8 +39,18 @@ public class PepeLandHelperAPI {
             if(content.has("error")) throw new Exception(getStringInJSON("error.message", content));
             return content.has("message") && content.has("time");
         } catch (Exception ex){
-            ex.printStackTrace();
             return false;
+        }
+    }
+
+    public static Component getMessageFromBreakAPI(){
+        try {
+            JsonObject content = WebAPI.getJsonObject(getURI("ping", false));
+            if(content.has("error")) throw new Exception(getStringInJSON("error.message", content));
+            return Component.empty();
+        } catch (Exception ex){
+            PepeLandHelper.LOG.error("API недоступен");
+            return ex.getMessage() == null ? Component.translatable("pplhelper.api.unavailable") : Component.translatable("pplhelper.api.error", ex.getMessage());
         }
     }
 

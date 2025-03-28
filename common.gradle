@@ -81,6 +81,7 @@ dependencies {
 //        modImplementation "maven.modrinth:abi:${rootProject.abi}"
         modImplementation "maven.modrinth:litematica:${rootProject.litematica}"
         modImplementation "maven.modrinth:malilib:${rootProject.malilib}"
+        modImplementation "maven.modrinth:sailstatus:${rootProject.sailstatus}"
         modImplementation "ru.kelcuprum:AlinLib-fabric:${rootProject.alinlib}+mc${project.alinlib_minecraft_version == null ? project.minecraft_version : project.alinlib_minecraft_version}"
         modImplementation "ru.kelcuprum:ActionBarInfo-fabric:${rootProject.abi}+mc${project.abi_minecraft_version == null ? project.minecraft_version : project.abi_minecraft_version}"
     }
@@ -163,7 +164,7 @@ modrinth {
     else loaders = [mod_brand]
     dependencies {
 //        required.project "alinlib"
-        required.version "AUF5Pygs"
+        required.version "mJtSihVH"
         if(mod_brand == "fabric"){
             required.project "fabric-api"
             optional.project "modmenu"

@@ -1,4 +1,4 @@
-package ru.kelcuprum.pplhelper.mixin;
+package ru.kelcuprum.pplhelper.mixin.mods;
 
 import net.minecraft.client.player.LocalPlayer;
 import org.spongepowered.asm.mixin.Mixin;

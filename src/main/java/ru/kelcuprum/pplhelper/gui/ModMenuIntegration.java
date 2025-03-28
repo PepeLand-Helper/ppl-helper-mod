@@ -9,20 +9,20 @@ import org.jetbrains.annotations.Nullable;
 import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
 import ru.kelcuprum.pplhelper.api.components.VersionInfo;
 import ru.kelcuprum.pplhelper.gui.screens.NewsListScreen;
+import ru.kelcuprum.pplhelper.gui.screens.UpdaterScreen;
 
 @Environment(EnvType.CLIENT)
 public class ModMenuIntegration implements ModMenuApi {
 
     @Override
     public ConfigScreenFactory<Screen> getModConfigScreenFactory() {
-        return NewsListScreen::new;
+        return PepeLandHelperAPI.apiAvailable() ? NewsListScreen::new : new UpdaterScreen()::build;
     }
 
     @Override
     public UpdateChecker getUpdateChecker() {
-        return new UpdateChecker() {
-            @Override
-            public UpdateInfo checkForUpdates() {
+        if (PepeLandHelperAPI.apiAvailable()) {
+            return () -> {
                 VersionInfo versionInfo = PepeLandHelperAPI.getAutoUpdate();
 
                 return new UpdateInfo() {
@@ -46,7 +46,7 @@ public class ModMenuIntegration implements ModMenuApi {
                         return versionInfo.latestVersion.contains("alpha") ? UpdateChannel.ALPHA : versionInfo.latestVersion.contains("beta") || versionInfo.latestVersion.contains("rc") ? UpdateChannel.BETA : UpdateChannel.RELEASE;
                     }
                 };
-            }
-        };
+            };
+        } else return null;
     }
 }

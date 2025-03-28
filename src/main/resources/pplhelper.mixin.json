@@ -5,19 +5,20 @@
   "plugin": "ru.kelcuprum.pplhelper.mixin.PPLHelperMixinPlugin",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "ABIMixin",
     "AccessorGridLayout",
     "ChatComponentMixin",
     "ChatScreenMixin",
     "PauseScreenMixin",
     "april.LanguageScreenMixin",
     "april.PauseScreenMixin",
-    "april.TitleScreenMixin"
+    "april.TitleScreenMixin",
+    "mods.ABIMixin"
   ],
   "injectors": {
     "defaultRequire": 1
   },
   "mixins": [
-    "april.PlayerInventoryMixin"
+    "april.PlayerInventoryMixin",
+    "mods.SailStatusMixin"
   ]
 }

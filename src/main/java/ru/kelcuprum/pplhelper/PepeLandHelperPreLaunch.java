@@ -3,6 +3,8 @@ package ru.kelcuprum.pplhelper;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint;
 import net.fabricmc.loader.impl.FabricLoaderImpl;
+import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
 import org.lwjgl.util.tinyfd.TinyFileDialogs;
 import ru.kelcuprum.alinlib.AlinLogger;
 import ru.kelcuprum.alinlib.config.Config;
@@ -20,6 +22,12 @@ public class PepeLandHelperPreLaunch implements PreLaunchEntrypoint  {
 
     @Override
     public void onPreLaunch() {
+        String alinlib = FabricLoader.getInstance().getModContainer("alinlib").get().getMetadata().getVersion().getFriendlyString();
+        if(alinlib.startsWith("2.1.0-alpha") || alinlib.startsWith("2.1.0-beta.1")){
+            TinyFileDialogs.tinyfd_messageBox("PepeLand Helper", "У вас установлена не поддерживаемая версия AlinLib! Просим вас обновить библиотеку для стабильной работы!", "error", "error", false);
+            Util.getPlatform().openUri("https://modrinth.com/mod/alinlib/versions?g=1.21.3&l=fabric");
+            System.exit(1);
+        }
         if(config.getBoolean("PPLH.AUTO_UPDATE", false)){
             PepeLandHelper.config = config;
             VersionInfo versionInfo = PepeLandHelperAPI.getAutoUpdate();

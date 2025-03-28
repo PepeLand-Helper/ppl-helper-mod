@@ -20,7 +20,8 @@
   "pplhelper.oauth.news.create": "Создать новость",
 
   "pplhelper.api": "PPL Helper API",
-  "pplhelper.api.unavailable": "К сожалению, API недоступен",
+  "pplhelper.api.unavailable": "К сожалению, мы не можем подключиться к инфраструктуре PepeLand Helper",
+  "pplhelper.api.error": "Произошла ошибка API:\n%s",
 
   "pplhelper.key.open.projects": "Открыть проекты",
   "pplhelper.key.open.config": "Открыть настройки",
@@ -38,6 +39,9 @@
   "pplhelper.configs.abi.legacy": "У Вас установлена старая версия Action Bar Info, в скором времени поддержка данной версии прекратится в PepeLand Helper. Рекомендуем обновится до последней версии",
   "pplhelper.configs.abi.info": "Информация",
   "pplhelper.configs.sproject.abi": "Показ закрепленного проекта в ABI",
+  "pplhelper.configs.sailstatus": "SailStatus",
+  "pplhelper.configs.sailstatus.art": "Иконка мира артов",
+  "pplhelper.configs.sailstatus.art.old": "Иконка мира старых артов",
   "pplhelper.configs.api": "PepeLand Helper API",
   "pplhelper.configs.api_url": "Адрес API",
   "pplhelper.configs.chat": "Чат",
@@ -59,6 +63,7 @@
   "pplhelper.configs.pack_updates.auto_update": "Автообновление",
   "pplhelper.configs.pack_updates.only_emote": "Только эмоуты",
   "pplhelper.configs.pack_updates.modrinth": "Загружать информацию с Modrinth (API PPL Helper)",
+  "pplhelper.configs.pack_updates.modrinth.api_warn": "Временно отключено, так как API PPL Helper недоступен",
   "pplhelper.configs.pack_updates.only_emote.citresewn_not_installed": "У вас не установлен CIT Resewn, поэтому мод будет загружать только эмоуты",
 
   "pplhelper.chat_filters": "Фильтры чата",

@@ -25,7 +25,7 @@ public class VersionInfo {
         }
     }
     public VersionInfo(String curVersion){
-        state = State.UNPUBLISHED;
+        state = State.LATEST;
         version = curVersion;
         latestVersion = curVersion;
     }

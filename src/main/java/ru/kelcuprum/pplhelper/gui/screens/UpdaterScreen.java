@@ -9,9 +9,12 @@ import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.text.TextBuilder;
 import ru.kelcuprum.pplhelper.PepeLandHelper;
 import ru.kelcuprum.pplhelper.api.PepeLandAPI;
+import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
 import ru.kelcuprum.pplhelper.gui.screens.message.DownloadScreen;
 import ru.kelcuprum.pplhelper.gui.screens.message.ErrorScreen;
 import ru.kelcuprum.pplhelper.gui.screens.builder.ScreenBuilder;
+
+import static ru.kelcuprum.alinlib.gui.Colors.CLOWNFISH;
 
 public class UpdaterScreen {
     public Screen parent;
@@ -34,12 +37,13 @@ public class UpdaterScreen {
                 .addPanelWidgets(PepeLandHelper.getPanelWidgets(parent, parent))
 
                 .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.pack_updates.notice"), true).setConfig(PepeLandHelper.config, "PACK_UPDATES.NOTICE"))
-                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.pack_updates.auto_update"), true).setConfig(PepeLandHelper.config, "PACK_UPDATES.AUTO_UPDATE"))
-                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.pack_updates.modrinth"), true).setConfig(PepeLandHelper.config, "PACK.MODRINTH"));
+                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.pack_updates.auto_update"), true).setConfig(PepeLandHelper.config, "PACK_UPDATES.AUTO_UPDATE"));
+                if(!PepeLandHelperAPI.apiAvailable()) builder.addWidget(new TextBuilder(Component.translatable("pplhelper.configs.pack_updates.modrinth.api_warn")).setType(TextBuilder.TYPE.BLOCKQUOTE).setColor(CLOWNFISH));
+                builder.addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.pack_updates.modrinth"), true).setConfig(PepeLandHelper.config, "PACK.MODRINTH"));
                 builder.addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.pack_updates.only_emote"), false).setConfig(PepeLandHelper.config, "PACK_UPDATES.ONLY_EMOTE")); // .setActive(FabricLoader.getInstance().isModLoaded("citresewn"))
 
         try {
-            boolean modrinth = PepeLandHelper.config.getBoolean("PACK.MODRINTH", true);
+            boolean modrinth = PepeLandHelperAPI.apiAvailable() && PepeLandHelper.config.getBoolean("PACK.MODRINTH", true);
             JsonObject pack = PepeLandAPI.getPackInfo(PepeLandHelper.onlyEmotesCheck(), modrinth);
             if (packVersion.isBlank()) {
                 if (PepeLandHelper.getAvailablePack().isEmpty()) {

@@ -30,19 +30,22 @@ public class ConfigScreen {
             builder.addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.test"), (s) ->AlinLib.MINECRAFT.setScreen(new TestConfigScreen().build(parent))).setIcon(CLOWNFISH));
 
         builder.addWidget(new TextBuilder(Component.translatable("pplhelper.configs")))
-                // Пока-что как заглушка
-                // .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.enable_toast"), true).setConfig(PepelandHelper.config,"ENABLE.TOAST"))
                 .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.menu.lobby"), true).setConfig(PepeLandHelper.config,"MENU.LOBBY"))
                 .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.menu.lobby.alinlib"), false).setConfig(PepeLandHelper.config,"MENU.LOBBY.ALINLIB"))
                 .addWidget(new SliderBuilder(Component.translatable("pplhelper.configs.selected_project.auto_hide")).setDefaultValue(5).setMin(1).setMax(32).setConfig(PepeLandHelper.config, "SELECTED_PROJECT.AUTO_HIDE"));
-                if(PepeLandHelper.isInstalledABI) {
-                    builder.addWidget(new HorizontalRuleBuilder(Component.translatable("pplhelper.configs.abi.title")));
-                    if(FabricLoader.getInstance().getModContainer("actionbarinfo").get().getMetadata().getVersion().getFriendlyString().startsWith("1."))
-                        builder.addWidget(new TextBuilder(Component.translatable("pplhelper.configs.abi.legacy")).setType(TextBuilder.TYPE.BLOCKQUOTE).setColor(GROUPIE));
-                    builder.addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.abi"), false).setConfig(PepeLandHelper.config, "ABI"))
-                            .addWidget(new EditBoxBuilder(Component.translatable("pplhelper.configs.abi.info")).setValue(PepeLandHelper.config.getString("INFO.PPLHELPER", ActionBarInfo.localization.getLocalization("info.pplhelper", false, false, false))).setConfig(PepeLandHelper.config, "INFO.PPLHELPER"))
-                            .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.sproject.abi"), true).setConfig(PepeLandHelper.config, "SPROJECT.ABI"));
-                }
+        if(PepeLandHelper.isInstalledABI) {
+            builder.addWidget(new HorizontalRuleBuilder(Component.translatable("pplhelper.configs.abi.title")));
+            if(FabricLoader.getInstance().getModContainer("actionbarinfo").get().getMetadata().getVersion().getFriendlyString().startsWith("1."))
+                builder.addWidget(new TextBuilder(Component.translatable("pplhelper.configs.abi.legacy")).setType(TextBuilder.TYPE.BLOCKQUOTE).setColor(GROUPIE));
+            builder.addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.abi"), false).setConfig(PepeLandHelper.config, "ABI"))
+                    .addWidget(new EditBoxBuilder(Component.translatable("pplhelper.configs.abi.info")).setValue(PepeLandHelper.config.getString("INFO.PPLHELPER", ActionBarInfo.localization.getLocalization("info.pplhelper", false, false, false))).setConfig(PepeLandHelper.config, "INFO.PPLHELPER"))
+                    .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.sproject.abi"), true).setConfig(PepeLandHelper.config, "SPROJECT.ABI"));
+        }
+        if(PepeLandHelper.isInstalledSailStatus) {
+            builder.addWidget(new HorizontalRuleBuilder(Component.translatable("pplhelper.configs.sailstatus")))
+                    .addWidget(new EditBoxBuilder(Component.translatable("pplhelper.configs.sailstatus.art")).setValue("https://wf.kelcu.ru/icons/mc_brush.png").setConfig(PepeLandHelper.config, "SAILSTATUS.ASSETS.WORLD_ART"))
+                    .addWidget(new EditBoxBuilder(Component.translatable("pplhelper.configs.sailstatus.art.old")).setValue("https://wf.kelcu.ru/icons/mc_brush.png").setConfig(PepeLandHelper.config, "SAILSTATUS.ASSETS.WORLD_ART.OLD"));
+        }
                 builder.addWidget(new HorizontalRuleBuilder(Component.translatable("pplhelper.project.schematic")))
                         .addWidget(new SliderBuilder(Component.translatable("pplhelper.project.schematic.total_blocks")).setMin(25).setMax(1000).setDefaultValue(50).setConfig(PepeLandHelper.config, "SCHEMATIC.MAX_SIZE"));
 
