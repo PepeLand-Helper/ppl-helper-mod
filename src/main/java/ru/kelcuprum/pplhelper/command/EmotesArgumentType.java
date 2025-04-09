@@ -11,9 +11,16 @@ import ru.kelcuprum.pplhelper.PepeLandHelper;
 import java.util.concurrent.CompletableFuture;
 
 public class EmotesArgumentType implements ArgumentType<String> {
+    public final String nameArgument;
+
+    public EmotesArgumentType(String nameArgument) {
+        this.nameArgument = nameArgument;
+    }
+
     public static String getWorld(final CommandContext<?> context, final String name) {
         return context.getArgument(name, String.class);
     }
+
     @Override
     public String parse(StringReader reader) throws CommandSyntaxException {
         final int start = reader.getCursor();
@@ -30,13 +37,22 @@ public class EmotesArgumentType implements ArgumentType<String> {
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
+
         try {
-            for(String world : PepeLandHelper.getEmotesPath().keySet())
-                if(!world.contains("black.png")) builder.suggest(String.format("%s", PepeLandHelper.getEmotesPath().get(world)));
+            String arg = context.getArgument(nameArgument, String.class);
+            if (arg.isBlank()) for (String world : PepeLandHelper.getEmotesPath().keySet()) {
+                if (!world.contains("black.png"))
+                    builder.suggest(String.format("%s", PepeLandHelper.getEmotesPath().get(world)));
+            } else {
+                for (String world : PepeLandHelper.getEmotesPath().keySet()) {
+                    String[] war = world.split("/");
+                    String name = war[war.length-1].split("\\.")[0];
+                    if(name.startsWith(arg) && !world.contains("black.png")) builder.suggest(String.format("%s", PepeLandHelper.getEmotesPath().get(world)));
+                }
+            }
         } catch (Exception e) {
 
         }
-//        builder.suggest("\"Когда нибудь потом...\"");
         return builder.buildFuture();
     }
 }

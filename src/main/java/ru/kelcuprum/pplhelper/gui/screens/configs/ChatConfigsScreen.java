@@ -28,6 +28,8 @@ public class ChatConfigsScreen {
             builder.addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.test"), (s) ->AlinLib.MINECRAFT.setScreen(new TestConfigScreen().build(parent))).setIcon(CLOWNFISH));
 
         builder.addWidget(new TextBuilder(Component.translatable("pplhelper.configs.chat")))
+                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.chat.emote_convert"), true).setConfig(PepeLandHelper.config,"CHAT.EMOTE_CONVERT"))
+                .addWidget(new HorizontalRuleBuilder())
                 .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.chat.global"), false).setConfig(PepeLandHelper.config,"CHAT.GLOBAL"))
                 .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.chat.global.toggle"), true).setConfig(PepeLandHelper.config,"CHAT.GLOBAL.TOGGLE"))
                 .addWidget(new TextBuilder(Component.translatable("pplhelper.configs.chat.global.description")).setType(TextBuilder.TYPE.BLOCKQUOTE))

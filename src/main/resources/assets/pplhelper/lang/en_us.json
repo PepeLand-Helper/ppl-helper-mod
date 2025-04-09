@@ -1,6 +1,9 @@
 {
   "pplhelper": "PepeLand Helper",
   "pplhelper.error": "Произошла ошибка :(",
+  "pplhelper.error.stacktrace": "Трассировка стека",
+  "pplhelper.error.description": "К сожалению, произошла ошибка в ходе исполнении функции!\nМы настоятельно рекомендуем обратиться к разработчику PepeLand Helper.\n\nКонтакты:\nTelegram: @kel_caffeine\nDiscord: @kel_cu\nGitHub: PepeLand-Helper/ppl-helper-mod/issues\nE-Mail: me@kelcu.ru",
+  "pplhelper.error.save": "Сохранить в файл",
   "pplhelper.configs": "Конфиги",
 
   "pplhelper.oauth.hello": "Добро пожаловать, %s!",
@@ -45,6 +48,7 @@
   "pplhelper.configs.api": "PepeLand Helper API",
   "pplhelper.configs.api_url": "Адрес API",
   "pplhelper.configs.chat": "Чат",
+  "pplhelper.configs.chat.emote_convert": "Конвертировать :эмоуты:",
   "pplhelper.configs.chat.global": "Режим глоб. чата",
   "pplhelper.configs.chat.global.toggle": "Переключение глоб. чата",
   "pplhelper.configs.chat.global.description": "Чтобы переключить режим чата, нужно нажать сочетание клавиш CTRL + G",

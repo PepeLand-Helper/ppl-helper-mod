@@ -13,6 +13,8 @@ import ru.kelcuprum.alinlib.gui.components.builder.text.HorizontalRuleBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.text.TextBuilder;
 import ru.kelcuprum.alinlib.gui.screens.ConfigScreenBuilder;
 import ru.kelcuprum.pplhelper.PepeLandHelper;
+import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
+import ru.kelcuprum.pplhelper.gui.screens.message.ErrorScreen;
 
 import static ru.kelcuprum.alinlib.gui.Colors.GROUPIE;
 import static ru.kelcuprum.alinlib.gui.Icons.*;
@@ -33,6 +35,20 @@ public class ConfigScreen {
                 .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.menu.lobby"), true).setConfig(PepeLandHelper.config,"MENU.LOBBY"))
                 .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.menu.lobby.alinlib"), false).setConfig(PepeLandHelper.config,"MENU.LOBBY.ALINLIB"))
                 .addWidget(new SliderBuilder(Component.translatable("pplhelper.configs.selected_project.auto_hide")).setDefaultValue(5).setMin(1).setMax(32).setConfig(PepeLandHelper.config, "SELECTED_PROJECT.AUTO_HIDE"));
+        if(PepeLandHelper.isTestSubject()) builder.addPanelWidget(new ButtonBuilder(Component.literal("Crash me!")).setIcon(DONT).setOnPress((s) -> {
+            try{
+                throw new RuntimeException("Эта карусель крутится и никогда не остановится!");
+            } catch (Exception ex){
+                AlinLib.MINECRAFT.setScreen(new ErrorScreen(ex, AlinLib.MINECRAFT.screen));
+            }
+        }));
+        if(PepeLandHelper.isTestSubject()) builder.addPanelWidget(new ButtonBuilder(Component.literal("Crash me! (без exception)")).setIcon(DONT).setOnPress((s) -> {
+            try{
+                throw new RuntimeException("Эта карусель крутится и никогда не остановится!");
+            } catch (Exception ex){
+                AlinLib.MINECRAFT.setScreen(new ErrorScreen(AlinLib.MINECRAFT.screen));
+            }
+        }));
         if(PepeLandHelper.isInstalledABI) {
             builder.addWidget(new HorizontalRuleBuilder(Component.translatable("pplhelper.configs.abi.title")));
             if(FabricLoader.getInstance().getModContainer("actionbarinfo").get().getMetadata().getVersion().getFriendlyString().startsWith("1."))

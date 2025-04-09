@@ -34,7 +34,7 @@ public class PPLHelperCommand {
         dispatcher.register(literal("pplhelper").then(literal("report")
                         .then(argument("description", greedyString()).executes((s) -> sendReport(s, getString(s, "description"))))
                         .executes((s) -> sendReport(s, "<описание>")))
-                .then(literal("emotes").then(argument("emote", new EmotesArgumentType()).executes((s) -> {
+                .then(literal("emotes").then(argument("emote", new EmotesArgumentType("emote")).executes((s) -> {
                             sendFeedback(s, Component.literal("Эмоут был скопирован\n"+getString(s, "emote")));
                             s.getSource().getClient().keyboardHandler.setClipboard(getString(s, "emote"));
                             return 0;
@@ -44,7 +44,7 @@ public class PPLHelperCommand {
                             sendFeedback(s, Component.literal("Эмоуты были обновлены"));
                             return 0;
                         })))
-                .then(literal("e").then(argument("emote", new EmotesArgumentType()).executes((s) -> {
+                .then(literal("e").then(argument("emote", new EmotesArgumentType("emote")).executes((s) -> {
                             sendFeedback(s, Component.literal("Эмоут был скопирован\n"+getString(s, "emote")));
                             s.getSource().getClient().keyboardHandler.setClipboard(getString(s, "emote"));
                             return 0;
