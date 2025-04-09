@@ -22,28 +22,9 @@ import static net.minecraft.ChatFormatting.BOLD;
 
 @Mixin(value = ChatComponent.class, priority = -1)
 public abstract class ChatComponentMixin {
-    @Shadow public abstract void addMessage(Component component);
-
-    @Unique boolean isSended = false;
     @Inject(method = "addMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/MessageSignature;Lnet/minecraft/client/GuiMessageTag;)V", at = @At("HEAD"), cancellable = true)
     public void addMessage(Component component, MessageSignature messageSignature, GuiMessageTag guiMessageTag, CallbackInfo ci) {
         if (!PepeLandHelper.playerInPPL()) return;
-        if(PepeLandHelper.isAprilFool() && PepeLandHelper.isPWGood()){
-            if(Math.random() < 0.005 && !isSended){ // Math.random() < 0.005 && !isSended
-                isSended = true;
-                MutableComponent component1 = Component.empty();
-                component1.append(Component.literal("✉✉✉ [").withColor(AQUA.getColor()));
-                component1.append(Component.literal("Sanhez").withStyle(BOLD).withColor(AQUA.getColor()));
-                component1.append(Component.literal(" → ").withColor(AQUA.getColor()));
-                component1.append(Component.literal("Вы").withStyle(BOLD).withColor(AQUA.getColor()));
-                component1.append(Component.literal("]: ").withColor(AQUA.getColor()));
-                component1.append("го ебаться");
-                for(int i = 0; i<3; i++){
-                    addMessage(Component.empty().append(component1).withStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal("Sanhez 300 блоков от вас")))));
-                    AlinLib.MINECRAFT.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.CHICKEN_EGG, 1.5f));
-                }
-            }
-        }
         String test = component.getString();
 
         if (test.replaceAll("\\[PPL[0-9]]: ", "").length() != test.length()) {

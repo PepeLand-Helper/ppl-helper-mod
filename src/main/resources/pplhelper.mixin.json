@@ -9,16 +9,12 @@
     "ChatComponentMixin",
     "ChatScreenMixin",
     "PauseScreenMixin",
-    "april.LanguageScreenMixin",
-    "april.PauseScreenMixin",
-    "april.TitleScreenMixin",
     "mods.ABIMixin"
   ],
   "injectors": {
     "defaultRequire": 1
   },
   "mixins": [
-    "april.PlayerInventoryMixin",
     "mods.SailStatusMixin"
   ]
 }

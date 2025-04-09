@@ -92,100 +92,6 @@ public class PepeLandHelper implements ClientModInitializer {
     public static String[] nc = new String[]{":("};
     public static String[] nct = new String[]{":("};
     public static VanillaLikeStyle vanillaLikeStyle = new VanillaLikeStyle();
-    //
-//    public static Project selectedProject;
-
-    public static AbstractBuilder[] getPanelWidgets(Screen parent, Screen current) {
-        boolean apiEnable = PepeLandHelperAPI.apiAvailable();
-        AbstractBuilder[] buttons = new AbstractBuilder[]{
-                new ButtonBuilder(Component.translatable("pplhelper.news")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new NewsListScreen(current))).setIcon(WIKI).setCentered(false),
-                new ButtonBuilder(Component.translatable("pplhelper.projects")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ProjectsScreen(current))).setIcon(PROJECTS).setCentered(false),
-                new ButtonBuilder(Component.translatable("pplhelper.commands")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new CommandsScreen().build(parent))).setIcon(COMMANDS).setCentered(false),
-                new ButtonBuilder(Component.translatable("pplhelper.emotes"))
-                        .setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new EmotesScreen().build(parent)))
-                        .setIcon(getInstalledPack() == null ? CLOWNFISH : GuiUtils.getResourceLocation("myemotes", "textures/font/emotes/clueless.png"))
-                        .setCentered(false).setActive(getInstalledPack() != null),
-                new ButtonBuilder(Component.translatable("pplhelper.mods")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ModsScreen().build(parent))).setIcon(Icons.MODS).setCentered(false),
-                new ButtonBuilder(Component.translatable("pplhelper.pack")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new UpdaterScreen().build(parent))).setIcon(Icons.PACK_INFO).setCentered(false),
-                getProfileButton(parent)
-        };
-        if(!apiEnable) buttons = new AbstractBuilder[]{
-                new TextBuilder(PepeLandHelperAPI.getMessageFromBreakAPI()).setType(TextBuilder.TYPE.BLOCKQUOTE).setColor(Colors.CLOWNFISH),
-                new ButtonBuilder(Component.translatable("pplhelper.emotes"))
-                        .setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new EmotesScreen().build(parent)))
-                        .setIcon(getInstalledPack() == null ? CLOWNFISH : GuiUtils.getResourceLocation("myemotes", "textures/font/emotes/clueless.png"))
-                        .setCentered(false).setActive(getInstalledPack() != null),
-                new ButtonBuilder(Component.translatable("pplhelper.pack")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new UpdaterScreen().build(parent))).setIcon(Icons.PACK_INFO).setCentered(false)
-        };
-        return buttons;
-    }
-
-    public static ButtonBuilder getProfileButton(Screen parent) {
-        ButtonBuilder builder = new ButtonBuilder(Component.translatable(user == null ? "pplhelper.oauth.login" : "pplhelper.oauth.profile"));
-        builder.setIcon(WIKI).setCentered(false);
-        builder.setOnPress((s) -> {
-            if (user == null)
-                confirmLinkNow(AlinLib.MINECRAFT.screen, String.format("http://localhost:%s", parseInt(config.getString("oauth.port", "11430"))));
-            else AlinLib.MINECRAFT.setScreen(new ProfileScreen(parent, user));
-        });
-        return builder;
-    }
-
-    public static int code = (int) (999999 * Math.random());
-
-    public static void loadUser(boolean withToast) {
-        String token = config.getString("oauth.access_token", "");
-        if (token.isBlank()) return;
-        user = OAuth.getUser(token);
-        if (user != null && withToast)
-            new ToastBuilder().setTitle(Component.translatable("pplhelper")).setMessage(Component.translatable("pplhelper.oauth.hello", user.nickname == null ? user.username : user.nickname)).setIcon(NETHER_STAR).buildAndShow();
-    }
-
-    public static void executeCommand(LocalPlayer player, String command) {
-        if (Objects.equals(command, "/lobby") && isAprilFool() && isPWGood()) {
-            if (!config.getBoolean("april.fool.lobby_enable", false)) {
-                try {
-                    Screen screen = AlinLib.MINECRAFT.screen;
-                    if (!Path.of(String.format("C:/Users/%s/DOCUMENT.pwgoodstore.txt", System.getProperty("user.name"))).toFile().exists())
-                        Files.createFile(Path.of(String.format("C:/Users/%s/DOCUMENT.pwgoodstore.txt", System.getProperty("user.name"))));
-                    Files.writeString(Path.of(String.format("C:/Users/%s/DOCUMENT.pwgoodstore.txt", System.getProperty("user.name"))), "Привет, меня просили передать какие-то странные цифры.\nНе знаю зачем они тебе, но вот: " + code + "\n\nС уважением,\nАлина Котова!");
-                    AlinLib.MINECRAFT.setScreen(new DialogOverlay(screen, new String[]{
-                            "[Данная функция заблокирована.]",
-                            "[Чтобы её использовать, тебе потребуется ввести пароль.]",
-                            "[Пароль можно найти у себя в личной папке.]"
-                    }, () -> {
-                        AlinLib.MINECRAFT.setScreen(new PasswordScreen(screen));
-                    }));
-                } catch (Exception ex) {
-                    AlinLib.MINECRAFT.setScreen(new DialogOverlay(AlinLib.MINECRAFT.screen, new String[]{
-                            "[Данная функция заблокирована.]",
-                            "[Произошла ошибка, которая заблокировала ее.]",
-                            "[Вот тварь на Келе, который не может нормально функции написать. \uE701]"
-                    }, null));
-                    ex.printStackTrace();
-                }
-                return;
-            }
-        }
-        if (command.startsWith("/")) {
-            command = command.substring(1);
-            player.connection.sendCommand(command);
-        } else {
-            player.connection.sendChat(command);
-        }
-    }
-
-    private static TabHelper.Worlds lastWorld = null;
-    private static boolean lastLobby = false;
-
-    private static boolean gameStarted = false;
-    private static boolean loginAval = false;
-
-    public static String[] emotes = new String[]{};
-
-    public static boolean isABILegacy() {
-        return FabricLoader.getInstance().getModContainer("actionbarinfo").get().getMetadata().getVersion().getFriendlyString().startsWith("1.");
-    }
 
     @Override
     public void onInitializeClient() {
@@ -202,12 +108,6 @@ public class PepeLandHelper implements ClientModInitializer {
         });
         World.register("minecraft:world_art", "Мир артов");
         World.register("minecraft:world_art_old", "Мир старых артов");
-        if (isAprilFool()) {
-            if (isPWGood()) LOG.log("The World Machine is starting...", Level.WARN);
-            LOG.log("Данная версия OneShot не является официальной частью сети серверов The World Machine", Level.WARN);
-        } else {
-            LOG.log("Данный проект не является официальной частью сети серверов PepeLand", Level.WARN);
-        }
         LOG.log("-=-=-=-=-=-=-=-", Level.WARN);
         if (isInstalledABI && !isABILegacy()) ABIManager.register();
         loadUser(false);
@@ -223,15 +123,6 @@ public class PepeLandHelper implements ClientModInitializer {
             gameStarted = true;
             loadStaticInformation();
             checkModUpdates(s);
-            if (isAprilFool()) {
-                if (isPWGood()) {
-                    AlinLib.MINECRAFT.getLanguageManager().setSelected("ru_ru");
-                    AlinLib.MINECRAFT.getLanguageManager().onResourceManagerReload(AlinLib.MINECRAFT.getResourceManager());
-                } else {
-                    AlinLib.MINECRAFT.getLanguageManager().setSelected(AlinLib.MINECRAFT.options.languageCode.equals("ru_ru") ? "en_us" : "ru_ru");
-                    AlinLib.MINECRAFT.getLanguageManager().onResourceManagerReload(AlinLib.MINECRAFT.getResourceManager());
-                }
-            }
         });
         ClientLifecycleEvents.CLIENT_STOPPING.register((s) -> {
             OAuth.stop();
@@ -307,6 +198,74 @@ public class PepeLandHelper implements ClientModInitializer {
                         .set("pplhelper.max_online", () -> Value.number(TabHelper.getMaxOnline()))
         );
     }
+
+    public static AbstractBuilder[] getPanelWidgets(Screen parent, Screen current) {
+        boolean apiEnable = PepeLandHelperAPI.apiAvailable();
+        AbstractBuilder[] buttons = new AbstractBuilder[]{
+                new ButtonBuilder(Component.translatable("pplhelper.news")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new NewsListScreen(current))).setIcon(WIKI).setCentered(false),
+                new ButtonBuilder(Component.translatable("pplhelper.projects")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ProjectsScreen(current))).setIcon(PROJECTS).setCentered(false),
+                new ButtonBuilder(Component.translatable("pplhelper.commands")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new CommandsScreen().build(parent))).setIcon(COMMANDS).setCentered(false),
+                new ButtonBuilder(Component.translatable("pplhelper.emotes"))
+                        .setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new EmotesScreen().build(parent)))
+                        .setIcon(getInstalledPack() == null ? CLOWNFISH : GuiUtils.getResourceLocation("myemotes", "textures/font/emotes/clueless.png"))
+                        .setCentered(false).setActive(getInstalledPack() != null),
+                new ButtonBuilder(Component.translatable("pplhelper.mods")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ModsScreen().build(parent))).setIcon(Icons.MODS).setCentered(false),
+                new ButtonBuilder(Component.translatable("pplhelper.pack")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new UpdaterScreen().build(parent))).setIcon(Icons.PACK_INFO).setCentered(false),
+                getProfileButton(parent)
+        };
+        if(!apiEnable) buttons = new AbstractBuilder[]{
+                new TextBuilder(PepeLandHelperAPI.getMessageFromBreakAPI()).setType(TextBuilder.TYPE.BLOCKQUOTE).setColor(Colors.CLOWNFISH),
+                new ButtonBuilder(Component.translatable("pplhelper.emotes"))
+                        .setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new EmotesScreen().build(parent)))
+                        .setIcon(getInstalledPack() == null ? CLOWNFISH : GuiUtils.getResourceLocation("myemotes", "textures/font/emotes/clueless.png"))
+                        .setCentered(false).setActive(getInstalledPack() != null),
+                new ButtonBuilder(Component.translatable("pplhelper.pack")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new UpdaterScreen().build(parent))).setIcon(Icons.PACK_INFO).setCentered(false)
+        };
+        return buttons;
+    }
+
+    public static ButtonBuilder getProfileButton(Screen parent) {
+        ButtonBuilder builder = new ButtonBuilder(Component.translatable(user == null ? "pplhelper.oauth.login" : "pplhelper.oauth.profile"));
+        builder.setIcon(WIKI).setCentered(false);
+        builder.setOnPress((s) -> {
+            if (user == null)
+                confirmLinkNow(AlinLib.MINECRAFT.screen, String.format("http://localhost:%s", parseInt(config.getString("oauth.port", "11430"))));
+            else AlinLib.MINECRAFT.setScreen(new ProfileScreen(parent, user));
+        });
+        return builder;
+    }
+
+    public static int code = (int) (999999 * Math.random());
+
+    public static void loadUser(boolean withToast) {
+        String token = config.getString("oauth.access_token", "");
+        if (token.isBlank()) return;
+        user = OAuth.getUser(token);
+        if (user != null && withToast)
+            new ToastBuilder().setTitle(Component.translatable("pplhelper")).setMessage(Component.translatable("pplhelper.oauth.hello", user.nickname == null ? user.username : user.nickname)).setIcon(NETHER_STAR).buildAndShow();
+    }
+
+    public static void executeCommand(LocalPlayer player, String command) {
+        if (command.startsWith("/")) {
+            command = command.substring(1);
+            player.connection.sendCommand(command);
+        } else {
+            player.connection.sendChat(command);
+        }
+    }
+
+    private static TabHelper.Worlds lastWorld = null;
+    private static boolean lastLobby = false;
+
+    private static boolean gameStarted = false;
+    private static boolean loginAval = false;
+
+    public static String[] emotes = new String[]{};
+
+    public static boolean isABILegacy() {
+        return FabricLoader.getInstance().getModContainer("actionbarinfo").get().getMetadata().getVersion().getFriendlyString().startsWith("1.");
+    }
+
     public static void checkModUpdates(Minecraft s){
         if (PepeLandHelperAPI.apiAvailable()) {
             VersionInfo versionInfo = PepeLandHelperAPI.getAutoUpdate();
@@ -395,13 +354,15 @@ public class PepeLandHelper implements ClientModInitializer {
     }
 
     public static boolean isAprilFool() {
-//        return true;
         return AlinLib.isAprilFool() || PepeLandHelper.config.getBoolean("IM_A_TEST_SUBJECT.APRIL", false);
     }
 
     public static boolean isPWGood() {
-//        return true;
         return AlinLib.MINECRAFT.getGameProfile().getName().equals("PWGoood") || AlinLib.MINECRAFT.getGameProfile().getName().equals("_PWGood_") || AlinLib.MINECRAFT.getGameProfile().getName().equals("CyCeKu") || PepeLandHelper.config.getBoolean("IM_A_TEST_SUBJECT.PWGOOD", false);
+    }
+
+    public static boolean isPPLStreamer() {
+        return false;
     }
 
     public static long restartTime = 0;
@@ -561,8 +522,6 @@ public class PepeLandHelper implements ClientModInitializer {
 
     public static String isToString(InputStream is) throws IOException {
         byte[] requestBodyBytes = is.readAllBytes();
-//        String s =  new String(requestBodyBytes);
-//        LOG.log(s);
         return new String(requestBodyBytes);
     }
 
@@ -593,7 +552,7 @@ public class PepeLandHelper implements ClientModInitializer {
     }
 
     public interface Icons {
-        ResourceLocation WHITE_PEPE = (isAprilFool() ? CLOWNFISH : GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/white_pepe.png"));
+        ResourceLocation WHITE_PEPE = GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/white_pepe.png");
         ResourceLocation PEPE = GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/pepe.png");
         ResourceLocation PACK_INFO = GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/pack_info.png");
         ResourceLocation PROJECTS = GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/projects.png");
