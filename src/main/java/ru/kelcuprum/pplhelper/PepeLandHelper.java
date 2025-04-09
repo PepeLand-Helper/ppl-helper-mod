@@ -48,8 +48,6 @@ import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
 import ru.kelcuprum.pplhelper.api.components.VersionInfo;
 import ru.kelcuprum.pplhelper.api.components.user.User;
 import ru.kelcuprum.pplhelper.command.PPLHelperCommand;
-import ru.kelcuprum.pplhelper.gui.components.oneshot.overlay.DialogOverlay;
-import ru.kelcuprum.pplhelper.gui.components.oneshot.overlay.PasswordScreen;
 import ru.kelcuprum.pplhelper.gui.screens.*;
 import ru.kelcuprum.pplhelper.gui.screens.configs.ConfigScreen;
 import ru.kelcuprum.pplhelper.gui.screens.message.NewUpdateScreen;
@@ -62,12 +60,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
-import java.util.Objects;
 import java.util.UUID;
 
 import static java.lang.Integer.parseInt;
@@ -265,7 +260,6 @@ public class PepeLandHelper implements ClientModInitializer {
     public static boolean isABILegacy() {
         return FabricLoader.getInstance().getModContainer("actionbarinfo").get().getMetadata().getVersion().getFriendlyString().startsWith("1.");
     }
-
     public static void checkModUpdates(Minecraft s){
         if (PepeLandHelperAPI.apiAvailable()) {
             VersionInfo versionInfo = PepeLandHelperAPI.getAutoUpdate();
@@ -472,8 +466,6 @@ public class PepeLandHelper implements ClientModInitializer {
     public static boolean onlyEmotesCheck() {
         return config.getBoolean("PACK_UPDATES.ONLY_EMOTE", false); // !FabricLoader.getInstance().isModLoaded("citresewn") ||
     }
-
-
     public static String getInstalledPackVersion() {
         String packVersion = "";
         for (Pack pack : AlinLib.MINECRAFT.getResourcePackRepository().getAvailablePacks()) {
@@ -484,7 +476,6 @@ public class PepeLandHelper implements ClientModInitializer {
         }
         return packVersion;
     }
-
     public static String[] getEmotes() throws IOException {
         String[] emotes = new String[]{};
         if (getInstalledPack() == null) return emotes;
@@ -501,9 +492,7 @@ public class PepeLandHelper implements ClientModInitializer {
         }
         return emotes;
     }
-
     private static HashMap<String, String> lastEmotes = null;
-
     public static HashMap<String, String> getEmotesPath() throws IOException {
         HashMap<String, String> emotes = new HashMap<>();
         if (getInstalledPack() == null) return emotes;
@@ -548,7 +537,10 @@ public class PepeLandHelper implements ClientModInitializer {
     }
 
     public static boolean playerInPPL() {
-        return config.getBoolean("IM_A_TEST_SUBJECT", false) || (AlinLib.MINECRAFT.getCurrentServer() != null && AlinLib.MINECRAFT.getCurrentServer().ip.contains("pepeland.net"));
+        return isTestSubject() || (AlinLib.MINECRAFT.getCurrentServer() != null && AlinLib.MINECRAFT.getCurrentServer().ip.contains("pepeland.net"));
+    }
+    public static boolean isTestSubject(){
+        return config.getBoolean("IM_A_TEST_SUBJECT", false) || FabricLoader.getInstance().isDevelopmentEnvironment();
     }
 
     public interface Icons {

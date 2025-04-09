@@ -23,7 +23,7 @@ public class TabHelper {
         if (!PepeLandHelper.playerInPPL()) return null;
         StringBuilder world = new StringBuilder();
         if (AlinLib.MINECRAFT.gui.getTabList().header == null) {
-            if (PepeLandHelper.config.getBoolean("IM_A_TEST_SUBJECT", false) && PepeLandHelper.config.getBoolean("IM_A_TEST_SUBJECT.ENABLE_WORLD", false))
+            if (PepeLandHelper.isTestSubject() && PepeLandHelper.config.getBoolean("IM_A_TEST_SUBJECT.ENABLE_WORLD", false))
                 world = new StringBuilder(PepeLandHelper.config.getString("IM_A_TEST_SUBJECT.WORLD", worlds[0]));
         } else {
             String[] args = AlinLib.MINECRAFT.gui.getTabList().header.getString().split("\n");
