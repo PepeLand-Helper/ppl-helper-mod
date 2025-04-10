@@ -37,15 +37,19 @@ public abstract class ChatComponentMixin {
             int time = parseInt(test.replaceAll("[^0-9]", ""));
             PepeLandHelper.joinTime = System.currentTimeMillis() + ((long) time * (test.contains("минут") ? 60 : 1) * 1000);
         }
-        if(!ChatFilter.mention(test) && PepeLandHelper.config.getBoolean("CHAT.FILTER", false)){
-            if(ChatFilter.isGlobalChat(test) && PepeLandHelper.config.getBoolean("CHAT.FILTER.GLOBAL", false)) ci.cancel();
-            else if (ChatFilter.isWorldEnabled(test)){
-                if(!ChatFilter.enableWorld(test)) ci.cancel();
-            } else if(ChatFilter.isMysteryBox(test) && PepeLandHelper.config.getBoolean("CHAT.FILTER.MYSTERY_BOX", true)) ci.cancel();
-            else if((ChatFilter.isLeave(test) && PepeLandHelper.config.getBoolean("CHAT.FILTER.LEAVE", false))
-                    || (ChatFilter.isJoin(test) && PepeLandHelper.config.getBoolean("CHAT.FILTER.JOIN", false))){
-                if(!ChatFilter.isFriend(test)) ci.cancel();
-            } else if(ChatFilter.isContainsNWords(test) && PepeLandHelper.config.getBoolean("CHAT.FILTER.WORDS", false)) ci.cancel();
-        }
+        if (PepeLandHelper.config.getBoolean("CHAT.FILTER", false)) {
+                if (!ChatFilter.mention(test) && ChatFilter.isGlobalChat(test) && PepeLandHelper.config.getBoolean("CHAT.FILTER.GLOBAL", false))
+                    ci.cancel();
+                else if (!ChatFilter.mention(test) && ChatFilter.isWorldEnabled(test)) {
+                    if (!ChatFilter.enableWorld(test)) ci.cancel();
+                } else if (!ChatFilter.mention(test) && ChatFilter.isMysteryBox(test) && PepeLandHelper.config.getBoolean("CHAT.FILTER.MYSTERY_BOX", true))
+                    ci.cancel();
+                else if (!ChatFilter.mention(test) && ChatFilter.isContainsNWords(test) && PepeLandHelper.config.getBoolean("CHAT.FILTER.WORDS", false))
+                    ci.cancel();
+                else if ((ChatFilter.isLeave(test) && PepeLandHelper.config.getBoolean("CHAT.FILTER.LEAVE", false))
+                        || (ChatFilter.isJoin(test) && PepeLandHelper.config.getBoolean("CHAT.FILTER.JOIN", false))) {
+                    if (!ChatFilter.isFriend(test)) ci.cancel();
+                }
+            }
     }
 }

@@ -77,7 +77,7 @@ public class PepeLandHelper implements ClientModInitializer {
     public static boolean isInstalledABI = FabricLoader.getInstance().isModLoaded("actionbarinfo");
     public static boolean isInstalledSailStatus = FabricLoader.getInstance().isModLoaded("sailstatus");
     public static boolean worldsLoaded = false;
-    public static String[] worlds = new String[]{":("};
+    public static String[] worlds = new String[]{"МП1","МП2","МР","МФ","ТЗ","Энд"};
     public static JsonArray commands = new JsonArray();
     public static JsonArray mods = new JsonArray();
     // -=-=-=- Категории -=-=-=-
@@ -91,6 +91,8 @@ public class PepeLandHelper implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         LOG.log("-=-=-=-=-=-=-=-", Level.WARN);
+        LOG.log("Данный проект не является официальной частью сети серверов PepeLand", Level.WARN);
+        LOG.log("-=-=-=-=-=-=-=-", Level.WARN);
         StealthManager.registerActiveManager(() -> {
             boolean isActive = false;
             if (config.getBoolean("STEALTH", false) && playerInPPL() && TabHelper.getWorld() != null) {
@@ -103,19 +105,23 @@ public class PepeLandHelper implements ClientModInitializer {
         });
         World.register("minecraft:world_art", "Мир артов");
         World.register("minecraft:world_art_old", "Мир старых артов");
-        LOG.log("-=-=-=-=-=-=-=-", Level.WARN);
         if (isInstalledABI && !isABILegacy()) ABIManager.register();
         loadUser(false);
         // -=-=-=- -=-=-=-
         // -=-=-=- Ресурс пак -=-=-=-
-        FabricLoader.getInstance().getModContainer("pplhelper").ifPresent(s -> {
-            ResourceManagerHelper.registerBuiltinResourcePack(GuiUtils.getResourceLocation("pplhelper", "icons"), s, Component.translatable("resourcePack.pplhelper.icons"), ResourcePackActivationType.NORMAL);
-        });
-
+        FabricLoader.getInstance().getModContainer("pplhelper").ifPresent(s ->
+                ResourceManagerHelper.registerBuiltinResourcePack(GuiUtils.getResourceLocation("pplhelper", "icons"), s, Component.translatable("resourcePack.pplhelper.icons"), ResourcePackActivationType.NORMAL)
+        );
 
         // -=-=-=- Сбор информации (НЕ ВАШИХ! [возможно позже]) и авто-обновление -=-=-=-
         ClientLifecycleEvents.CLIENT_FULL_STARTED.register((s) -> {
             gameStarted = true;
+            if(!config.getBoolean("Q.TWO_DOT_ZERO_UPDATES", false)){
+                s.setScreen(new ConfirmScreen(s.screen, WHITE_PEPE, Component.translatable("pplhelper.q.two_dot_zero_update"), Component.translatable("pplhelper.q.two_dot_zero_update.description"), (b) -> {
+                    config.setBoolean("UPDATER.FOLLOW_TWO_DOT_ZERO", b);
+                    config.setBoolean("Q.TWO_DOT_ZERO_UPDATES", true);
+                }));
+            }
             loadStaticInformation();
             checkModUpdates(s);
         });
@@ -230,8 +236,6 @@ public class PepeLandHelper implements ClientModInitializer {
         return builder;
     }
 
-    public static int code = (int) (999999 * Math.random());
-
     public static void loadUser(boolean withToast) {
         String token = config.getString("oauth.access_token", "");
         if (token.isBlank()) return;
@@ -262,7 +266,7 @@ public class PepeLandHelper implements ClientModInitializer {
     }
     public static void checkModUpdates(Minecraft s){
         if (PepeLandHelperAPI.apiAvailable()) {
-            VersionInfo versionInfo = PepeLandHelperAPI.getAutoUpdate();
+            VersionInfo versionInfo = PepeLandHelperAPI.getAutoUpdate(config.getBoolean("UPDATER.FOLLOW_TWO_DOT_ZERO", true));
             if (versionInfo.state != VersionInfo.State.LATEST && PepeLandHelper.config.getBoolean("PPLH.NOTICE", true)) {
                 if (versionInfo.state == VersionInfo.State.NEW_UPDATE) {
                     s.setScreen(new NewUpdateScreen$Helper(s.screen, versionInfo));

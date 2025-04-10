@@ -6,6 +6,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
+import ru.kelcuprum.alinlib.config.Config;
 import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
 import ru.kelcuprum.pplhelper.api.components.VersionInfo;
 import ru.kelcuprum.pplhelper.gui.screens.NewsListScreen;
@@ -23,7 +24,7 @@ public class ModMenuIntegration implements ModMenuApi {
     public UpdateChecker getUpdateChecker() {
         if (PepeLandHelperAPI.apiAvailable()) {
             return () -> {
-                VersionInfo versionInfo = PepeLandHelperAPI.getAutoUpdate();
+                VersionInfo versionInfo = PepeLandHelperAPI.getAutoUpdate(new Config("config/pplhelper/config.json").getBoolean("UPDATER.FOLLOW_TWO_DOT_ZERO", true));
 
                 return new UpdateInfo() {
                     @Override

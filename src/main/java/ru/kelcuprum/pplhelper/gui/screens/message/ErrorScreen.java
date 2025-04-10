@@ -92,14 +92,15 @@ public class ErrorScreen extends Screen {
             AlinLib.LOG.log(e.getLocalizedMessage(), Level.ERROR);
         }
     }
-
+    public double startFireX = Math.random();
     @Override
     public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
         super.renderBackground(guiGraphics, i, j, f);
         int fireSize = (int) Math.max(32, height * 0.35);
+        int startX = (int) -(fireSize*startFireX);
         for(int l = 0; true; l++){
-            if(fireSize*l > width) break;
-            guiGraphics.blitSprite(RenderType::guiTextured, GuiUtils.getResourceLocation("pplhelper", "error/fire_0"), fireSize*l, height-fireSize, fireSize, fireSize);
+            if(fireSize*l+startX > width) break;
+            guiGraphics.blitSprite(RenderType::guiTextured, GuiUtils.getResourceLocation("pplhelper", "error/fire_0"), fireSize*l+startX, height-fireSize, fireSize, fireSize);
         }
         guiGraphics.fillGradient(0, 0, this.width, this.height, 0x7f245965, 0x7F9f1b46);
 

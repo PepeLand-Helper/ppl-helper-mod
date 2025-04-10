@@ -169,11 +169,11 @@ public class PepeLandHelperAPI {
         }
     }
     // -=-=-=-
-    public static VersionInfo getAutoUpdate(){
+    public static VersionInfo getAutoUpdate(boolean followTwoDotZero){
         String ver = FabricLoader.getInstance().getModContainer("pplhelper").get().getMetadata().getVersion().getFriendlyString();
         if(ver.contains("+")) ver = ver.split("\\+")[0];
         try {
-            JsonObject jsonObject = WebAPI.getJsonObject(getURI("versions?version="+uriEncode(ver), false));
+            JsonObject jsonObject = WebAPI.getJsonObject(getURI("versions?version="+uriEncode(ver)+"&allow_two="+followTwoDotZero, false));
             if(isError(jsonObject)) throw new RuntimeException(jsonObject.getAsJsonObject("error").get("message").getAsString());
             return new VersionInfo(jsonObject);
         } catch (Exception ex){

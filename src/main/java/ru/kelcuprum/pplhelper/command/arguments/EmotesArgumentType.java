@@ -1,4 +1,4 @@
-package ru.kelcuprum.pplhelper.command;
+package ru.kelcuprum.pplhelper.command.arguments;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
@@ -39,20 +39,17 @@ public class EmotesArgumentType implements ArgumentType<String> {
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
 
         try {
-            String arg = context.getArgument(nameArgument, String.class);
-            if (arg.isBlank()) for (String world : PepeLandHelper.getEmotesPath().keySet()) {
-                if (!world.contains("black.png"))
+            String arg = "";
+            try {
+                arg = context.getArgument(nameArgument, String.class);
+            } catch (Exception ignored){}
+            for (String world : PepeLandHelper.getEmotesPath().keySet()) {
+                String[] war = world.split("/");
+                String name = war[war.length - 1].split("\\.")[0];
+                if (name.startsWith(arg) && !world.contains("black.png"))
                     builder.suggest(String.format("%s", PepeLandHelper.getEmotesPath().get(world)));
-            } else {
-                for (String world : PepeLandHelper.getEmotesPath().keySet()) {
-                    String[] war = world.split("/");
-                    String name = war[war.length-1].split("\\.")[0];
-                    if(name.startsWith(arg) && !world.contains("black.png")) builder.suggest(String.format("%s", PepeLandHelper.getEmotesPath().get(world)));
-                }
             }
-        } catch (Exception e) {
-
-        }
+        } catch (Exception ignored) {}
         return builder.buildFuture();
     }
 }

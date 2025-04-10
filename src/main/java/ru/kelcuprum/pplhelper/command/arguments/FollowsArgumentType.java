@@ -1,4 +1,4 @@
-package ru.kelcuprum.pplhelper.command;
+package ru.kelcuprum.pplhelper.command.arguments;
 
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.StringReader;

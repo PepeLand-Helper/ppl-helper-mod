@@ -4,7 +4,6 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint;
 import net.fabricmc.loader.impl.FabricLoaderImpl;
 import net.minecraft.Util;
-import net.minecraft.client.Minecraft;
 import org.lwjgl.util.tinyfd.TinyFileDialogs;
 import ru.kelcuprum.alinlib.AlinLogger;
 import ru.kelcuprum.alinlib.config.Config;
@@ -30,7 +29,7 @@ public class PepeLandHelperPreLaunch implements PreLaunchEntrypoint  {
         }
         if(config.getBoolean("PPLH.AUTO_UPDATE", false) && PepeLandHelperAPI.apiAvailable()){
             PepeLandHelper.config = config;
-            VersionInfo versionInfo = PepeLandHelperAPI.getAutoUpdate();
+            VersionInfo versionInfo = PepeLandHelperAPI.getAutoUpdate(config.getBoolean("UPDATER.FOLLOW_TWO_DOT_ZERO", true));
             if(versionInfo.state == VersionInfo.State.NEW_UPDATE){
                 try {
                     installUpdates(versionInfo);
