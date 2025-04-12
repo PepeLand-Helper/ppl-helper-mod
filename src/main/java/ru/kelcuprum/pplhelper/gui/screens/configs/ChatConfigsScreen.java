@@ -56,7 +56,7 @@ public class ChatConfigsScreen {
                 .addWidget(new EditBoxBuilder(Component.translatable("pplhelper.chat_filters.friends")).setValue("PWGoood, Gwinsen, Pooshka").setConfig(PepeLandHelper.config, "CHAT.FILTER.FRIENDS"))
                 .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.chat_filters.words"), false).setConfig(PepeLandHelper.config, "CHAT.FILTER.WORDS"))
                 .addWidget(new TextBuilder(Component.literal("Пример: матч, хоккей, куплю, продам, продаст, купить, пипохуй")).setType(TextBuilder.TYPE.BLOCKQUOTE).setColor(Colors.CLOWNFISH))
-                .addWidget(new EditBoxBuilder(Component.translatable("pplhelper.chat_filters.nwords")).setValue("").setConfig(PepeLandHelper.config, "CHAT.FILTER.NWORDS"));
+                .addWidget(new EditBoxBuilder(Component.translatable("pplhelper.chat_filters.nwords")).setValue("хоккей, хоккейный, матч").setConfig(PepeLandHelper.config, "CHAT.FILTER.NWORDS"));
 
         return builder.build();
     }

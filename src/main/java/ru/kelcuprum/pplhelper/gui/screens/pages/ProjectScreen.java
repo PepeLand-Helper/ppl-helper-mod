@@ -97,7 +97,7 @@ public class ProjectScreen extends Screen {
             }
             if(PepeLandHelper.user != null && Objects.equals(PepeLandHelper.user.id, project.author)){
                 widgets.add(new ButtonBuilder(Component.translatable("pplhelper.project.schematic.upload_short"), (s) -> {
-                    PepeLandHelper.confirmLinkNow(this, String.format("https://l.pplh.ru/projects/%s/schematic", project.id));
+                    PepeLandHelper.confirmLinkNow(this, String.format("https://pplh.ru/projects/%s/schematic", project.id));
                 }).setPosition(x, y).setWidth(size).build());
             }
         }
