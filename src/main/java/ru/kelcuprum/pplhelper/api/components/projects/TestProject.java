@@ -1,7 +1,7 @@
 package ru.kelcuprum.pplhelper.api.components.projects;
 
 import net.minecraft.util.GsonHelper;
-import ru.kelcuprum.pplhelper.api.components.Project;
+import ru.kelcuprum.pplhelper.api.components.project.Project;
 
 public class TestProject extends Project {
     public TestProject() {

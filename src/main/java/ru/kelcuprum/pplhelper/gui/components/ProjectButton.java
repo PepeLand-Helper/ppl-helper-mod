@@ -11,7 +11,7 @@ import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.gui.GuiUtils;
 import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
 import ru.kelcuprum.alinlib.gui.components.buttons.Button;
-import ru.kelcuprum.pplhelper.api.components.Project;
+import ru.kelcuprum.pplhelper.api.components.project.Project;
 import ru.kelcuprum.pplhelper.gui.TextureHelper;
 import ru.kelcuprum.pplhelper.gui.screens.pages.ProjectScreen;
 

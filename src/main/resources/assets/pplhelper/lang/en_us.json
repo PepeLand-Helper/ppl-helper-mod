@@ -121,7 +121,9 @@
   "pplhelper.news.not_found": "По вашему запросу был найден только этот амогус в шляпе",
   "pplhelper.projects": "Проекты",
 
-  "pplhelper.project": "Проекты > %s",
+  "pplhelper.project": "Проект",
+  "pplhelper.project.description": "О проекте",
+  "pplhelper.project.description.empty": "О амогусе",
   "pplhelper.project.selected": "Закрепленный проект",
   "pplhelper.project.world": "Мир",
   "pplhelper.project.world.all": "Все",
@@ -137,7 +139,7 @@
   "pplhelper.project.web": "Открыть страницу сайта",
   "pplhelper.project.author": "Проект опубликовал",
 
-  "pplhelper.project.state": "Статус: %s",
+  "pplhelper.project.state": "§lСтатус:§r %s",
   "pplhelper.project.state.built": "Построен",
   "pplhelper.project.state.build": "Строится",
   "pplhelper.project.state.planned": "В процессе планировки",

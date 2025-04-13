@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.info.World;
 import ru.kelcuprum.pplhelper.PepeLandHelper;
-import ru.kelcuprum.pplhelper.api.components.Project;
+import ru.kelcuprum.pplhelper.api.components.project.Project;
 
 import static java.lang.Integer.parseInt;
 

@@ -9,7 +9,8 @@ import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.WebAPI;
 import ru.kelcuprum.pplhelper.PepeLandHelper;
 import ru.kelcuprum.pplhelper.api.components.News;
-import ru.kelcuprum.pplhelper.api.components.Project;
+import ru.kelcuprum.pplhelper.api.components.project.Page;
+import ru.kelcuprum.pplhelper.api.components.project.Project;
 import ru.kelcuprum.pplhelper.api.components.VersionInfo;
 
 import java.io.IOException;
@@ -28,7 +29,7 @@ public class PepeLandHelperAPI {
         return getURI(url, true);
     }
     public static String getURI(String url, boolean uriEncode){
-        String api = PepeLandHelper.config.getString("API_URL", "https://api.pplh.ru/");
+        String api = PepeLandHelper.config.getString("API_URL", "https://a-api.pplh.ru/");
         if(!api.endsWith("/")) api+="/";
         return String.format("%1$s%2$s", api, uriEncode ? uriEncode(url) : url);
     }
@@ -211,6 +212,29 @@ public class PepeLandHelperAPI {
         } catch (Exception ex){
             ex.printStackTrace();
             return "";
+        }
+    }
+    public static String getProjectPageContent(int id, String pageID){
+        try {
+            return WebAPI.getString(getURI(String.format("projects/%s/pages/%s", id, pageID), false));
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return "";
+        }
+    }
+    public static Page[] getProjectPages(int id){
+        try {
+            JsonObject jsonObject = WebAPI.getJsonObject(getURI(String.format("projects/%s/pages", id), false));
+            if(isError(jsonObject)) throw new RuntimeException(getError(jsonObject));
+            Page[] pages = new Page[jsonObject.getAsJsonObject("pages").keySet().size()];
+            int i = 0;
+            for(String pageID : jsonObject.getAsJsonObject("pages").keySet()){
+                pages[i] = new Page(id, pageID, jsonObject.getAsJsonObject("pages").getAsJsonObject(pageID).get("name").getAsString());
+                i++;
+            }
+            return pages;
+        } catch (Exception ex){
+            throw new RuntimeException(ex);
         }
     }
     public static void uploadProjectSchematicFile(byte[] file, int id) throws IOException, InterruptedException {

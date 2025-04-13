@@ -1,9 +1,8 @@
-package ru.kelcuprum.pplhelper.api.components;
+package ru.kelcuprum.pplhelper.api.components.project;
 
 import com.google.gson.JsonObject;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.network.chat.Component;
-import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.pplhelper.api.OAuth;
 import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
 import ru.kelcuprum.pplhelper.api.components.user.User;
@@ -98,6 +97,8 @@ public class Project {
     public String getContent(){
         return PepeLandHelperAPI.getProjectContent(this.id);
     }
+
+    public Page[] getPages() {return PepeLandHelperAPI.getProjectPages(this.id);}
 
     public User getAuthor(){
         return OAuth.getUserByID(author);

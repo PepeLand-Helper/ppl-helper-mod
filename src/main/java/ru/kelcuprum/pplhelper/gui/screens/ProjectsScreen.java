@@ -16,7 +16,7 @@ import ru.kelcuprum.alinlib.gui.components.builder.text.HorizontalRuleBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.text.TextBuilder;
 import ru.kelcuprum.pplhelper.PepeLandHelper;
 import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
-import ru.kelcuprum.pplhelper.api.components.Project;
+import ru.kelcuprum.pplhelper.api.components.project.Project;
 import ru.kelcuprum.pplhelper.gui.components.ProjectButton;
 import ru.kelcuprum.pplhelper.gui.screens.builder.AbstractPPLScreen;
 import ru.kelcuprum.pplhelper.gui.screens.builder.ScreenBuilder;

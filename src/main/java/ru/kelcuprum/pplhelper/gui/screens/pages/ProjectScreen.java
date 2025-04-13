@@ -3,12 +3,16 @@ package ru.kelcuprum.pplhelper.gui.screens.pages;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import org.lwjgl.glfw.GLFW;
 import ru.kelcuprum.alinlib.gui.Colors;
+import ru.kelcuprum.alinlib.gui.GuiUtils;
 import ru.kelcuprum.alinlib.gui.components.ConfigureScrolWidget;
 import ru.kelcuprum.alinlib.gui.components.ImageWidget;
 import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
@@ -16,10 +20,11 @@ import ru.kelcuprum.alinlib.gui.components.builder.text.HorizontalRuleBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.text.TextBuilder;
 import ru.kelcuprum.alinlib.gui.components.text.TextBox;
 import ru.kelcuprum.pplhelper.PepeLandHelper;
-import ru.kelcuprum.pplhelper.api.components.Project;
+import ru.kelcuprum.pplhelper.api.components.project.Page;
+import ru.kelcuprum.pplhelper.api.components.project.Project;
 import ru.kelcuprum.pplhelper.gui.components.BannerWidget;
-import ru.kelcuprum.pplhelper.gui.components.ScaledTextBox;
 import ru.kelcuprum.pplhelper.gui.components.UserCard;
+import ru.kelcuprum.pplhelper.gui.components.VerticalConfigureScrolWidget;
 import ru.kelcuprum.pplhelper.utils.FollowManager;
 import ru.kelcuprum.pplhelper.utils.MarkdownParser;
 
@@ -27,37 +32,105 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static ru.kelcuprum.pplhelper.PepeLandHelper.Icons.WEB;
+import static ru.kelcuprum.alinlib.gui.Icons.DONT;
+import static ru.kelcuprum.alinlib.gui.Icons.EXIT;
 
 public class ProjectScreen extends Screen {
     public final Project project;
     public final Screen parent;
+    public String content = "";
+    public String mainContent = "";
+    Page[] pages = new Page[0];
 
     public ProjectScreen(Screen screen, Project project) {
-        super(Component.translatable("pplhelper.project", project.title));
+        super(Component.translatable("pplhelper.project"));
         this.project = project;
         this.parent = screen;
+        this.content = project.getContent();
+        this.mainContent = this.content;
+        pages = project.getPages();
     }
 
     @Override
     protected void init() {
+        initSidebar();
         initContent();
     }
 
     private ConfigureScrolWidget scroller;
     private List<AbstractWidget> widgets = new ArrayList<>();
-    private final int maxSize = 400;
 
+    private VerticalConfigureScrolWidget scroller_pages;
+    private List<AbstractWidget> widgets_pages = new ArrayList<>();
+    // -=-=-=- Sidebar
+    private ConfigureScrolWidget panel_scroller;
+    private List<AbstractWidget> panel_widgets = new ArrayList<>();
+
+    private final int maxSize = 550;
+    private final int panelSize = 200;
+
+    public void initSidebar(){
+        int x = 10, y = 35;
+        panel_widgets = new ArrayList<>();
+        int size = panelSize-20;
+        this.panel_scroller = addRenderableWidget(new ConfigureScrolWidget(x+size+1, y, 3, this.height - y - 6, Component.empty(), scroller -> {
+            scroller.innerHeight = 0;
+            for (AbstractWidget widget : panel_widgets) {
+                if (widget.visible) {
+                    if (widget instanceof ImageWidget) widget.setWidth(Math.min(widget.getWidth(), size));
+                    else widget.setWidth(size);
+                    widget.setPosition(x, (y + (int) (scroller.innerHeight - scroller.scrollAmount())));
+                    scroller.innerHeight += (widget.getHeight() + ((widget instanceof ImageWidget) ? 5 : (widget instanceof BannerWidget) ? 7 : 3));
+                } else widget.setY(-widget.getHeight());
+            }
+            scroller.innerHeight -= 8;
+        }));
+
+        double scale = (double) size / maxSize;
+        addRenderableWidget(new TextBuilder(title).setPosition(10, 10).setSize(size-20, 20).build());
+        addRenderableWidget(new ButtonBuilder(CommonComponents.GUI_BACK, (s) -> onClose()).setSprite(EXIT).setPosition(10+size-20, 10).setSize(20, 20).build());
+        if (project.banner != null && !project.banner.isEmpty())
+            panel_widgets.add(new BannerWidget(x, -160, size, (int) (160 * scale), project.banner, String.format("project_banner_%s", project.id), Component.empty()));
+        panel_widgets.add(new TextBuilder(Component.empty().append(Component.literal(project.title).setStyle(Style.EMPTY.withBold(true))).append(project.description.isEmpty() ? "" : "\n").append(project.description)).setType(TextBuilder.TYPE.MESSAGE).setPosition(x, -40).setSize(size, 20).build());
+        panel_widgets.add(new TextBuilder(Component.translatable("pplhelper.project.creators", project.creators)).setType(TextBuilder.TYPE.BLOCKQUOTE).setPosition(x, -40).setSize(size, 20).build());
+        panel_widgets.add(new TextBuilder(Component.translatable("pplhelper.project.state", project.state == Project.State.BUILT ? Component.translatable("pplhelper.project.state.built") : project.state == Project.State.BUILD ? Component.translatable("pplhelper.project.state.build") : Component.translatable("pplhelper.project.state.planned"))).setType(TextBuilder.TYPE.BLOCKQUOTE).setPosition(x, -40).setSize(size, 20).build());
+        MutableComponent coord = Component.empty().append(Component.translatable("pplhelper.project.coordinates", project.world));
+        if (project.coordinates$overworld != null && !project.coordinates$overworld.isEmpty())
+            coord.append("\n").append(Component.translatable("pplhelper.project.coordinates.overworld")).append(": ").append(project.coordinates$overworld);
+        if (project.coordinates$nether != null && !project.coordinates$nether.isEmpty())
+            coord.append("\n").append(Component.translatable("pplhelper.project.coordinates.nether")).append(": ").append(project.coordinates$nether);
+        if (project.coordinates$end != null && !project.coordinates$end.isEmpty())
+            coord.append("\n").append(Component.translatable("pplhelper.project.coordinates.end")).append(": ").append(project.coordinates$end);
+        TextBox msg = (TextBox) new TextBuilder(coord).setType(TextBuilder.TYPE.BLOCKQUOTE).setPosition(x, y).setSize(size, 20).build();
+        panel_widgets.add(msg);
+        panel_widgets.add(new ButtonBuilder(Component.translatable((FollowManager.project == null || FollowManager.project.id != project.id) ? "pplhelper.project.follow" : "pplhelper.project.unfollow"), (s) -> {
+            if(FollowManager.project == null || FollowManager.project.id != project.id) FollowManager.setCoordinates(project); else FollowManager.resetCoordinates();
+            s.builder.setTitle(Component.translatable(FollowManager.project == null ? "pplhelper.project.follow" : "pplhelper.project.unfollow"));
+        }).setPosition(x, y).setWidth(size).build());
+        if(FabricLoader.getInstance().isModLoaded("litematica") && ((project.schematicEnable  && PepeLandHelper.playerInPPL()) || (PepeLandHelper.user != null && Objects.equals(PepeLandHelper.user.id, project.author)))){
+            panel_widgets.add(new HorizontalRuleBuilder(Component.translatable("pplhelper.project.schematic")).setPosition(x, y).build());
+            if(project.schematicEnable && PepeLandHelper.playerInPPL()){
+                panel_widgets.add(new ButtonBuilder(Component.translatable("pplhelper.project.schematic.download"), (s) -> {
+                    project.loadSchematic();
+                }).setPosition(x, y).setWidth(size).build());
+            }
+            if(PepeLandHelper.user != null && Objects.equals(PepeLandHelper.user.id, project.author)){
+                panel_widgets.add(new ButtonBuilder(Component.translatable("pplhelper.project.schematic.upload_short"), (s) -> {
+                    PepeLandHelper.confirmLinkNow(this, String.format("https://pplh.ru/projects/%s/schematic", project.id));
+                }).setPosition(x, y).setWidth(size).build());
+            }
+        }
+        panel_widgets.add(new HorizontalRuleBuilder().setTitle(Component.translatable("pplhelper.project.author")).build());
+        panel_widgets.add(new UserCard(x, y, size, project.getAuthor(), true));
+        addWidgetsToScroller(panel_widgets, panel_scroller);
+    }
     public void initContent() {
         widgets = new ArrayList<>();
-        int size = Math.min(maxSize, width - 10);
-        double scale = (double) size / maxSize;
-        int x = (width - size) / 2;
-        int y = 30;
-        addRenderableWidget(new ButtonBuilder(Component.literal("x"), (s) -> onClose()).setPosition(x + size - 20, 5).setWidth(20).build()); //, 20, 20,
-        addRenderableWidget(new ButtonBuilder(Component.translatable("pplhelper.project.web"), (s) -> PepeLandHelper.confirmLinkNow(this, String.format("https://pplh.ru/projects/%s", project.id))).setSprite(WEB).setPosition(x, 5).setWidth(20).build()); //, 20, 20,
-        addRenderableWidget(new TextBuilder(title).setPosition(x + 25, 5).setSize(size - 50, 20).build());
-        this.scroller = addRenderableWidget(new ConfigureScrolWidget(x + size + 1, y, 4, this.height - y, Component.empty(), scroller -> {
+        widgets_pages = new ArrayList<>();
+        int size = Math.min(maxSize, width - 15 - panelSize);
+        int x = (width - size - panelSize) / 2 + panelSize;
+        int y = 35;
+        this.scroller = addRenderableWidget(new ConfigureScrolWidget(x + size + 1, y, 3, this.height - y - 6, Component.empty(), scroller -> {
             scroller.innerHeight = 0;
             for (AbstractWidget widget : widgets) {
                 if (widget.visible) {
@@ -69,55 +142,60 @@ public class ProjectScreen extends Screen {
             }
             scroller.innerHeight -= 8;
         }));
-        if (project.banner != null && !project.banner.isEmpty())
-            widgets.add(new BannerWidget(x, -160, size, (int) (160 * scale), project.banner, String.format("project_banner_%s", project.id), Component.empty()));
-        widgets.add(new ScaledTextBox(x, -40, size, 12, Component.literal(project.title), true, 1.5f));
-        widgets.add(new TextBuilder(Component.literal(project.description)).setType(TextBuilder.TYPE.MESSAGE).setAlign(TextBuilder.ALIGN.CENTER).setPosition(x, -40).setSize(size, 20).build());
-        widgets.add(new TextBuilder(Component.translatable("pplhelper.project.creators", project.creators)).setType(TextBuilder.TYPE.BLOCKQUOTE).setPosition(x, -40).setSize(size, 20).build());
-        widgets.add(new TextBuilder(Component.translatable("pplhelper.project.state", project.state == Project.State.BUILT ? Component.translatable("pplhelper.project.state.built") : project.state == Project.State.BUILD ? Component.translatable("pplhelper.project.state.build") : Component.translatable("pplhelper.project.state.planned"))).setType(TextBuilder.TYPE.BLOCKQUOTE).setPosition(x, -40).setSize(size, 20).build());
-        MutableComponent coord = Component.empty().append(Component.translatable("pplhelper.project.coordinates", project.world));
-        if (project.coordinates$overworld != null && !project.coordinates$overworld.isEmpty())
-            coord.append("\n").append(Component.translatable("pplhelper.project.coordinates.overworld")).append(": ").append(project.coordinates$overworld);
-        if (project.coordinates$nether != null && !project.coordinates$nether.isEmpty())
-            coord.append("\n").append(Component.translatable("pplhelper.project.coordinates.nether")).append(": ").append(project.coordinates$nether);
-        if (project.coordinates$end != null && !project.coordinates$end.isEmpty())
-            coord.append("\n").append(Component.translatable("pplhelper.project.coordinates.end")).append(": ").append(project.coordinates$end);
-        TextBox msg = (TextBox) new TextBuilder(coord).setType(TextBuilder.TYPE.BLOCKQUOTE).setPosition(x, y).setSize(size, 20).build();
-        widgets.add(msg);
-        widgets.add(new ButtonBuilder(Component.translatable((FollowManager.project == null || FollowManager.project.id != project.id) ? "pplhelper.project.follow" : "pplhelper.project.unfollow"), (s) -> {
-            if(FollowManager.project == null || FollowManager.project.id != project.id) FollowManager.setCoordinates(project); else FollowManager.resetCoordinates();
-            s.builder.setTitle(Component.translatable(FollowManager.project == null ? "pplhelper.project.follow" : "pplhelper.project.unfollow"));
-        }).setPosition(x, y).setWidth(size).build());
-        if(FabricLoader.getInstance().isModLoaded("litematica") && ((project.schematicEnable  && PepeLandHelper.playerInPPL()) || (PepeLandHelper.user != null && Objects.equals(PepeLandHelper.user.id, project.author)))){
-            widgets.add(new HorizontalRuleBuilder(Component.translatable("pplhelper.project.schematic")).setPosition(x, y).build());
-            if(project.schematicEnable && PepeLandHelper.playerInPPL()){
-                widgets.add(new ButtonBuilder(Component.translatable("pplhelper.project.schematic.download"), (s) -> {
-                    project.loadSchematic();
-                }).setPosition(x, y).setWidth(size).build());
+        this.scroller_pages = addRenderableWidget(new VerticalConfigureScrolWidget(x, y-4, size, 3, Component.empty(), scroller -> {
+            scroller.innerHeight = 0;
+            for (AbstractWidget widget : widgets_pages) {
+                if (widget.visible) {
+                    widget.setPosition((x + (int) (scroller.innerHeight - scroller.scrollAmount())), y-25);
+                    scroller.innerHeight += (widget.getWidth() + 5);
+                } else widget.setY(-widget.getHeight());
             }
-            if(PepeLandHelper.user != null && Objects.equals(PepeLandHelper.user.id, project.author)){
-                widgets.add(new ButtonBuilder(Component.translatable("pplhelper.project.schematic.upload_short"), (s) -> {
-                    PepeLandHelper.confirmLinkNow(this, String.format("https://pplh.ru/projects/%s/schematic", project.id));
-                }).setPosition(x, y).setWidth(size).build());
+            scroller.innerHeight -= 13;
+        }));
+        Component description = Component.translatable(mainContent.isEmpty() ? "pplhelper.project.description.empty" : "pplhelper.project.description");
+        if(pages.length == 0) addRenderableWidget(new TextBuilder(description).setPosition(x, 10).setSize(size, 20).build());
+        else {
+            widgets_pages.add(new ButtonBuilder(description, (s) -> {
+                content = project.getContent();
+                rebuildWidgets();
+            }).setWidth(12+minecraft.font.width(description)).build());
+            for(Page page : pages){
+                if(page != null) widgets_pages.add(new ButtonBuilder(Component.literal(page.name), (s) -> {
+                    content = page.getContent();
+                    rebuildWidgets();
+                }).setWidth(12+minecraft.font.width(page.name)).build());
             }
         }
-        widgets.add(new HorizontalRuleBuilder().setPosition(x, y).build());
-        widgets.addAll(MarkdownParser.parse(project.getContent(), x, size, String.format("project_%s_", project.id) + "%s", this));
-        widgets.add(new HorizontalRuleBuilder().setTitle(Component.translatable("pplhelper.project.author")).build());
-        widgets.add(new UserCard(x, y, size, project.getAuthor(), true));
+        addWidgetsToScroller(widgets_pages, scroller_pages);
+        if(!content.isEmpty()) widgets.addAll(MarkdownParser.parse(content, x, size, String.format("project_%s_", project.id) + "%s", this));
+        else widgets.add(new ImageWidget(x, 35, size, 20, GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/amogus.png"), 256, 32, true, Component.empty()));
         addWidgetsToScroller(widgets);
     }
 
     public void addWidgetsToScroller(List<AbstractWidget> widgets) {
-        for (AbstractWidget widget : widgets) addWidgetsToScroller(widget);
+        addWidgetsToScroller(widgets, this.scroller);
     }
 
-    int yC = 30;
 
     public void addWidgetsToScroller(AbstractWidget widget) {
-        widget.setY(yC);
-        yC += 5 + widget.getHeight();
-        this.scroller.addWidget(widget);
+       addWidgetsToScroller(widget, this.scroller);
+    }
+
+    public void addWidgetsToScroller(List<AbstractWidget> widgets, ConfigureScrolWidget scroller) {
+        for (AbstractWidget widget : widgets) addWidgetsToScroller(widget, scroller);
+    }
+    public void addWidgetsToScroller(AbstractWidget widget, ConfigureScrolWidget scroller) {
+        widget.setY(-100);
+        scroller.addWidget(widget);
+        this.addWidget(widget);
+    }
+
+    public void addWidgetsToScroller(List<AbstractWidget> widgets, VerticalConfigureScrolWidget scroller) {
+        for (AbstractWidget widget : widgets) addWidgetsToScroller(widget, scroller);
+    }
+    public void addWidgetsToScroller(AbstractWidget widget, VerticalConfigureScrolWidget scroller) {
+        widget.setY(-100);
+        scroller.addWidget(widget);
         this.addWidget(widget);
     }
 
@@ -125,22 +203,42 @@ public class ProjectScreen extends Screen {
     @Override
     public void render(GuiGraphics guiGraphics, int i, int j, float f) {
         super.render(guiGraphics, i, j, f);
-        int size = Math.min(maxSize, width - 10);
-        int x = (width - size) / 2;
-        guiGraphics.enableScissor(0, 30, width, this.height);
+        int size = Math.min(maxSize, width - 15 - panelSize);
+        int x = (width - size - panelSize) / 2 + panelSize;
+        guiGraphics.enableScissor(x, 10, x+size, 30);
+        if (scroller_pages != null) for (AbstractWidget widget : scroller_pages.widgets) widget.render(guiGraphics, i, j, f);
+        guiGraphics.disableScissor();
+        guiGraphics.enableScissor(0, 35, width, this.height-5);
         if (scroller != null) for (AbstractWidget widget : scroller.widgets) widget.render(guiGraphics, i, j, f);
+        if (panel_scroller != null) for (AbstractWidget widget : panel_scroller.widgets) widget.render(guiGraphics, i, j, f);
         guiGraphics.disableScissor();
     }
 
     @Override
     public boolean mouseClicked(double d, double e, int i) {
-        int size = Math.min(maxSize, width - 10);
-        int x = (width - size) / 2;
+        int size = Math.min(maxSize, width - 15 - panelSize);
+        int x = (width - size - panelSize) / 2 + panelSize;
+
+        int panelX = 10, panel_size = panelSize - 10;
         boolean st = true;
         GuiEventListener selected = null;
         for (GuiEventListener guiEventListener : this.children()) {
             if (scroller != null && scroller.widgets.contains(guiEventListener)) {
                 if ((d >= x && d <= x + size) && e >= 30)
+                    if (guiEventListener.mouseClicked(d, e, i)) {
+                        st = false;
+                        selected = guiEventListener;
+                        break;
+                    }
+            } else if (panel_scroller != null && panel_scroller.widgets.contains(guiEventListener)) {
+                if ((d >= panelX && d <= panelX + panel_size) && e >= 30)
+                    if (guiEventListener.mouseClicked(d, e, i)) {
+                        st = false;
+                        selected = guiEventListener;
+                        break;
+                    }
+            } else  if (scroller_pages != null && scroller_pages.widgets.contains(guiEventListener)) {
+                if ((d >= x && d <= x + size) && e <= 30)
                     if (guiEventListener.mouseClicked(d, e, i)) {
                         st = false;
                         selected = guiEventListener;
@@ -162,11 +260,19 @@ public class ProjectScreen extends Screen {
 
     public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
         super.renderBackground(guiGraphics, i, j, f);
-        int size = Math.min(maxSize, width - 10);
-        int x = (width - size) / 2;
-        guiGraphics.fill(x - 5, 0, x + size + 5, height, Colors.BLACK_ALPHA); // Затемнение
+        int size = Math.min(maxSize, width - 15 - panelSize);
+        int x = (width - size - panelSize) / 2 + panelSize;
 
-        guiGraphics.fill(x + 25, 5, x + size - 25, 25, Colors.BLACK_ALPHA);
+        int maxY = 35;
+        if(scroller != null) for(AbstractWidget widget : scroller.widgets) maxY = widget.getY()+widget.getHeight()+5;
+        guiGraphics.fill(x - 5, 5, x + size + 5, Math.min(height-5, maxY), Colors.BLACK_ALPHA); // Затемнение
+
+        int maxPanelY = 35;
+        if(panel_scroller != null) for(AbstractWidget widget : panel_scroller.widgets) maxPanelY = widget.getY()+widget.getHeight()+5;
+        guiGraphics.fill(5, 5, 5+panelSize-10, Math.min(height-5, maxPanelY), Colors.BLACK_ALPHA); // Затемнение
+
+        if(pages.length == 0) guiGraphics.fill(x, 10, x + size, 30, Colors.BLACK_ALPHA);
+        guiGraphics.fill(10, 10, 5 + panelSize - 35, 30, Colors.BLACK_ALPHA);
     }
 
     public void onClose() {
@@ -176,13 +282,17 @@ public class ProjectScreen extends Screen {
 
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         boolean scr = super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
-        if (!scr && scroller != null) scr = scroller.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+        if (!scr && panel_scroller != null && mouseX < panelSize) scr = panel_scroller.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+        else if(!scr && scroller_pages != null && mouseY < 30) scr = scroller_pages.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+        else if (!scr && scroller != null) scr = scroller.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
         return scr;
     }
 
     @Override
     public void tick() {
         if (scroller != null) scroller.onScroll.accept(scroller);
+        if (panel_scroller != null) panel_scroller.onScroll.accept(panel_scroller);
+        if (scroller_pages != null) scroller_pages.onScroll.accept(scroller_pages);
         super.tick();
     }
 

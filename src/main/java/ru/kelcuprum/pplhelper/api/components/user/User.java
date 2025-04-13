@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import ru.kelcuprum.alinlib.WebAPI;
 import ru.kelcuprum.pplhelper.PepeLandHelper;
 import ru.kelcuprum.pplhelper.api.components.News;
-import ru.kelcuprum.pplhelper.api.components.Project;
+import ru.kelcuprum.pplhelper.api.components.project.Project;
 
 import java.util.ArrayList;
 import java.util.List;
