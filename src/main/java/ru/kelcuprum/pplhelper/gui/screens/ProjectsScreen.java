@@ -16,12 +16,15 @@ import ru.kelcuprum.alinlib.gui.components.builder.text.HorizontalRuleBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.text.TextBuilder;
 import ru.kelcuprum.pplhelper.PepeLandHelper;
 import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
+import ru.kelcuprum.pplhelper.api.components.SearchResult;
 import ru.kelcuprum.pplhelper.api.components.project.Project;
+import ru.kelcuprum.pplhelper.gui.components.PageControlWidget;
 import ru.kelcuprum.pplhelper.gui.components.ProjectButton;
 import ru.kelcuprum.pplhelper.gui.screens.builder.AbstractPPLScreen;
 import ru.kelcuprum.pplhelper.gui.screens.builder.ScreenBuilder;
 import ru.kelcuprum.pplhelper.utils.FollowManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static ru.kelcuprum.alinlib.gui.Colors.*;
@@ -30,21 +33,24 @@ import static ru.kelcuprum.alinlib.gui.Icons.SEARCH;
 public class ProjectsScreen extends AbstractPPLScreen {
     public ProjectsScreen(Screen screen) {
         super(new ScreenBuilder(screen, Component.translatable("pplhelper.projects")).addPanelWidgets(PepeLandHelper.getPanelWidgets(screen, screen)));
-        builder.contentY = 85;
+        builder.contentY = 110;
     }
 
     private static String query = "";
     private static int world = 0;
     private static int category = 0;
-    private static List<Project> lastProjects;
+    private static SearchResult lastProjects;
+    private static int currentPosition = 0;
     public Thread loadInfo = null;
     boolean apiAvailable = PepeLandHelperAPI.apiAvailable();
+
+    public PageControlWidget pageControlWidget;
 
     @Override
     public void initCategory() {
         builder.widgets.clear();
         super.initCategory();
-        final int[] y = {builder.contentY - 50};
+        final int[] y = {builder.contentY - 75};
         int searchSize = (getContentWidth() - 5) / 2;
         addRenderableWidget(new EditBoxBuilder(Component.translatable("pplhelper.news.search"), (s) -> query = s).setValue(query).setPosition(getX(), y[0]).setWidth(getContentWidth() - 25).setActive(apiAvailable).build());
         addRenderableWidget(new ButtonBuilder(Component.translatable("pplhelper.news.find"), (s) -> search()).setSprite(SEARCH).setPosition(getX() + getContentWidth() - 20, y[0]).setWidth(20).setActive(apiAvailable).build());
@@ -57,6 +63,11 @@ public class ProjectsScreen extends AbstractPPLScreen {
             category = s.getPosition();
             search();
         }).setList(PepeLandHelper.pc).setValue(category).setPosition(getX() + 5 + searchSize, y[0]).setWidth(searchSize).setActive(apiAvailable).build());
+        y[0] += 25;
+        pageControlWidget =  addRenderableWidget(new PageControlWidget(getX(), y[0], getContentWidth(), 20, currentPosition, 8, (widget) -> {
+            currentPosition = widget.position;
+            search();
+        }));
         y[0] += 25;
         if(FollowManager.project != null){
             builder.addWidget(new HorizontalRuleBuilder(Component.translatable("pplhelper.project.selected")));
@@ -84,13 +95,16 @@ public class ProjectsScreen extends AbstractPPLScreen {
                 } catch (Exception ignored){}
             }
             loadInfo = new Thread(() -> {
-                List<Project> projects = lastProjects == null ? PepeLandHelperAPI.getProjects(query, PepeLandHelper.worlds[world], PepeLandHelper.pct[category]) : lastProjects;
+                SearchResult projects = lastProjects == null ? PepeLandHelperAPI.getProjects(query, PepeLandHelper.worlds[world], PepeLandHelper.pct[category], currentPosition) : lastProjects;
                 lastProjects = projects;
-                if (projects.isEmpty()) {
+                if (projects.arrayList().isEmpty()) {
                     builder.addWidget(new TextBuilder(Component.translatable("pplhelper.news.not_found")).setType(TextBuilder.TYPE.BLOCKQUOTE).setColor(GROUPIE).setPosition(getX(), 55).setSize(getContentWidth(), 20).build());
                     builder.addWidget(new ImageWidget(getX(), 55, getContentWidth(), 20, GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/amogus.png"), 256, 32, true, Component.empty()));
-                } else for (Project project : projects)
-                    builder.addWidget(new ProjectButton(getX(), -40, getContentWidth(), project, this));
+                } else {
+                    pageControlWidget.size = projects.pages();
+                    for (Project project : (ArrayList<Project>) projects.arrayList())
+                        builder.addWidget(new ProjectButton(getX(), -40, getContentWidth(), project, this));
+                }
                 int heigthScroller = builder.contentY;
                 for (AbstractWidget widget : builder.widgets) {
                     heigthScroller += (widget.getHeight() + 5);
@@ -125,7 +139,7 @@ public class ProjectsScreen extends AbstractPPLScreen {
         long cur = System.currentTimeMillis();
         long limit = 750;
         if(cur - lastSearch <= limit){
-            if(count > 4){
+            if(count > (lastProjects == null ? 4 : lastProjects.pages())){
                 Util.getPlatform().openUri("https://wfu.kelcu.ru/vpEJaZQ");
                 AlinLib.MINECRAFT.setScreen(builder.parent);
             } else count++;

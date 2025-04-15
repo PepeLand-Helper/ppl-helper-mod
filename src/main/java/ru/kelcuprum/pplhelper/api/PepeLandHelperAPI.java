@@ -9,6 +9,7 @@ import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.WebAPI;
 import ru.kelcuprum.pplhelper.PepeLandHelper;
 import ru.kelcuprum.pplhelper.api.components.News;
+import ru.kelcuprum.pplhelper.api.components.SearchResult;
 import ru.kelcuprum.pplhelper.api.components.project.Page;
 import ru.kelcuprum.pplhelper.api.components.project.Project;
 import ru.kelcuprum.pplhelper.api.components.VersionInfo;
@@ -184,17 +185,18 @@ public class PepeLandHelperAPI {
     }
     // -=-=-=-
 
-    public static List<Project> getProjects(String query, String world, String category){
+    public static SearchResult getProjects(String query, String world, String category, int page){
         try {
             JsonObject projects = WebAPI.getJsonObject(getURI("projects?query="+uriEncode(query)+
+                    "&page="+page+
                     (world.equalsIgnoreCase(Component.translatable("pplhelper.project.world.all").getString()) ? "" : "&world="+uriEncode(world))+
                     (category.isEmpty() ? "" : "&category="+uriEncode(category)), false));
-            List<Project> list = new ArrayList<>();
-            for(JsonElement element : projects.getAsJsonArray("items")) list.add(new Project(element.getAsJsonObject()));
-            return list;
+            ArrayList<Project> list = new ArrayList<>();
+            for(JsonElement element : projects.getAsJsonArray("page")) list.add(new Project(element.getAsJsonObject()));
+            return new SearchResult(list, projects.getAsJsonObject("info").get("max_pages").getAsInt());
         } catch (Exception ex){
             PepeLandHelper.LOG.error(ex.getMessage() == null ? ex.getClass().getName() : ex.getMessage());
-            return new ArrayList<>();
+            return new SearchResult(new ArrayList(), 1);
         }
     }
 

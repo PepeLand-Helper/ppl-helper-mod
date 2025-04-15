@@ -1,9 +1,9 @@
 package ru.kelcuprum.pplhelper.gui.screens.pages;
 
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
@@ -11,6 +11,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import org.lwjgl.glfw.GLFW;
+import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.gui.Colors;
 import ru.kelcuprum.alinlib.gui.GuiUtils;
 import ru.kelcuprum.alinlib.gui.components.ConfigureScrolWidget;
@@ -25,6 +26,7 @@ import ru.kelcuprum.pplhelper.api.components.project.Project;
 import ru.kelcuprum.pplhelper.gui.components.BannerWidget;
 import ru.kelcuprum.pplhelper.gui.components.UserCard;
 import ru.kelcuprum.pplhelper.gui.components.VerticalConfigureScrolWidget;
+import ru.kelcuprum.pplhelper.gui.screens.message.ErrorScreen;
 import ru.kelcuprum.pplhelper.utils.FollowManager;
 import ru.kelcuprum.pplhelper.utils.MarkdownParser;
 
@@ -32,7 +34,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static ru.kelcuprum.alinlib.gui.Icons.DONT;
 import static ru.kelcuprum.alinlib.gui.Icons.EXIT;
 
 public class ProjectScreen extends Screen {
@@ -46,9 +47,13 @@ public class ProjectScreen extends Screen {
         super(Component.translatable("pplhelper.project"));
         this.project = project;
         this.parent = screen;
-        this.content = project.getContent();
-        this.mainContent = this.content;
-        pages = project.getPages();
+        try {
+            this.content = project.getContent();
+            this.mainContent = this.content;
+            pages = project.getPages();
+        } catch (Exception ex){
+            AlinLib.MINECRAFT.setScreen(new ErrorScreen(ex, screen));
+        }
     }
 
     @Override
@@ -56,13 +61,13 @@ public class ProjectScreen extends Screen {
         initSidebar();
         initContent();
     }
-
+    // -=-=-=- Контент
     private ConfigureScrolWidget scroller;
     private List<AbstractWidget> widgets = new ArrayList<>();
-
+    // -=-=-=- Страницы
     private VerticalConfigureScrolWidget scroller_pages;
     private List<AbstractWidget> widgets_pages = new ArrayList<>();
-    // -=-=-=- Sidebar
+    // -=-=-=- Информация
     private ConfigureScrolWidget panel_scroller;
     private List<AbstractWidget> panel_widgets = new ArrayList<>();
 
@@ -157,12 +162,13 @@ public class ProjectScreen extends Screen {
         else {
             widgets_pages.add(new ButtonBuilder(description, (s) -> {
                 content = project.getContent();
-                rebuildWidgets();
+                mainContent = content;
+                rebuildContentWidgets();
             }).setWidth(12+minecraft.font.width(description)).build());
             for(Page page : pages){
                 if(page != null) widgets_pages.add(new ButtonBuilder(Component.literal(page.name), (s) -> {
                     content = page.getContent();
-                    rebuildWidgets();
+                    rebuildContentWidgets();
                 }).setWidth(12+minecraft.font.width(page.name)).build());
             }
         }
@@ -170,6 +176,11 @@ public class ProjectScreen extends Screen {
         if(!content.isEmpty()) widgets.addAll(MarkdownParser.parse(content, x, size, String.format("project_%s_", project.id) + "%s", this));
         else widgets.add(new ImageWidget(x, 35, size, 20, GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/amogus.png"), 256, 32, true, Component.empty()));
         addWidgetsToScroller(widgets);
+    }
+
+    public void rebuildContentWidgets(){
+        for(AbstractWidget widget : widgets) removeWidget(widget);
+        initContent();
     }
 
     public void addWidgetsToScroller(List<AbstractWidget> widgets) {
