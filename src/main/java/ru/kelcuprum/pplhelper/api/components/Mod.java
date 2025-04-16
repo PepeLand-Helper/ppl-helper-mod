@@ -1,7 +1,7 @@
 package ru.kelcuprum.pplhelper.api.components;
 
 import com.google.gson.JsonObject;
-import ru.kelcuprum.alinlib.WebAPI;
+import ru.kelcuprum.pplhelper.utils.WebUtils;
 import ru.kelcuprum.pplhelper.PepeLandHelper;
 
 import java.util.HashMap;
@@ -38,7 +38,7 @@ public class Mod {
     public void loadGitHubInfo(){
         try{
             String url = String.format("https://api.github.com/repos/%s", id);
-            JsonObject jsonObject = cache.containsKey(url) ? cache.get(url) : WebAPI.getJsonObject(url);
+            JsonObject jsonObject = cache.containsKey(url) ? cache.get(url) : WebUtils.getJsonObject(url);
             if(this.title.isBlank()) this.title = getStringInJSON("name", jsonObject, "");
             if(this.description.isBlank()) this.description = getStringInJSON("description", jsonObject, "");
             cache.put(url, jsonObject);
@@ -49,7 +49,7 @@ public class Mod {
     public void loadModrinthInfo(){
         try{
             String url = String.format("https://api.modrinth.com/v2/project/%s", id);
-            JsonObject jsonObject = cache.containsKey(url) ? cache.get(url) : WebAPI.getJsonObject(url);
+            JsonObject jsonObject = cache.containsKey(url) ? cache.get(url) : WebUtils.getJsonObject(url);
             if(this.title.isBlank()) this.title = getStringInJSON("title", jsonObject, "");
             if(this.description.isBlank()) this.description = getStringInJSON("description", jsonObject, "");
             if(this.icon.isBlank()) this.icon = getStringInJSON("icon_url", jsonObject, "");

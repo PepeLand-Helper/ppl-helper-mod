@@ -13,6 +13,7 @@ public class PageControlWidget extends AbstractWidget {
     public int position;
     public int size;
     public final OnPress onPress;
+
     public PageControlWidget(int x, int y, int width, int height, int position, int size, OnPress onPress) {
         super(x, y, width, height, Component.empty());
         this.position = position;
@@ -23,9 +24,9 @@ public class PageControlWidget extends AbstractWidget {
     @Override
     protected void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
         int p = (this.getHeight() - 8) / 2;
-        guiGraphics.drawString(AlinLib.MINECRAFT.font, "◀", getX()+p, getY()+p, availableLeftScroll() ? -1 : 0xFFadb5bd);
-        guiGraphics.drawCenteredString(AlinLib.MINECRAFT.font, String.format("%s / %s", position+1, size), getX()+(getWidth()/2), getY()+p, -1);
-        guiGraphics.drawString(AlinLib.MINECRAFT.font, "▶", getRight()-p-AlinLib.MINECRAFT.font.width("▶"), getY()+p, availableRightScroll() ? -1 : 0xFFadb5bd);
+        guiGraphics.drawString(AlinLib.MINECRAFT.font, "◀", getX() + p, getY() + p, availableLeftScroll() ? -1 : 0xFFadb5bd);
+        guiGraphics.drawCenteredString(AlinLib.MINECRAFT.font, String.format("%s / %s", position + 1, size), getX() + (getWidth() / 2), getY() + p, -1);
+        guiGraphics.drawString(AlinLib.MINECRAFT.font, "▶", getRight() - p - AlinLib.MINECRAFT.font.width("▶"), getY() + p, availableRightScroll() ? -1 : 0xFFadb5bd);
     }
 
     @Override
@@ -35,32 +36,36 @@ public class PageControlWidget extends AbstractWidget {
 
     @Override
     public boolean mouseClicked(double d, double e, int i) {
-        if(d < getX()+getHeight() && availableLeftScroll()){
-            leftScroll();
-            Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.BOOK_PAGE_TURN, 1.0F));
-            onPress.onPress(this);
-            return true;
-        } else if(d > getRight()-getHeight() && availableRightScroll()){
-            rightScroll();
-            Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.BOOK_PAGE_TURN, 1.0F));
-            onPress.onPress(this);
-            return true;
+        if (clicked(d, e)) {
+            if (d < getX() + getHeight() && availableLeftScroll()) {
+                leftScroll();
+                Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.BOOK_PAGE_TURN, 1.0F));
+                onPress.onPress(this);
+                return true;
+            } else if (d > getRight() - getHeight() && availableRightScroll()) {
+                rightScroll();
+                Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.BOOK_PAGE_TURN, 1.0F));
+                onPress.onPress(this);
+                return true;
+            }
         }
         return false;
     }
 
-    public boolean availableLeftScroll(){
+    public boolean availableLeftScroll() {
         return position > 0;
     }
-    public boolean availableRightScroll(){
-        return position+1 != size;
+
+    public boolean availableRightScroll() {
+        return position + 1 != size;
     }
 
-    public void leftScroll(){
-        if(position - 1 != -1) position--;
+    public void leftScroll() {
+        if (position - 1 != -1) position--;
     }
-    public void rightScroll(){
-        if(position + 1 != size) position++;
+
+    public void rightScroll() {
+        if (position + 1 != size) position++;
     }
 
     public interface OnPress {

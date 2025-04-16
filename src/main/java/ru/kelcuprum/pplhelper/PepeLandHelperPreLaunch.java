@@ -27,17 +27,19 @@ public class PepeLandHelperPreLaunch implements PreLaunchEntrypoint  {
             Util.getPlatform().openUri("https://modrinth.com/mod/alinlib/versions&l=fabric");
             System.exit(1);
         }
-        if(config.getBoolean("PPLH.AUTO_UPDATE", false) && PepeLandHelperAPI.apiAvailable()){
-            PepeLandHelper.config = config;
-            VersionInfo versionInfo = PepeLandHelperAPI.getAutoUpdate(config.getBoolean("UPDATER.FOLLOW_TWO_DOT_ZERO", true));
-            if(versionInfo.state == VersionInfo.State.NEW_UPDATE){
-                try {
-                    installUpdates(versionInfo);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+        new Thread(() -> {
+            if(config.getBoolean("PPLH.AUTO_UPDATE", false) && PepeLandHelperAPI.apiAvailable()){
+                PepeLandHelper.config = config;
+                VersionInfo versionInfo = PepeLandHelperAPI.getAutoUpdate(config.getBoolean("UPDATER.FOLLOW_TWO_DOT_ZERO", true));
+                if(versionInfo.state == VersionInfo.State.NEW_UPDATE){
+                    try {
+                        installUpdates(versionInfo);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
-        }
+        }).start();
     }
 
     public static void installUpdates(VersionInfo versionInfo) throws IOException {

@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.network.chat.Component;
 import ru.kelcuprum.alinlib.AlinLib;
-import ru.kelcuprum.alinlib.WebAPI;
+import ru.kelcuprum.pplhelper.utils.WebUtils;
 import ru.kelcuprum.pplhelper.PepeLandHelper;
 import ru.kelcuprum.pplhelper.api.components.News;
 import ru.kelcuprum.pplhelper.api.components.SearchResult;
@@ -37,7 +37,7 @@ public class PepeLandHelperAPI {
 
     public static boolean apiAvailable(){
         try {
-            JsonObject content = WebAPI.getJsonObject(getURI("ping", false));
+            JsonObject content = WebUtils.getJsonObject(getURI("ping", false));
             if(content.has("error")) throw new Exception(getStringInJSON("error.message", content));
             return content.has("message") && content.has("time");
         } catch (Exception ex){
@@ -47,7 +47,7 @@ public class PepeLandHelperAPI {
 
     public static Component getMessageFromBreakAPI(){
         try {
-            JsonObject content = WebAPI.getJsonObject(getURI("ping", false));
+            JsonObject content = WebUtils.getJsonObject(getURI("ping", false));
             if(content.has("error")) throw new Exception(getStringInJSON("error.message", content));
             return Component.empty();
         } catch (Exception ex){
@@ -58,28 +58,28 @@ public class PepeLandHelperAPI {
 
     public static JsonArray getRecommendMods(){
         try {
-            return WebAPI.getJsonArray(getURI("mods"));
+            return WebUtils.getJsonArray(getURI("mods"));
         } catch (Exception ex){
             throw new RuntimeException(ex);
         }
     }
     public static JsonArray getRecommendPacks(){
         try {
-            return WebAPI.getJsonArray(getURI("resourcepacks"));
+            return WebUtils.getJsonArray(getURI("resourcepacks"));
         } catch (Exception ex){
             throw new RuntimeException(ex);
         }
     }
     public static JsonArray getCommands(){
         try {
-            return WebAPI.getJsonArray(getURI("commands"));
+            return WebUtils.getJsonArray(getURI("commands"));
         } catch (Exception ex){
             throw new RuntimeException(ex);
         }
     }
     public static String[] getWorlds(){
         try {
-            JsonArray array = WebAPI.getJsonArray(getURI("worlds"));
+            JsonArray array = WebUtils.getJsonArray(getURI("worlds"));
             String[] worlds = new String[array.size()+1];
             worlds[0] = Component.translatable("pplhelper.project.world.all").getString();
             for(int i = 1; i<array.size()+1;i++) worlds[i] = array.get(i-1).getAsString();
@@ -99,7 +99,7 @@ public class PepeLandHelperAPI {
 
     public static String[] getProjectCategories(){
         try {
-            JsonArray array = WebAPI.getJsonObject(getURI("category")).getAsJsonArray("projects");
+            JsonArray array = WebUtils.getJsonObject(getURI("category")).getAsJsonArray("projects");
             String[] categories = new String[array.size()+1];
             categories[0] = Component.translatable("pplhelper.project.world.all").getString();
             int size = 1;
@@ -118,7 +118,7 @@ public class PepeLandHelperAPI {
     }
     public static String[] getProjectCategoriesTags(){
         try {
-            JsonArray array = WebAPI.getJsonObject(getURI("category")).getAsJsonArray("projects");
+            JsonArray array = WebUtils.getJsonObject(getURI("category")).getAsJsonArray("projects");
             String[] categories = new String[array.size()+1];
             categories[0] = "";
             int size = 1;
@@ -137,7 +137,7 @@ public class PepeLandHelperAPI {
 
     public static String[] getNewsCategories(){
         try {
-            JsonArray array = WebAPI.getJsonObject(getURI("category")).getAsJsonArray("news");
+            JsonArray array = WebUtils.getJsonObject(getURI("category")).getAsJsonArray("news");
             String[] categories = new String[array.size()+1];
             categories[0] = Component.translatable("pplhelper.project.world.all").getString();
             int size = 1;
@@ -155,7 +155,7 @@ public class PepeLandHelperAPI {
     }
     public static String[] getNewsCategoriesTags(){
         try {
-            JsonArray array = WebAPI.getJsonObject(getURI("category")).getAsJsonArray("news");
+            JsonArray array = WebUtils.getJsonObject(getURI("category")).getAsJsonArray("news");
             String[] categories = new String[array.size()+1];
             categories[0] = "";
             int size = 1;
@@ -175,7 +175,7 @@ public class PepeLandHelperAPI {
         String ver = FabricLoader.getInstance().getModContainer("pplhelper").get().getMetadata().getVersion().getFriendlyString();
         if(ver.contains("+")) ver = ver.split("\\+")[0];
         try {
-            JsonObject jsonObject = WebAPI.getJsonObject(getURI("versions?version="+uriEncode(ver)+"&allow_two="+followTwoDotZero, false));
+            JsonObject jsonObject = WebUtils.getJsonObject(getURI("versions?version="+uriEncode(ver)+"&allow_two="+followTwoDotZero, false));
             if(isError(jsonObject)) throw new RuntimeException(jsonObject.getAsJsonObject("error").get("message").getAsString());
             return new VersionInfo(jsonObject);
         } catch (Exception ex){
@@ -187,7 +187,7 @@ public class PepeLandHelperAPI {
 
     public static SearchResult getProjects(String query, String world, String category, int page){
         try {
-            JsonObject projects = WebAPI.getJsonObject(getURI("projects?query="+uriEncode(query)+
+            JsonObject projects = WebUtils.getJsonObject(getURI("projects?query="+uriEncode(query)+
                     "&page="+page+
                     (world.equalsIgnoreCase(Component.translatable("pplhelper.project.world.all").getString()) ? "" : "&world="+uriEncode(world))+
                     (category.isEmpty() ? "" : "&category="+uriEncode(category)), false));
@@ -202,7 +202,7 @@ public class PepeLandHelperAPI {
 
     public static JsonObject getProject(int id){
         try {
-            return WebAPI.getJsonObject(getURI(String.format("projects/%s", id), false));
+            return WebUtils.getJsonObject(getURI(String.format("projects/%s", id), false));
         } catch (Exception ex){
             throw new RuntimeException(ex);
         }
@@ -210,7 +210,7 @@ public class PepeLandHelperAPI {
 
     public static String getProjectContent(int id){
         try {
-            return WebAPI.getString(getURI(String.format("projects/%s/content", id), false));
+            return WebUtils.getString(getURI(String.format("projects/%s/content", id), false));
         } catch (Exception ex){
             ex.printStackTrace();
             return "";
@@ -218,7 +218,7 @@ public class PepeLandHelperAPI {
     }
     public static String getProjectPageContent(int id, String pageID){
         try {
-            return WebAPI.getString(getURI(String.format("projects/%s/pages/%s", id, pageID), false));
+            return WebUtils.getString(getURI(String.format("projects/%s/pages/%s", id, pageID), false));
         } catch (Exception ex){
             ex.printStackTrace();
             return "";
@@ -226,7 +226,7 @@ public class PepeLandHelperAPI {
     }
     public static Page[] getProjectPages(int id){
         try {
-            JsonObject jsonObject = WebAPI.getJsonObject(getURI(String.format("projects/%s/pages", id), false));
+            JsonObject jsonObject = WebUtils.getJsonObject(getURI(String.format("projects/%s/pages", id), false));
             if(isError(jsonObject)) throw new RuntimeException(getError(jsonObject));
             Page[] pages = new Page[jsonObject.getAsJsonObject("pages").keySet().size()];
             int i = 0;
@@ -244,7 +244,7 @@ public class PepeLandHelperAPI {
         HttpRequest.Builder builder = HttpRequest.newBuilder(URI.create(getURI(String.format("projects/%s?schematic=true", id))));
         builder.header("Authorization", "Bearer "+ PepeLandHelper.config.getString("oauth.access_token", ""));
         builder.POST(HttpRequest.BodyPublishers.ofString("hehehe"));
-        JsonObject object = net.minecraft.util.GsonHelper.parse(WebAPI.getString(builder));
+        JsonObject object = net.minecraft.util.GsonHelper.parse(WebUtils.getString(builder));
 
         if(isError(object)) throw new RuntimeException(object.getAsJsonObject("error").get("message").getAsString());
         else PepeLandHelper.LOG.log(object.get("message").getAsString());
@@ -254,7 +254,7 @@ public class PepeLandHelperAPI {
         JsonObject data = new JsonObject();
         data.add("data", project.toJSON());
         data.addProperty("content", getProjectContent(project.id));
-        JsonObject object = WebAPI.getJsonObject(HttpRequest.newBuilder(URI.create(getURI(String.format("projects/%s", project.id))))
+        JsonObject object = WebUtils.getJsonObject(HttpRequest.newBuilder(URI.create(getURI(String.format("projects/%s", project.id))))
                 .header("Authorization", "Bearer "+ PepeLandHelper.config.getString("oauth.access_token", ""))
                 .POST(HttpRequest.BodyPublishers.ofString(data.toString())));
         if(isError(object)) throw new RuntimeException(object.getAsJsonObject("error").get("message").getAsString());
@@ -270,7 +270,7 @@ public class PepeLandHelperAPI {
 
     public static List<News> getNews(String search, String category){
         try {
-            JsonObject projects = WebAPI.getJsonObject(getURI("news?query="+uriEncode(search)+
+            JsonObject projects = WebUtils.getJsonObject(getURI("news?query="+uriEncode(search)+
             (category.isEmpty() ? "" : "&category="+uriEncode(category)), false));
             List<News> list = new ArrayList<>();
             for(JsonElement element : projects.getAsJsonArray("items")) list.add(new News(element.getAsJsonObject()));
@@ -282,7 +282,7 @@ public class PepeLandHelperAPI {
     }
     public static String getNewsContent(int id){
         try {
-            return WebAPI.getString(getURI(String.format("news/%s/content", id), false));
+            return WebUtils.getString(getURI(String.format("news/%s/content", id), false));
         } catch (Exception ex){
             throw new RuntimeException(ex);
         }

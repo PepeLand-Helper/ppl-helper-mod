@@ -9,7 +9,7 @@ import express.utils.Status;
 import net.minecraft.util.GsonHelper;
 import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.AlinLogger;
-import ru.kelcuprum.alinlib.WebAPI;
+import ru.kelcuprum.pplhelper.utils.WebUtils;
 import ru.kelcuprum.pplhelper.PepeLandHelper;
 import ru.kelcuprum.pplhelper.api.components.user.User;
 
@@ -73,7 +73,7 @@ public class OAuth {
                     return;
                 }
                 try {
-                    JsonObject jsonObject = WebAPI.getJsonObject(getURI("auth", false)+"?code="+req.getQuery("code")+"&mc_uuid="+ AlinLib.MINECRAFT.getUser().getProfileId() +"&json=true"+"&ruri="+uriEncode(config.getString("oauth.redirect_uri", "http://127.0.0.1:11430/auth")));
+                    JsonObject jsonObject = WebUtils.getJsonObject(getURI("auth", false)+"?code="+req.getQuery("code")+"&mc_uuid="+ AlinLib.MINECRAFT.getUser().getProfileId() +"&json=true"+"&ruri="+uriEncode(config.getString("oauth.redirect_uri", "http://127.0.0.1:11430/auth")));
                     if(jsonObject.has("error"))
                         res.setStatus(parseInt(getStringInJSON("error.code", jsonObject, "500")));
                     else {
@@ -120,7 +120,7 @@ public class OAuth {
 
     public static User getUser(String token){
         try{
-            JsonObject object = WebAPI.getJsonObject(HttpRequest.newBuilder(URI.create(getURI("me"))).header("Authorization", "Bearer "+  token));
+            JsonObject object = WebUtils.getJsonObject(HttpRequest.newBuilder(URI.create(getURI("me"))).header("Authorization", "Bearer "+  token));
             if(object.has("error")) return null;
             else return new User(object);
         } catch (Exception ex){
@@ -130,7 +130,7 @@ public class OAuth {
     }
     public static User getUserByID(String id){
         try {
-            JsonObject object = WebAPI.getJsonObject(getURI(String.format("user?id=%s", id), false));
+            JsonObject object = WebUtils.getJsonObject(getURI(String.format("user?id=%s", id), false));
             if(object.has("error")) return null;
             return new User(object);
         } catch (Exception ex){

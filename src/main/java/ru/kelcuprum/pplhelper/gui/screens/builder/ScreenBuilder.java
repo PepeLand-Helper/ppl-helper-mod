@@ -26,7 +26,7 @@ public class ScreenBuilder {
     public Screen parent;
     public int yL = 35;
     public int yC = 5;
-    public int contentY = 60;
+    public int contentY = 35;
 
     public ScreenBuilder(Screen parent) {
         this(parent, Component.literal("Change me please"));

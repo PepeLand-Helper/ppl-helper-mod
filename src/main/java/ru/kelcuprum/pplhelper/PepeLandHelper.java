@@ -117,24 +117,26 @@ public class PepeLandHelper implements ClientModInitializer {
         // -=-=-=- Сбор информации (НЕ ВАШИХ! [возможно позже]) и авто-обновление -=-=-=-
         ClientLifecycleEvents.CLIENT_FULL_STARTED.register((s) -> {
             gameStarted = true;
-            loadStaticInformation();
-            if(!config.getBoolean("Q.TWO_DOT_ZERO_UPDATES_WARNING", false)){
-                Screen parent = AlinLib.MINECRAFT.screen;
-                s.setScreen(new DialogScreen(parent, new String[]{
-                        "[Ты нашёл меня.]",
-                        "[Ты пошёл на риск ради общества.]",
-                        "[Но будь на чеку, эта версия не стабильна.]",
-                        "[Поэтому в любой момент Мировая машина может рухнуть.]",
-                        "[Удачи.]"
-                }, () -> {
-                    s.setScreen(parent);
-                    config.setString("API_URL", "https://a-api.pplh.ru/");
-                    config.setBoolean("Q.TWO_DOT_ZERO_UPDATES_WARNING", true);
+            new Thread(() -> {
+                loadStaticInformation();
+                if(!config.getBoolean("Q.TWO_DOT_ZERO_UPDATES_WARNING", false)){
+                    Screen parent = AlinLib.MINECRAFT.screen;
+                    s.setScreen(new DialogScreen(parent, new String[]{
+                            "[Ты нашёл меня.]",
+                            "[Ты пошёл на риск ради общества.]",
+                            "[Но будь на чеку, эта версия не стабильна.]",
+                            "[Поэтому в любой момент Мировая машина может рухнуть.]",
+                            "[Удачи.]"
+                    }, () -> {
+                        s.setScreen(parent);
+                        config.setString("API_URL", "https://a-api.pplh.ru/");
+                        config.setBoolean("Q.TWO_DOT_ZERO_UPDATES_WARNING", true);
+                        checkModUpdates(s);
+                    }));
+                } else {
                     checkModUpdates(s);
-                }));
-            } else {
-                checkModUpdates(s);
-            }
+                }
+            }).start();
         });
         ClientLifecycleEvents.CLIENT_STOPPING.register((s) -> {
             OAuth.stop();

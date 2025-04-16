@@ -2,7 +2,7 @@ package ru.kelcuprum.pplhelper.api.components.user;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import ru.kelcuprum.alinlib.WebAPI;
+import ru.kelcuprum.pplhelper.utils.WebUtils;
 import ru.kelcuprum.pplhelper.PepeLandHelper;
 import ru.kelcuprum.pplhelper.api.components.News;
 import ru.kelcuprum.pplhelper.api.components.project.Project;
@@ -30,7 +30,7 @@ public class User {
 
     public List<Project> getProjects(){
         try {
-            JsonObject projects = WebAPI.getJsonObject(getURI("projects?id="+id, false));
+            JsonObject projects = WebUtils.getJsonObject(getURI("projects?id="+id, false));
             List<Project> list = new ArrayList<>();
             for(JsonElement element : projects.getAsJsonArray("items")) list.add(new Project(element.getAsJsonObject()));
             return list;
@@ -42,7 +42,7 @@ public class User {
 
     public List<News> getNews(){
         try {
-            JsonObject projects = WebAPI.getJsonObject(getURI("news?id="+id, false));
+            JsonObject projects = WebUtils.getJsonObject(getURI("news?id="+id, false));
             List<News> list = new ArrayList<>();
             for(JsonElement element : projects.getAsJsonArray("items")) list.add(new News(element.getAsJsonObject()));
             return list;

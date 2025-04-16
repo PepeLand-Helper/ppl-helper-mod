@@ -3,7 +3,7 @@ package ru.kelcuprum.pplhelper.api;
 import com.google.gson.JsonObject;
 import org.apache.logging.log4j.Level;
 import ru.kelcuprum.alinlib.AlinLib;
-import ru.kelcuprum.alinlib.WebAPI;
+import ru.kelcuprum.pplhelper.utils.WebUtils;
 import ru.kelcuprum.pplhelper.PepeLandHelper;
 
 import java.io.File;
@@ -28,8 +28,8 @@ public class PepeLandAPI {
     }
     public static JsonObject getPacksInfo(boolean modrinth){
         try {
-            if(modrinth) return WebAPI.getJsonObject(PepeLandHelperAPI.getURI("resourcepacks/versions", false));
-            else return WebAPI.getJsonObject(getURI("resourcepack/latest.json"));
+            if(modrinth) return WebUtils.getJsonObject(PepeLandHelperAPI.getURI("resourcepacks/versions", false));
+            else return WebUtils.getJsonObject(getURI("resourcepack/latest.json"));
         } catch (Exception ex){
             throw new RuntimeException(ex);
         }
