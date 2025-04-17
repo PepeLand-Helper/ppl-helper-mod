@@ -121,18 +121,22 @@ public class PepeLandHelper implements ClientModInitializer {
                 loadStaticInformation();
                 if(!config.getBoolean("Q.TWO_DOT_ZERO_UPDATES_WARNING", false)){
                     Screen parent = AlinLib.MINECRAFT.screen;
-                    s.setScreen(new DialogScreen(parent, new String[]{
-                            "[Ты нашёл меня.]",
-                            "[Ты пошёл на риск ради общества.]",
-                            "[Но будь на чеку, эта версия не стабильна.]",
-                            "[Поэтому в любой момент Мировая машина может рухнуть.]",
-                            "[Удачи.]"
-                    }, () -> {
-                        s.setScreen(parent);
-                        config.setString("API_URL", "https://a-api.pplh.ru/");
-                        config.setBoolean("Q.TWO_DOT_ZERO_UPDATES_WARNING", true);
-                        checkModUpdates(s);
-                    }));
+                    s.execute(() -> {
+                        s.setScreen(new DialogScreen(parent, new String[]{
+                                "[Ты нашёл меня.]",
+                                "[Ты пошёл на риск ради общества.]",
+                                "[Но будь на чеку, эта версия не стабильна.]",
+                                "[Данная версия имеет свои данные, чтобы не повредить стабильную машину.]",
+                                "[Поэтому, в любой момент эта Мировая машина может рухнуть.]",
+                                "[Надеюсь, ты понял.]",
+                                "[Удачи.]"
+                        }, () -> {
+                            s.setScreen(parent);
+                            config.setString("API_URL", "https://a-api.pplh.ru/");
+                            config.setBoolean("Q.TWO_DOT_ZERO_UPDATES_WARNING", true);
+                            checkModUpdates(s);
+                        }));
+                    });
                 } else {
                     checkModUpdates(s);
                 }
@@ -282,7 +286,7 @@ public class PepeLandHelper implements ClientModInitializer {
             VersionInfo versionInfo = PepeLandHelperAPI.getAutoUpdate(config.getBoolean("UPDATER.FOLLOW_TWO_DOT_ZERO", true));
             if (versionInfo.state != VersionInfo.State.LATEST && PepeLandHelper.config.getBoolean("PPLH.NOTICE", true)) {
                 if (versionInfo.state == VersionInfo.State.NEW_UPDATE) {
-                    s.setScreen(new NewUpdateScreen$Helper(s.screen, versionInfo));
+                    s.execute(() -> s.setScreen(new NewUpdateScreen$Helper(s.screen, versionInfo)));
                 } else {
                     checkPackUpdates();
                     if (!FabricLoader.getInstance().isDevelopmentEnvironment()) new ToastBuilder()
@@ -304,7 +308,7 @@ public class PepeLandHelper implements ClientModInitializer {
                 JsonObject packInfo = PepeLandAPI.getPackInfo(onlyEmotesCheck(), modrinth);
                 if (config.getBoolean("PACK_UPDATES.NOTICE", true) && !config.getBoolean("PACK_UPDATES.AUTO_UPDATE", false)) {
                     if (!packInfo.get("version").getAsString().equals(packVersion))
-                        AlinLib.MINECRAFT.setScreen(new NewUpdateScreen(AlinLib.MINECRAFT.screen, packVersion, packInfo, modrinth));
+                        AlinLib.MINECRAFT.execute(() -> AlinLib.MINECRAFT.setScreen(new NewUpdateScreen(AlinLib.MINECRAFT.screen, packVersion, packInfo, modrinth)));
                 } else if (config.getBoolean("PACK_UPDATES.AUTO_UPDATE", false)) {
                     if (!packInfo.get("version").getAsString().equals(packVersion)) {
                         PepeLandHelper.downloadPack(packInfo, onlyEmotesCheck(), (ss) -> {
