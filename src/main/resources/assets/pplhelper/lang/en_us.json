@@ -83,6 +83,8 @@
   "pplhelper.chat_filters.friends": "Друзья (исключения)",
   "pplhelper.chat_filters.words": "Фильтры слов",
   "pplhelper.chat_filters.nwords": "Слова",
+  "pplhelper.chat_filters.blacklist": "Черный список",
+  "pplhelper.chat_filters.gandons": "Нежелательные люди",
 
   "pplhelper.test": "Тестовый объект",
   "pplhelper.test.im_a_test_subject": "Я подопытный",

@@ -59,7 +59,7 @@ public class ChatConfigsScreen {
                 .addWidget(new EditBoxBuilder(Component.translatable("pplhelper.chat_filters.nwords")).setValue("хоккей, хоккейный, матч").setConfig(PepeLandHelper.config, "CHAT.FILTER.NWORDS"))
 
                 .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.chat_filters.blacklist"), false).setConfig(PepeLandHelper.config, "CHAT.FILTER.BLACKLIST"))
-                .addWidget(new TextBuilder(Component.literal("Пример: LeoBarn")).setType(TextBuilder.TYPE.BLOCKQUOTE).setColor(Colors.CLOWNFISH))
+                .addWidget(new TextBuilder(Component.literal("Пример: LeoBarn, Anton_Gandon")).setType(TextBuilder.TYPE.BLOCKQUOTE).setColor(Colors.CLOWNFISH))
                 .addWidget(new EditBoxBuilder(Component.translatable("pplhelper.chat_filters.gandons")).setValue("GaszovayaPlita").setConfig(PepeLandHelper.config, "CHAT.FILTER.GANDONS"));
 
         return builder.build();

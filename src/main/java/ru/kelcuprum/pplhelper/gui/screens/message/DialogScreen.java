@@ -47,7 +47,7 @@ public class DialogScreen extends Screen {
         }
     }
 
-    static int replaceAlpha(int i, int j) {
+    public static int replaceAlpha(int i, int j) {
         return i & 16777215 | j << 24;
     }
 
