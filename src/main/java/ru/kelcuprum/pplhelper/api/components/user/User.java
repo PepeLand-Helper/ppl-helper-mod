@@ -30,9 +30,9 @@ public class User {
 
     public List<Project> getProjects(){
         try {
-            JsonObject projects = WebUtils.getJsonObject(getURI("projects?id="+id, false));
+            JsonObject projects = WebUtils.getJsonObject(getURI("projects?id="+id+"&page_size="+Integer.MAX_VALUE, false));
             List<Project> list = new ArrayList<>();
-            for(JsonElement element : projects.getAsJsonArray("items")) list.add(new Project(element.getAsJsonObject()));
+            for(JsonElement element : projects.getAsJsonArray("page")) list.add(new Project(element.getAsJsonObject()));
             return list;
         } catch (Exception ex){
             PepeLandHelper.LOG.error(ex.getMessage() == null ? ex.getClass().getName() : ex.getMessage());
