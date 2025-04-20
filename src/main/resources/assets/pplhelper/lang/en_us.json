@@ -192,7 +192,7 @@
   "pplhelper.join": "Вы cможете зайти через %s",
   "pplhelper.selected_project": "%1$s » %2$s%3$s",
 
-  "pplhelper.news.page": "Новости > %s",
+  "pplhelper.news.page": "Новость",
 
   "pplhelper.commands": "Команды",
   "pplhelper.commands.description": "Список доступных на сервере команд. Чтобы скопировать команду, нажмите на неё.",
