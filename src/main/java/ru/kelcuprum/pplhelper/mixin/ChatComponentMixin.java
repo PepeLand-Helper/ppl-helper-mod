@@ -46,6 +46,8 @@ public abstract class ChatComponentMixin {
                     ci.cancel();
                 else if (!ChatFilter.mention(test) && ChatFilter.isContainsNWords(test) && PepeLandHelper.config.getBoolean("CHAT.FILTER.WORDS", false))
                     ci.cancel();
+                else if (!ChatFilter.isContainsGandons(test) && PepeLandHelper.config.getBoolean("CHAT.FILTER.BLACKLIST", false))
+                    ci.cancel();
                 else if ((ChatFilter.isLeave(test) && PepeLandHelper.config.getBoolean("CHAT.FILTER.LEAVE", false))
                         || (ChatFilter.isJoin(test) && PepeLandHelper.config.getBoolean("CHAT.FILTER.JOIN", false))) {
                     if (!ChatFilter.isFriend(test)) ci.cancel();
