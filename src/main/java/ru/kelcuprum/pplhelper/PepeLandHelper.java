@@ -116,13 +116,13 @@ public class PepeLandHelper implements ClientModInitializer {
         // -=-=-=- Сбор информации (НЕ ВАШИХ! [возможно позже]) и авто-обновление -=-=-=-
         ClientLifecycleEvents.CLIENT_FULL_STARTED.register((s) -> {
             gameStarted = true;
-            new Thread(() -> {
             if(!config.getBoolean("Q.TWO_DOT_ZERO_UPDATES", false)){
                 s.setScreen(new ConfirmScreen(s.screen, WHITE_PEPE, Component.translatable("pplhelper.q.two_dot_zero_update"), Component.translatable("pplhelper.q.two_dot_zero_update.description"), (b) -> {
                     config.setBoolean("UPDATER.FOLLOW_TWO_DOT_ZERO", b);
                     config.setBoolean("Q.TWO_DOT_ZERO_UPDATES", true);
                 }));
             }
+            new Thread(() -> {
             loadStaticInformation();
             checkModUpdates(s);
             }).start();
