@@ -3,6 +3,8 @@ package ru.kelcuprum.pplhelper.gui;
 import com.terraformersmc.modmenu.api.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
@@ -24,7 +26,7 @@ public class ModMenuIntegration implements ModMenuApi {
     public UpdateChecker getUpdateChecker() {
         if (PepeLandHelperAPI.apiAvailable()) {
             return () -> {
-                VersionInfo versionInfo = PepeLandHelperAPI.getAutoUpdate(new Config("config/pplhelper/config.json").getBoolean("UPDATER.FOLLOW_TWO_DOT_ZERO", true));
+                VersionInfo versionInfo = PepeLandHelperAPI.getAutoUpdate(new Config("config/pplhelper/config.json").getBoolean("UPDATER.FOLLOW_TWO_DOT_ZERO", true), FabricLoader.getInstance().getModContainer("minecraft").get().getMetadata().getVersion().getFriendlyString());
 
                 return new UpdateInfo() {
                     @Override

@@ -219,5 +219,6 @@
   "pwshot.mods":      "Моды",
 
   "pwshot.lobby":     "Переместиться",
-  "pwshot.other":     "Заметки"
+  "pwshot.other":     "Заметки",
+  "modmenu.pplh.telegram": "@ppl_helper в Telegram"
 }

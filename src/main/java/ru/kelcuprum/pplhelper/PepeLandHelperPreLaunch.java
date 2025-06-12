@@ -22,6 +22,7 @@ public class PepeLandHelperPreLaunch implements PreLaunchEntrypoint  {
     @Override
     public void onPreLaunch() {
         String alinlib = FabricLoader.getInstance().getModContainer("alinlib").get().getMetadata().getVersion().getFriendlyString();
+        String minecraft = FabricLoader.getInstance().getModContainer("minecraft").get().getMetadata().getVersion().getFriendlyString();
         if(alinlib.startsWith("2.1.0-alpha") || alinlib.startsWith("2.1.0-beta.1")){
             TinyFileDialogs.tinyfd_messageBox("PepeLand Helper", "У вас установлена не поддерживаемая версия AlinLib! Просим вас обновить библиотеку для стабильной работы!", "error", "error", false);
             Util.getPlatform().openUri("https://modrinth.com/mod/alinlib/versions&l=fabric");
@@ -29,7 +30,7 @@ public class PepeLandHelperPreLaunch implements PreLaunchEntrypoint  {
         }
         if(config.getBoolean("PPLH.AUTO_UPDATE", false) && PepeLandHelperAPI.apiAvailable()){
             PepeLandHelper.config = config;
-            VersionInfo versionInfo = PepeLandHelperAPI.getAutoUpdate(config.getBoolean("UPDATER.FOLLOW_TWO_DOT_ZERO", true));
+            VersionInfo versionInfo = PepeLandHelperAPI.getAutoUpdate(config.getBoolean("UPDATER.FOLLOW_TWO_DOT_ZERO", true), minecraft);
             if(versionInfo.state == VersionInfo.State.NEW_UPDATE){
                 try {
                     installUpdates(versionInfo);

@@ -122,8 +122,10 @@ public class PepeLandHelper implements ClientModInitializer {
                     config.setBoolean("Q.TWO_DOT_ZERO_UPDATES", true);
                 }));
             }
-            loadStaticInformation();
-            checkModUpdates(s);
+            new Thread(() -> {
+                loadStaticInformation();
+                checkModUpdates(s);
+            }).start();
         });
         ClientLifecycleEvents.CLIENT_STOPPING.register((s) -> {
             OAuth.stop();
@@ -266,10 +268,10 @@ public class PepeLandHelper implements ClientModInitializer {
     }
     public static void checkModUpdates(Minecraft s){
         if (PepeLandHelperAPI.apiAvailable()) {
-            VersionInfo versionInfo = PepeLandHelperAPI.getAutoUpdate(config.getBoolean("UPDATER.FOLLOW_TWO_DOT_ZERO", true));
+            VersionInfo versionInfo = PepeLandHelperAPI.getAutoUpdate(config.getBoolean("UPDATER.FOLLOW_TWO_DOT_ZERO", true),FabricLoader.getInstance().getModContainer("minecraft").get().getMetadata().getVersion().getFriendlyString());
             if (versionInfo.state != VersionInfo.State.LATEST && PepeLandHelper.config.getBoolean("PPLH.NOTICE", true)) {
                 if (versionInfo.state == VersionInfo.State.NEW_UPDATE) {
-                    s.setScreen(new NewUpdateScreen$Helper(s.screen, versionInfo));
+                    s.execute(() -> s.setScreen(new NewUpdateScreen$Helper(s.screen, versionInfo)));
                 } else {
                     checkPackUpdates();
                     if (!FabricLoader.getInstance().isDevelopmentEnvironment()) new ToastBuilder()
@@ -291,7 +293,7 @@ public class PepeLandHelper implements ClientModInitializer {
                 JsonObject packInfo = PepeLandAPI.getPackInfo(onlyEmotesCheck(), modrinth);
                 if (config.getBoolean("PACK_UPDATES.NOTICE", true) && !config.getBoolean("PACK_UPDATES.AUTO_UPDATE", false)) {
                     if (!packInfo.get("version").getAsString().equals(packVersion))
-                        AlinLib.MINECRAFT.setScreen(new NewUpdateScreen(AlinLib.MINECRAFT.screen, packVersion, packInfo, modrinth));
+                        AlinLib.MINECRAFT.execute(() -> AlinLib.MINECRAFT.setScreen(new NewUpdateScreen(AlinLib.MINECRAFT.screen, packVersion, packInfo, modrinth)));
                 } else if (config.getBoolean("PACK_UPDATES.AUTO_UPDATE", false)) {
                     if (!packInfo.get("version").getAsString().equals(packVersion)) {
                         PepeLandHelper.downloadPack(packInfo, onlyEmotesCheck(), (ss) -> {
