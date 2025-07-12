@@ -2,6 +2,7 @@
 package ru.kelcuprum.pplhelper.gui;
 
 import com.mojang.blaze3d.platform.NativeImage;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.resources.ResourceLocation;
@@ -15,6 +16,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static ru.kelcuprum.pplhelper.PepeLandHelper.Icons.PACK_INFO;
 import static ru.kelcuprum.pplhelper.PepeLandHelper.Icons.WHITE_PEPE;
@@ -38,12 +40,11 @@ public class TextureHelper {
         }
     }
 
-    @Async.Execute
     public static void registerTexture(String url, String id, TextureManager textureManager, ResourceLocation textureId) {
         PepeLandHelper.LOG.debug(String.format("REGISTER: %s %s", url, id));
-        DynamicTexture texture;
+        AtomicReference<DynamicTexture> texture = new AtomicReference<>();
         if (urlsTextures.containsKey(url)) {
-            texture = urlsTextures.get(url);
+            texture.set(urlsTextures.get(url));
         } else {
             NativeImage image;
             try {
@@ -52,8 +53,14 @@ public class TextureHelper {
                 ImageIO.write(bufferedImage, url.contains(".webp") ? "webp" : "png", byteArrayOutputStream);
                 InputStream is = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
                 image = NativeImage.read(is);
-                texture = new DynamicTexture(image);
-                urlsTextures.put(url, texture);
+                Minecraft.getInstance().execute(() -> {
+                    //#if MC >= 12105
+                    texture.set(new DynamicTexture(() -> id, image));
+                    //#else
+                    //$$ texture.set(new DynamicTexture(image));
+                    //#endif
+                });
+                urlsTextures.put(url, texture.get());
                 urlsImages.put(url, image);
             } catch (Exception e) {
                 PepeLandHelper.LOG.error("Error loading image from URL: " + url + " - " + e.getMessage());
@@ -62,7 +69,7 @@ public class TextureHelper {
             }
         }
         if (textureManager != null) {
-            textureManager.register(textureId, texture);
+            Minecraft.getInstance().execute(() -> Minecraft.getInstance().getTextureManager().register(textureId, texture.get()));
             resourceLocationMap.put(id, textureId);
         }
     }
@@ -80,12 +87,11 @@ public class TextureHelper {
         }
     }
 
-    @Async.Execute
     public static void registerBanner(String url, String id, TextureManager textureManager, ResourceLocation textureId) {
         PepeLandHelper.LOG.debug(String.format("REGISTER: %s %s", url, id));
-        DynamicTexture texture;
+        AtomicReference<DynamicTexture> texture = new AtomicReference<>();
         if (urlsTextures.containsKey(url))
-            texture = urlsTextures.get(url);
+            texture.set(urlsTextures.get(url));
         else {
             NativeImage image;
             try {
@@ -102,8 +108,14 @@ public class TextureHelper {
                 ImageIO.write(bufferedImage, "png", byteArrayOutputStream);
                 InputStream is = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
                 image = NativeImage.read(is);
-                texture = new DynamicTexture(image);
-                urlsTextures.put(url, texture);
+                Minecraft.getInstance().execute(() -> {
+                    //#if MC >= 12105
+                    texture.set(new DynamicTexture(() -> id, image));
+                    //#else
+                    //$$ texture.set(new DynamicTexture(image));
+                    //#endif
+                });
+                urlsTextures.put(url, texture.get());
                 urlsImages.put(url, image);
             } catch (Exception e) {
                 PepeLandHelper.LOG.error("Error loading image from URL: " + url + " - " + e.getMessage());
@@ -112,7 +124,7 @@ public class TextureHelper {
             }
         }
         if (textureManager != null) {
-            textureManager.register(textureId, texture);
+            Minecraft.getInstance().execute(() -> Minecraft.getInstance().getTextureManager().register(textureId, texture.get()));
             resourceLocationMap.put(id, textureId);
         }
     }

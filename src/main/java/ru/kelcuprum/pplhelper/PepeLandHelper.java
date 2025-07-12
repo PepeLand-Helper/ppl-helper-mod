@@ -38,6 +38,7 @@ import ru.kelcuprum.alinlib.gui.components.builder.AbstractBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.text.TextBuilder;
 import ru.kelcuprum.alinlib.gui.screens.ConfirmScreen;
+import ru.kelcuprum.alinlib.gui.screens.DialogScreen;
 import ru.kelcuprum.alinlib.gui.toast.ToastBuilder;
 import ru.kelcuprum.alinlib.info.World;
 import ru.kelcuprum.alinlib.utils.StealthManager;
@@ -50,7 +51,6 @@ import ru.kelcuprum.pplhelper.api.components.user.User;
 import ru.kelcuprum.pplhelper.command.PPLHelperCommand;
 import ru.kelcuprum.pplhelper.gui.screens.*;
 import ru.kelcuprum.pplhelper.gui.screens.configs.ConfigScreen;
-import ru.kelcuprum.pplhelper.gui.screens.message.DialogScreen;
 import ru.kelcuprum.pplhelper.gui.screens.message.NewUpdateScreen;
 import ru.kelcuprum.pplhelper.gui.screens.message.NewUpdateScreen$Helper;
 import ru.kelcuprum.pplhelper.gui.style.VanillaLikeStyle;
@@ -119,7 +119,25 @@ public class PepeLandHelper implements ClientModInitializer {
             gameStarted = true;
             new Thread(() -> {
                 loadStaticInformation();
-                if(!config.getBoolean("Q.TWO_DOT_ZERO_UPDATES_WARNING", false)){
+                if(!config.getBoolean("Q.END_9", false)) {
+                    Screen parent = AlinLib.MINECRAFT.screen;
+                    s.execute(() -> {
+                        s.setScreen(new DialogScreen(parent, new String[]{
+                                "[Привет.]",
+                                "[Спешу сообщить некоторые новости.]",
+                                "[К концу июля PepeLand Helper перейдет в режим чтения.]",
+                                "[Также, после окончания 9-ого сезона хелпер уйдет на долгий перерыв...]",
+                                "[До начала сезона/экспериментов.]",
+                                "[Как повезёт.]",
+                                "[Вся информация на сайте pplh.ru.]",
+                                "[Удачи.]"
+                        }, () -> {
+                            s.setScreen(parent);
+                            config.setBoolean("Q.END_9", true);
+                            checkModUpdates(s);
+                        }));
+                    });
+                } else if(!config.getBoolean("Q.TWO_DOT_ZERO_UPDATES_WARNING", false)){
                     Screen parent = AlinLib.MINECRAFT.screen;
                     s.execute(() -> {
                         s.setScreen(new DialogScreen(parent, new String[]{

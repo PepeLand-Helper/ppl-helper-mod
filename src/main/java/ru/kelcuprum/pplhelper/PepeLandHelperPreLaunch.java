@@ -22,7 +22,7 @@ public class PepeLandHelperPreLaunch implements PreLaunchEntrypoint  {
     @Override
     public void onPreLaunch() {
         String alinlib = FabricLoader.getInstance().getModContainer("alinlib").get().getMetadata().getVersion().getFriendlyString();
-        if(alinlib.startsWith("2.1.0-alpha") || alinlib.startsWith("2.1.0-beta.1")){
+        if(alinlib.startsWith("2.1.0-alpha") || alinlib.startsWith("2.1.0-beta")){
             TinyFileDialogs.tinyfd_messageBox("PepeLand Helper", "У вас установлена не поддерживаемая версия AlinLib! Просим вас обновить библиотеку для стабильной работы!", "error", "error", false);
             Util.getPlatform().openUri("https://modrinth.com/mod/alinlib/versions&l=fabric");
             System.exit(1);

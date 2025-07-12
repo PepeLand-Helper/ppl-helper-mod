@@ -41,18 +41,34 @@ public class LitematicaManager {
         LitematicaSchematic schematic = null;
         FileType type = FileType.fromFile(file.toPath());
         if(type == FileType.LITEMATICA_SCHEMATIC)
-            schematic = LitematicaSchematic.createFromFile(file.getParentFile(), file.getName());
+            schematic = LitematicaSchematic.createFromFile(file.getParentFile()
+                            //#if MC >= 12105
+                            .toPath()
+                    //#endif
+                    , file.getName());
         else if (type == FileType.SCHEMATICA_SCHEMATIC)
-            schematic = WorldUtils.convertSchematicaSchematicToLitematicaSchematic(file.getParentFile(), file.getName(), false, new IStringConsumer() {
+            schematic = WorldUtils.convertSchematicaSchematicToLitematicaSchematic(file.getParentFile()
+                            //#if MC >= 12105
+                            .toPath()
+                    //#endif
+                    , file.getName(), false, new IStringConsumer() {
                 @Override
                 public void setString(String s) {
 
                 }
             });
         else if (type == FileType.VANILLA_STRUCTURE)
-            schematic = WorldUtils.convertStructureToLitematicaSchematic(file.getParentFile(), file.getName());
+            schematic = WorldUtils.convertStructureToLitematicaSchematic(file.getParentFile()
+                            //#if MC >= 12105
+                            .toPath()
+                    //#endif
+                    , file.getName());
         else if (type == FileType.SPONGE_SCHEMATIC)
-            schematic = WorldUtils.convertSpongeSchematicToLitematicaSchematic(file.getParentFile(), file.getName());
+            schematic = WorldUtils.convertSpongeSchematicToLitematicaSchematic(file.getParentFile()
+                            //#if MC >= 12105
+                            .toPath()
+                    //#endif
+                    , file.getName());
         if(schematic == null) throw new RuntimeException("Схематики нет :(");
         SchematicHolder.getInstance().addSchematic(schematic, true);
         if(DataManager.getCreatePlacementOnLoad()){

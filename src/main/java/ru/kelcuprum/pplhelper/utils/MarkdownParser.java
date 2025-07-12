@@ -13,6 +13,7 @@ import ru.kelcuprum.alinlib.gui.components.builder.text.TextBuilder;
 import ru.kelcuprum.pplhelper.gui.components.ScaledTextBox;
 import ru.kelcuprum.pplhelper.gui.components.WebImageWidget;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -117,7 +118,13 @@ public class MarkdownParser {
             for(String text : sp.split("\\[\uE699]")){
                 component.append(Component.literal(text));
                 if(u < links.length) {
-                    MutableComponent cLink = Component.empty().withStyle(Style.EMPTY.withUnderlined(true).withColor(CPM_BLUE).withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, links[u].replaceAll("\\[(.+?)]\\((.+?)\\)", "$2")))).append(links[u].replaceAll("\\[(.+?)]\\((.+?)\\)", "$1"));
+                    MutableComponent cLink = Component.empty().withStyle(Style.EMPTY.withUnderlined(true).withColor(CPM_BLUE).withClickEvent(
+                            //#if MC >= 12105
+                            new ClickEvent.OpenUrl(URI.create(links[u].replaceAll("\\[(.+?)]\\((.+?)\\)", "$2")))
+                            //#else
+                            //$$ new ClickEvent(ClickEvent.Action.OPEN_URL, links[u].replaceAll("\\[(.+?)]\\((.+?)\\)", "$2"))
+                            //#endif
+                    )).append(links[u].replaceAll("\\[(.+?)]\\((.+?)\\)", "$1"));
                     component.append(cLink);
                 }
                 u++;

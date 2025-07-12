@@ -1,5 +1,6 @@
 {
   "versions": [
-    "1.21.2-fabric"
+    "1.21.3-fabric",
+    "1.21.5-fabric"
   ]
 }
