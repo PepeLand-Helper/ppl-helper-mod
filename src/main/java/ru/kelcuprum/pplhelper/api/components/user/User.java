@@ -15,6 +15,7 @@ import static ru.kelcuprum.pplhelper.api.PepeLandHelperAPI.getURI;
 public class User {
     public String nickname;
     public String username;
+    public String description;
     public String id;
     public String avatar;
     public Role role = new Role(new JsonObject());
@@ -22,6 +23,7 @@ public class User {
     public User(JsonObject object){
         if(object.has("nickname")) nickname = object.get("nickname").getAsString();
         if(object.has("username")) username = object.get("username").getAsString();
+        if(object.has("description")) description = object.get("description").getAsString();
         if(object.has("id")) id = object.get("id").getAsString();
         if(object.has("avatar")) avatar = object.get("avatar").getAsString();
         if(object.has("role")) role = new Role(object.getAsJsonObject("role"));
@@ -32,7 +34,7 @@ public class User {
         try {
             JsonObject projects = WebUtils.getJsonObject(getURI("projects?id="+id+"&page_size="+Integer.MAX_VALUE, false));
             List<Project> list = new ArrayList<>();
-            for(JsonElement element : projects.getAsJsonArray("page")) list.add(new Project(element.getAsJsonObject()));
+            for(JsonElement element : projects.getAsJsonArray("page")) list.add(new Project(element.getAsJsonObject(), true));
             return list;
         } catch (Exception ex){
             PepeLandHelper.LOG.error(ex.getMessage() == null ? ex.getClass().getName() : ex.getMessage());
@@ -42,9 +44,9 @@ public class User {
 
     public List<News> getNews(){
         try {
-            JsonObject projects = WebUtils.getJsonObject(getURI("news?id="+id, false));
+            JsonObject projects = WebUtils.getJsonObject(getURI("news?id="+id+"&page_size="+Integer.MAX_VALUE, false));
             List<News> list = new ArrayList<>();
-            for(JsonElement element : projects.getAsJsonArray("items")) list.add(new News(element.getAsJsonObject()));
+            for(JsonElement element : projects.getAsJsonArray("page")) list.add(new News(element.getAsJsonObject(), true));
             return list;
         } catch (Exception ex){
             PepeLandHelper.LOG.error(ex.getMessage() == null ? ex.getClass().getName() : ex.getMessage());

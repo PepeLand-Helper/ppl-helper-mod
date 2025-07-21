@@ -1,6 +1,6 @@
 package ru.kelcuprum.pplhelper.api.components;
 
-import java.util.ArrayList;
+import java.util.List;
 
-public record  SearchResult(ArrayList<ru.kelcuprum.pplhelper.api.components.project.Project> arrayList, int pages) {
+public record  SearchResult(List arrayList, int pages) {
 }

@@ -19,10 +19,12 @@ import static ru.kelcuprum.pplhelper.PepeLandHelper.Icons.WHITE_PEPE;
 
 public class ProjectButton extends Button {
     protected Project project;
+    String season;
 
-    public ProjectButton(int x, int y, int width, Project project, Screen screen) {
-        super(new ButtonBuilder().setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ProjectScreen(screen, project))).setTitle(Component.empty()).setStyle(GuiUtils.getSelected()).setSize(width, project.description.isEmpty() ? 20 : 40).setPosition(x, y));
+    public ProjectButton(int x, int y, int width, Project project, String season, Screen screen) {
+        super(new ButtonBuilder().setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ProjectScreen(screen, project, season))).setTitle(Component.empty()).setStyle(GuiUtils.getSelected()).setSize(width, project.description.isEmpty() ? 20 : 40).setPosition(x, y));
         this.project = project;
+        this.season = season;
         MutableComponent title = Component.empty().append(Component.literal(project.title));
         if(project.state != Project.State.BUILT){
             switch (project.state){

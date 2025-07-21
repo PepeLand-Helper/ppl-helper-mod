@@ -152,6 +152,42 @@ public class PepeLandHelperAPI {
             };
         }
     }
+    public static String[] getArchivedSeasons(){
+        try {
+            JsonArray array = WebUtils.getJsonObject(getURI("category")).getAsJsonArray("seasons");
+            String[] categories = new String[array.size()+1];
+            categories[0] = Component.translatable("pplhelper.project.world.all").getString();
+            int size = 1;
+            for(JsonElement data : array) {
+                categories[size] = jsonElementIsNull("translatable", (JsonObject) data) ? getStringInJSON("name", (JsonObject) data, "")
+                        : Component.translatable(getStringInJSON("name", (JsonObject) data, "")).getString();
+                size++;
+            }
+            return categories;
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return new String[]{
+                    Component.translatable("pplhelper.project.world.all").getString(),
+            };
+        }
+    }
+    public static String[] getArchivedSeasonsTags(){
+        try {
+            JsonArray array = WebUtils.getJsonObject(getURI("category")).getAsJsonArray("seasons");
+            String[] categories = new String[array.size()+1];
+            categories[0] = "";
+            int size = 1;
+            for(JsonElement data : array) {
+                categories[size] =  Component.translatable(getStringInJSON("tag", (JsonObject) data, "")).getString();
+                size++;
+            }
+            return categories;
+        } catch (Exception ex){
+            return new String[]{
+                    "",
+            };
+        }
+    }
     // -=-=-=-
 
     public static String[] getNewsCategories(){
@@ -212,7 +248,7 @@ public class PepeLandHelperAPI {
                     (world.equalsIgnoreCase(Component.translatable("pplhelper.project.world.all").getString()) ? "" : "&world="+uriEncode(world))+
                     (category.isEmpty() ? "" : "&category="+uriEncode(category)), false));
             ArrayList<Project> list = new ArrayList<>();
-            for(JsonElement element : projects.getAsJsonArray("page")) list.add(new Project(element.getAsJsonObject()));
+            for(JsonElement element : projects.getAsJsonArray("page")) list.add(new Project(element.getAsJsonObject(), true));
             return new SearchResult(list, projects.getAsJsonObject("info").get("max_pages").getAsInt());
         } catch (Exception ex){
             PepeLandHelper.LOG.error(ex.getMessage() == null ? ex.getClass().getName() : ex.getMessage());
@@ -287,17 +323,39 @@ public class PepeLandHelperAPI {
             ex.printStackTrace();
         }
     }
-
-    public static List<News> getNews(String search, String category){
+    // -=-=-=-
+    public static SearchResult getArchivedProjects(String query, String season, String category, int page){
+        try {
+            JsonObject projects = WebUtils.getJsonObject(getURI("archive/"+season+"?query="+uriEncode(query)+
+                    "&page="+page+"&page_size=20"+
+                    (category.isEmpty() ? "" : "&category="+uriEncode(category)), false));
+            ArrayList<Project> list = new ArrayList<>();
+            for(JsonElement element : projects.getAsJsonArray("page")) list.add(new Project(element.getAsJsonObject(), true));
+            return new SearchResult(list, projects.getAsJsonObject("info").get("max_pages").getAsInt());
+        } catch (Exception ex){
+            PepeLandHelper.LOG.error(ex.getMessage() == null ? ex.getClass().getName() : ex.getMessage());
+            return new SearchResult(new ArrayList(), 1);
+        }
+    }
+    public static String getArchivedProjectContent(int id, String season){
+        try {
+            return WebUtils.getString(getURI(String.format("archive/%s/%s/content", season, id), false));
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return "";
+        }
+    }
+    // -=-=-=-
+    public static SearchResult getNews(String search, String category){
         try {
             JsonObject projects = WebUtils.getJsonObject(getURI("news?query="+uriEncode(search)+
             (category.isEmpty() ? "" : "&category="+uriEncode(category)), false));
             List<News> list = new ArrayList<>();
-            for(JsonElement element : projects.getAsJsonArray("items")) list.add(new News(element.getAsJsonObject()));
-            return list;
+            for(JsonElement element : projects.getAsJsonArray("page")) list.add(new News(element.getAsJsonObject(), true));
+            return new SearchResult(list, projects.getAsJsonObject("info").get("max_pages").getAsInt());
         } catch (Exception ex){
             PepeLandHelper.LOG.error(ex.getMessage() == null ? ex.getClass().getName() : ex.getMessage());
-            return new ArrayList<>();
+            return new SearchResult(new ArrayList(), 1);
         }
     }
     public static String getNewsContent(int id){

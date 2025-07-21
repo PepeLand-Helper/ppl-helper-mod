@@ -59,12 +59,12 @@ public class OAuth {
         app.use(Middleware.cors());
         app.use((req, res) -> logger.log(String.format("%s сделал запрос на %s", req.getIp(), req.getPath())));
         app.all("/", (req, res) -> {
-            String location = String.format("https://discord.com/oauth2/authorize?client_id=%1$s&response_type=code&redirect_uri=%2$s&scope=identify+email",
-                    uriEncode(config.getString("oauth.client_id", "1299064772943155322")),
-                    uriEncode(config.getString("oauth.redirect_uri", "http://127.0.0.1:11430/auth")));
+            String location = String.format("https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=%1$s&redirect_uri=%2$s",
+                    uriEncode(config.getString("oauth.client_id", "n0wrmdd14dpmcmlkfwmtgel5bu1ev5")),
+                    uriEncode(config.getString("oauth.redirect_uri", "http://localhost:11430/auth")));
             res.redirect(location);
         });
-        app.all("/avatars/:id", (req, res) -> res.redirect(getURI("avatars/"+req.getParam("id"),false)));
+        app.all("/avatar/:id", (req, res) -> res.redirect(getURI("avatar/"+req.getParam("id"),false)));
         app.all("/auth", (req, res) -> {
             if (req.getContentType().toLowerCase().contains("application/json") || (req.getQuery("json") != null && req.getQuery("json").equalsIgnoreCase("true")) || htmlAuth == null) {
                 if (req.getQuery("code").isEmpty()) {
@@ -73,7 +73,7 @@ public class OAuth {
                     return;
                 }
                 try {
-                    JsonObject jsonObject = WebUtils.getJsonObject(getURI("auth", false)+"?code="+req.getQuery("code")+"&mc_uuid="+ AlinLib.MINECRAFT.getUser().getProfileId() +"&json=true"+"&ruri="+uriEncode(config.getString("oauth.redirect_uri", "http://127.0.0.1:11430/auth")));
+                    JsonObject jsonObject = WebUtils.getJsonObject(getURI("login", false)+"?code="+req.getQuery("code")+"&mc_uuid="+ AlinLib.MINECRAFT.getUser().getProfileId() +"&json=true"+"&ruri="+uriEncode(config.getString("oauth.redirect_uri", "http://127.0.0.1:11430/auth")));
                     if(jsonObject.has("error"))
                         res.setStatus(parseInt(getStringInJSON("error.code", jsonObject, "500")));
                     else {
@@ -120,7 +120,8 @@ public class OAuth {
 
     public static User getUser(String token){
         try{
-            JsonObject object = WebUtils.getJsonObject(HttpRequest.newBuilder(URI.create(getURI("me"))).header("Authorization", "Bearer "+  token));
+            JsonObject object = WebUtils.getJsonObject(HttpRequest.newBuilder(URI.create(getURI("user/me", false))).header("Authorization", "Bearer "+  token));
+            PepeLandHelper.LOG.log(object.toString());
             if(object.has("error")) return null;
             else return new User(object);
         } catch (Exception ex){
@@ -130,7 +131,7 @@ public class OAuth {
     }
     public static User getUserByID(String id){
         try {
-            JsonObject object = WebUtils.getJsonObject(getURI(String.format("user?id=%s", id), false));
+            JsonObject object = WebUtils.getJsonObject(getURI(String.format("user/%s", id), false));
             if(object.has("error")) return null;
             return new User(object);
         } catch (Exception ex){

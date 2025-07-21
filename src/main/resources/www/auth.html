@@ -9,11 +9,10 @@
     <meta name="twitter:site" content="@kel_cu">
     <style>
         html {
-            background-image: url("https://pplh.ru/assets/back.png");
             background-color: #11111b;
             background-repeat: repeat;
-            background-position-x: center;
-            font-family: "Source Code Pro", monospace;
+            background-position: center;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
             color: #fff;
         }
 
@@ -35,10 +34,8 @@
             margin-left: auto;
             margin-right: auto;
             width: 75%;
-            max-width: 500pt;
-            padding: 16pt;
-            border-radius: 10pt;
-            background: #181825;
+            max-width: 800pt;
+            padding: 4pt;
         }
 
         h1,
@@ -61,7 +58,7 @@
 
         h3::selection {
             color: #09090b;
-            background-color: #257570;
+            background-color: #2dd4bf;
         }
 
         p {
@@ -79,22 +76,33 @@
             text-decoration: none;
         }
         p a:hover{
-            background-color: #257570;
+            background-color: #2dd4bf;
             color: #fff;
         }
 
         h3 {
             font-size: 16pt;
-            color: #257570;
-            font-style: 257570;
+            color: #2dd4bf;
+            font-style: 2dd4bf;
         }
         img{
+            border: solid 5pt #2dd4bf;
             max-width: 250pt;
             min-width: 250pt;
             width: 250pt;
-            border-radius: 8pt;
-            background-color: #2575701e;
+            border-radius: 16pt;
+            background-color: #2dd4bf1e;
             margin-bottom: 10pt;
+        }
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+        iframe{
+            border: none;
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
@@ -117,9 +125,11 @@
         }
 
         async function auth() {
+            const oauthHash = location.hash.substr(1);
+            const oauthToken = oauthHash.substr(oauthHash.indexOf('access_token=')).split('&')[0].split('=')[1];
             try {
                 let url = await axios({
-                    url: `/auth?code=${GetURLParameter('code')}&json=true`, headers:
+                    url: `?code=${oauthToken}&json=true`, headers:
                     {
                         "Content-Type": "application/json"
                     }
@@ -154,10 +164,12 @@
 </head>
 
 <body>
-    <div class="outer">
+    <iframe src="https://pplh.ru/assets/error_back.html" width="100%" height="100%"></iframe>
+    <div class="outer"  style="background-color: #00000080;">
         <div class="middle">
             <div class="inner" align="center">
                 <div id="content" style="height: auto !important;">
+                    <img id="wait" src="">
                     <h3>Пожалуйста подождите...</h3>
                 </div>
             </div>

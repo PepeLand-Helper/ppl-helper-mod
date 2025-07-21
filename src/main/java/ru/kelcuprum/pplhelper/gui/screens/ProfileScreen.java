@@ -82,7 +82,7 @@ public class ProfileScreen extends AbstractPPLScreen {
                         if (projects.isEmpty()) {
                             builder.addWidget(new TextBuilder(Component.translatable("pplhelper.oauth.projects.empty")).setType(TextBuilder.TYPE.BLOCKQUOTE).setColor(GROUPIE).setPosition(getX(), 55).setSize(getContentWidth(), 20).build());
                         } else for (Project project : projects)
-                            builder.addWidget(new ProjectButton(getX(), -40, DEFAULT_WIDTH(), project, this));
+                            builder.addWidget(new ProjectButton(getX(), -40, DEFAULT_WIDTH(), project, null, this));
                         // -=-=-=
 
                         int heigthScroller = builder.contentY;

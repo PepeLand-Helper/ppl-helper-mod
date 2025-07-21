@@ -21,6 +21,7 @@ import ru.kelcuprum.alinlib.gui.components.builder.text.HorizontalRuleBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.text.TextBuilder;
 import ru.kelcuprum.alinlib.gui.components.text.TextBox;
 import ru.kelcuprum.pplhelper.PepeLandHelper;
+import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
 import ru.kelcuprum.pplhelper.api.components.project.Page;
 import ru.kelcuprum.pplhelper.api.components.project.Project;
 import ru.kelcuprum.pplhelper.gui.components.BannerWidget;
@@ -42,15 +43,23 @@ public class ProjectScreen extends Screen {
     public String content = "";
     public String mainContent = "";
     Page[] pages = new Page[0];
+    public String season;
 
-    public ProjectScreen(Screen screen, Project project) {
-        super(Component.translatable("pplhelper.project"));
+    public ProjectScreen(Screen screen, Project project, String season) {
+        super(Component.translatable(season == null || season.isEmpty() ? "pplhelper.project" : "pplhelper.project.archived"));
         this.project = project;
         this.parent = screen;
+        this.season = season;
         try {
-            this.content = project.getContent();
-            this.mainContent = this.content;
-            pages = project.getPages();
+            if(season == null || season.isEmpty()) {
+                this.content = project.getContent();
+                this.mainContent = this.content;
+                pages = project.getPages();
+            } else {
+                this.content = PepeLandHelperAPI.getArchivedProjectContent(project.id, season);
+                this.mainContent = this.content;
+                pages = new Page[0];
+            }
         } catch (Exception ex){
             AlinLib.MINECRAFT.setScreen(new ErrorScreen(ex, screen));
         }
@@ -125,8 +134,10 @@ public class ProjectScreen extends Screen {
                 }).setPosition(x, y).setWidth(size).build());
             }
         }
-        panel_widgets.add(new HorizontalRuleBuilder().setTitle(Component.translatable("pplhelper.project.author")).build());
-        panel_widgets.add(new UserCard(x, y, size, project.getAuthor(), true));
+        if(season == null || season.isEmpty()) {
+            panel_widgets.add(new HorizontalRuleBuilder().setTitle(Component.translatable("pplhelper.project.author")).build());
+            panel_widgets.add(new UserCard(x, y, size, project.getAuthor(), true));
+        }
         addWidgetsToScroller(panel_widgets, panel_scroller);
     }
     public void initContent() {

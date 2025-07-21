@@ -71,7 +71,7 @@ public class ProjectsScreen extends AbstractPPLScreen {
         y[0] += 25;
         if(FollowManager.project != null){
             builder.addWidget(new HorizontalRuleBuilder(Component.translatable("pplhelper.project.selected")));
-            builder.addWidget(new ProjectButton(getX(), -40, searchSize, FollowManager.project, this));
+            builder.addWidget(new ProjectButton(getX(), -40, searchSize, FollowManager.project, null, this));
             builder.addWidget(new ButtonBuilder(Component.translatable("pplhelper.project.unfollow_project"), (s) -> {
                 FollowManager.resetCoordinates();
                 rebuildWidgets();
@@ -103,7 +103,7 @@ public class ProjectsScreen extends AbstractPPLScreen {
                 } else {
                     pageControlWidget.size = projects.pages();
                     for (Project project : (ArrayList<Project>) projects.arrayList())
-                        builder.addWidget(new ProjectButton(getX(), -40, getContentWidth(), project, this));
+                        builder.addWidget(new ProjectButton(getX(), -40, getContentWidth(), project, null, this));
                 }
                 int heigthScroller = builder.contentY;
                 for (AbstractWidget widget : builder.widgets) {

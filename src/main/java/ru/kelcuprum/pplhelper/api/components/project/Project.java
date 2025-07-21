@@ -3,6 +3,7 @@ package ru.kelcuprum.pplhelper.api.components.project;
 import com.google.gson.JsonObject;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.network.chat.Component;
+import ru.kelcuprum.pplhelper.PepeLandHelper;
 import ru.kelcuprum.pplhelper.api.OAuth;
 import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
 import ru.kelcuprum.pplhelper.api.components.user.User;
@@ -39,13 +40,15 @@ public class Project {
     public int schematicZ;
 
     public Project(JsonObject info){
+        this(info, false);
+    }
+    public Project(JsonObject info, boolean isSearch){
         id = info.get("id").getAsInt();
 
         title = getStringInJSON("data.title", info, "");
         description = getStringInJSON("data.description", info, "");
         creators = getStringInJSON("data.creators", info, Component.translatable("pplhelper.project.unknown_creators").getString());
-        author = getStringInJSON("data.author", info);
-
+        author = getStringInJSON(isSearch ? "data.author.id" : "data.author", info);
         icon = getStringInJSON("data.icon", info);
         banner = getStringInJSON("data.banner", info);
         state = getStateByID(getNumberInJSON("data.state", info, 0).intValue());

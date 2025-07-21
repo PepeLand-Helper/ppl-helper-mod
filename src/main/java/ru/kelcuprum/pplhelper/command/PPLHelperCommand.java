@@ -35,7 +35,8 @@ import static ru.kelcuprum.pplhelper.api.PepeLandAPI.uriEncode;
 
 public class PPLHelperCommand {
     public static void register(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
-        dispatcher.register(literal("pplhelper").then(literal("report")
+        dispatcher.register(literal("pplh")
+                .then(literal("report")
                         .then(argument("description", greedyString()).executes((s) -> sendReport(s, getString(s, "description"))))
                         .executes((s) -> sendReport(s, "<описание>")))
                 .then(literal("emotes").then(argument("emote", new EmotesArgumentType("emote")).executes((s) -> {
@@ -162,7 +163,7 @@ public class PPLHelperCommand {
                         })
                 )
                 .executes(s -> {
-                    sendFeedback(s, Component.literal(String.format("Привет, %s!", Player.getName())));
+                    sendFeedback(s, Component.literal(String.format("Привет, %s!", PepeLandHelper.user == null ? Player.getName() : PepeLandHelper.user.nickname == null ? PepeLandHelper.user.username : PepeLandHelper.user.nickname)));
                     return 0;
                 }));
     }

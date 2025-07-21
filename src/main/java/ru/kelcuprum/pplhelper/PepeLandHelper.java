@@ -87,6 +87,8 @@ public class PepeLandHelper implements ClientModInitializer {
     public static String[] pct = new String[]{":("};
     public static String[] nc = new String[]{":("};
     public static String[] nct = new String[]{":("};
+    public static String[] sc = new String[]{"PepeLand 9"};
+    public static String[] sct = new String[]{"ppl9"};
     public static VanillaLikeStyle vanillaLikeStyle = new VanillaLikeStyle();
 
     @Override
@@ -240,6 +242,7 @@ public class PepeLandHelper implements ClientModInitializer {
         AbstractBuilder[] buttons = new AbstractBuilder[]{
                 new ButtonBuilder(Component.translatable("pplhelper.news")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new NewsListScreen(current))).setIcon(WIKI).setCentered(false),
                 new ButtonBuilder(Component.translatable("pplhelper.projects")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ProjectsScreen(current))).setIcon(PROJECTS).setCentered(false),
+                new ButtonBuilder(Component.translatable("pplhelper.projects.archived")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ArchivedProjectsScreen(current))).setIcon(WHITE_PEPE).setCentered(false),
                 new ButtonBuilder(Component.translatable("pplhelper.commands")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new CommandsScreen().build(parent))).setIcon(COMMANDS).setCentered(false),
                 new ButtonBuilder(Component.translatable("pplhelper.emotes"))
                         .setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new EmotesScreen().build(parent)))

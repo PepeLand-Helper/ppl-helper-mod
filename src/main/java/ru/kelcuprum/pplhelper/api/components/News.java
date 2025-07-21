@@ -17,12 +17,12 @@ public class News {
     public String banner;
     public String icon;
 
-    public News(JsonObject info){
+    public News(JsonObject info, boolean isSearch){
         id = info.get("id").getAsInt();
 
         title = getStringInJSON("data.title", info, "");
         description = getStringInJSON("data.description", info, "");
-        author = getStringInJSON("data.author", info);
+        author = getStringInJSON(isSearch ? "data.author.id" : "data.author", info);
         studio = getStringInJSON("data.studio", info);
 
         banner = getStringInJSON("data.banner", info);
