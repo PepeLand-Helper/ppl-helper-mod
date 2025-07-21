@@ -94,7 +94,7 @@ public class AbstractPPLScreen extends Screen {
         // 85 before reset button
         int heigthScroller = 35;
         for (AbstractWidget widget : builder.panelWidgets) heigthScroller+=(widget.getHeight()+5);
-        this.scroller_panel = addRenderableWidget(new ConfigureScrolWidget(builder.panelSize, 30, 4, this.height - 60, Component.empty(), scroller -> {
+        this.scroller_panel = addRenderableWidget(new ConfigureScrolWidget(builder.panelSize-9, 30, 4, this.height - 60, Component.empty(), scroller -> {
             scroller.innerHeight = 5;
             for (AbstractWidget widget : builder.panelWidgets) {
                 if (widget.visible) {

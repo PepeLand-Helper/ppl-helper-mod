@@ -2,6 +2,9 @@ package ru.kelcuprum.pplhelper.gui.components;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+//#if MC >= 12106
+import net.minecraft.client.renderer.RenderPipelines;
+//#endif
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -41,7 +44,13 @@ public class UserCard extends Button {
     public void renderText(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (getY() < guiGraphics.guiHeight() && !(getY() <= -getHeight())) {
             ResourceLocation icon = track.avatar.isBlank() ? PEPE : TextureHelper.getTexture(OAuth.getURI(track.avatar,false), "avatarka_"+track.id);
-            guiGraphics.blit(RenderType::guiTextured, icon, getX() + 2, getY() + 2, 0.0F, 0.0F, getHeight()-4, getHeight()-4, getHeight()-4, getHeight()-4);
+            guiGraphics.blit(
+                    //#if MC >= 12106
+                    RenderPipelines.GUI_TEXTURED,
+                    //#elseif MC >= 12102
+                    //$$ RenderType::guiTextured,
+                    //#endif
+                    icon, getX() + 2, getY() + 2, 0.0F, 0.0F, getHeight()-4, getHeight()-4, getHeight()-4, getHeight()-4);
             if(isShort) renderString(guiGraphics, getMessage().getString(), getX() + getHeight() + 5, getY() + (this.getHeight() - 8) / 2);
             else {
                 renderString(guiGraphics, getMessage().getString(), getX() + 45, getY() + 8);

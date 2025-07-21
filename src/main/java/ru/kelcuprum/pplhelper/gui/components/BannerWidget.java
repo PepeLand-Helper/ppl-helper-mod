@@ -4,6 +4,9 @@ import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+//#if MC >= 12106
+import net.minecraft.client.renderer.RenderPipelines;
+//#endif
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -52,14 +55,26 @@ public class BannerWidget extends AbstractWidget {
                 int startX = (int) -(fireSize*0.5);
                 for(int l = 0; true; l++){
                     if(fireSize*l+startX > width) break;
-                    guiGraphics.blitSprite(RenderType::guiTextured, GuiUtils.getResourceLocation("pplhelper", "error/fire_0"), fireSize*l+startX, getBottom()-fireSize, fireSize, fireSize);
+                    guiGraphics.blitSprite(
+                            //#if MC >= 12106
+                            RenderPipelines.GUI_TEXTURED,
+                            //#elseif MC >= 12102
+                            //$$ RenderType::guiTextured,
+                            //#endif
+                            GuiUtils.getResourceLocation("pplhelper", "error/fire_0"), fireSize*l+startX, getBottom()-fireSize, fireSize, fireSize);
                 }
                 guiGraphics.disableScissor();
                 guiGraphics.fillGradient(getX(), getY(), getRight(), getBottom(), 0x7f245965, 0x7F9f1b46);
                 guiGraphics.drawCenteredString(AlinLib.MINECRAFT.font, "Он пропал. НЕТ! У НАС ЕГО УКРАЛИ!", getX()+(getWidth()/2), getY()+(getHeight()/2 - AlinLib.MINECRAFT.font.lineHeight / 2), -1);
             };
         }
-        else guiGraphics.blit(RenderType::guiTextured, image, getX(), getY(), 0.0F, 0.0F, getWidth(), getHeight(), getWidth(), getHeight());
+        else guiGraphics.blit(
+                //#if MC >= 12106
+                RenderPipelines.GUI_TEXTURED,
+                //#elseif MC >= 12102
+                //$$ RenderType::guiTextured,
+                //#endif
+                image, getX(), getY(), 0.0F, 0.0F, getWidth(), getHeight(), getWidth(), getHeight());
     }
 
     @Override

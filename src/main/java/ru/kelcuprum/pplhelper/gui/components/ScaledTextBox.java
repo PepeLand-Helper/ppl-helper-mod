@@ -1,7 +1,11 @@
 package ru.kelcuprum.pplhelper.gui.components;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.network.chat.Component;
+//#if MC >= 12106
+import org.joml.Matrix3x2f;
+//#endif
 import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.gui.GuiUtils;
 import ru.kelcuprum.alinlib.gui.components.builder.text.TextBuilder;
@@ -50,20 +54,44 @@ public class ScaledTextBox extends TextBox {
     }
 
     public void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().scale(scale, scale, scale);
+        //#if MC >= 12106
+        guiGraphics.pose().pushMatrix();
+        //#elseif MC >= 12102
+        //$$ guiGraphics.pose().pushPose();
+        //#endif
+        guiGraphics.pose().translate(getX() + 6, getY() + ((float) (getHeight() - 8) / 2)
+        //#if MC >= 12102
+        //$$ , 0f
+        //#endif
+        );
+        guiGraphics.pose().scale(scale, scale
+                //#if MC >= 12102
+                //$$ , scale
+                //#endif
+        );
         if(isDoesNotFit()){
-            if(isCentered) guiGraphics.drawCenteredString(AlinLib.MINECRAFT.font, AlinLib.MINECRAFT.font.plainSubstrByWidth(this.getMessage().getString(), (int) ((width-30)/scale))+"...", (int) ((this.getX() + (float) this.getWidth() / 2) / scale), (int) ((this.getY() + ((this.getHeight()/scale) - 8) / 2)/scale), 16777215);
-            else guiGraphics.drawString(AlinLib.MINECRAFT.font, AlinLib.MINECRAFT.font.plainSubstrByWidth(this.getMessage().getString(), (int) ((width-30)/scale))+"...", (int) ((this.getX() + ((this.getHeight()/scale) - 8) / 2)/scale), (int) ((this.getY() + ((this.getHeight()/scale) - 8) / 2)/scale), 16777215);
+            if(isCentered) guiGraphics.drawCenteredString(AlinLib.MINECRAFT.font, AlinLib.MINECRAFT.font.plainSubstrByWidth(this.getMessage().getString(), (int) ((width-30)/scale))+"...", width/2, 0, -1);
+            else guiGraphics.drawString(AlinLib.MINECRAFT.font, AlinLib.MINECRAFT.font.plainSubstrByWidth(this.getMessage().getString(), (int) ((width-30)/scale))+"...", 0, 0, -1);
             if(isHovered) {
-                guiGraphics.pose().popPose();
-                guiGraphics.renderTooltip(AlinLib.MINECRAFT.font, AlinLib.MINECRAFT.font.split(getMessage(), width - 10), i, j);
-                guiGraphics.pose().pushPose();
-                guiGraphics.pose().scale(scale, scale, scale);
+                //#if MC >= 12106
+                guiGraphics.setTooltipForNextFrame(AlinLib.MINECRAFT.font, getMessage(), i, j);
+                //#elseif MC >= 12102
+                //$$ guiGraphics.pose().popPose();
+                //$$ guiGraphics.renderTooltip(AlinLib.MINECRAFT.font, AlinLib.MINECRAFT.font.split(getMessage(), width - 10), i, j);
+                //$$ guiGraphics.pose().pushPose();
+                //$$ guiGraphics.pose().translate(getX() + 6, getY() + (float) (this.getHeight() - 8) / 2, 0);
+                //$$ guiGraphics.pose().scale(scale, scale, scale);
+                //#endif
             }
-        } else if (this.isCentered) guiGraphics.drawCenteredString(AlinLib.MINECRAFT.font, this.getMessage(), (int) ((this.getX() + (float) this.getWidth() / 2) / scale), (int) ((this.getY() + ((this.getHeight()/scale) - 8) / 2)/scale), 16777215);
-        else guiGraphics.drawString(AlinLib.MINECRAFT.font, this.getMessage(), (int) ((this.getX() + ((this.getHeight()/scale) - 8) / 2)/scale), (int) ((this.getY() + ((this.getHeight()/scale) - 8) / 2)/scale), 16777215);
-        guiGraphics.pose().popPose();
+        } else if (this.isCentered) guiGraphics.drawCenteredString(AlinLib.MINECRAFT.font, this.getMessage(), width/2, 0, -1);
+        else guiGraphics.drawString(AlinLib.MINECRAFT.font, this.getMessage(), 0,0, -1);
+
+        guiGraphics.pose()
+                //#if MC >= 12106
+                .popMatrix();
+        //#elseif MC >= 12102
+        //$$ .popPose();
+        //#endif
     }
 
     private boolean isDoesNotFit(){

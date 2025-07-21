@@ -3,6 +3,9 @@ package ru.kelcuprum.pplhelper.gui.components;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+//#if MC >= 12106
+import net.minecraft.client.renderer.RenderPipelines;
+//#endif
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -40,7 +43,13 @@ public class ProjectButton extends Button {
         if (getY() < guiGraphics.guiHeight() && !(getY() <= -getHeight())) {
             int x = 5;
             ResourceLocation icon = (project.icon != null && !project.icon.isEmpty()) ? TextureHelper.getTexture(project.icon, String.format("project_%s", project.id)) : WHITE_PEPE;
-            guiGraphics.blit(RenderType::guiTextured, icon, getX() + 2, getY() + 2, 0.0F, 0.0F, getHeight()-4, getHeight()-4, getHeight()-4, getHeight()-4);
+            guiGraphics.blit(
+                    //#if MC >= 12106
+                    RenderPipelines.GUI_TEXTURED,
+                    //#elseif MC >= 12102
+                    //$$ RenderType::guiTextured,
+                    //#endif
+                    icon, getX() + 2, getY() + 2, 0.0F, 0.0F, getHeight()-4, getHeight()-4, getHeight()-4, getHeight()-4);
             x += getHeight();
             renderString(guiGraphics, getMessage(), getX() + x, getY() + (project.description.isEmpty() ? 6 : 8));
             if(!project.description.isEmpty()) renderString(guiGraphics, project.description, getX() + x, getY() + getHeight() - 8 - AlinLib.MINECRAFT.font.lineHeight);

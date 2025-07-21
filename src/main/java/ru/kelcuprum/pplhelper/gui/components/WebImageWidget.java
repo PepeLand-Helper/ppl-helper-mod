@@ -4,6 +4,9 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.navigation.CommonInputs;
+//#if MC >= 12106
+import net.minecraft.client.renderer.RenderPipelines;
+//#endif
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -96,10 +99,10 @@ public class WebImageWidget extends AbstractButton implements Description {
     public void renderButton(GuiGraphics guiGraphics, int i, int j, float f){
         GuiUtils.getSelected().renderBackground$widget(guiGraphics, getX(), getY(), getWidth(), getHeight(), this.active, this.isHoveredOrFocused());
         if (GuiUtils.isDoesNotFit(getMessage(), getWidth(), getHeight()))
-            this.renderScrollingString(guiGraphics, AlinLib.MINECRAFT.font, 2, 0xFFFFFF);
+            this.renderScrollingString(guiGraphics, AlinLib.MINECRAFT.font, 2, 0xFFFFFFFF);
          else {
-            guiGraphics.drawString(AlinLib.MINECRAFT.font, url, getX() + (getHeight() - 8) / 2, getY() + (getHeight() - 8) / 2, 0xffffff, true);
-            guiGraphics.drawString(AlinLib.MINECRAFT.font, id, getX() + getWidth() - AlinLib.MINECRAFT.font.width(id) - ((getHeight() - 8) / 2), getY() + (getHeight() - 8) / 2, 0xffffff);
+            guiGraphics.drawString(AlinLib.MINECRAFT.font, url, getX() + (getHeight() - 8) / 2, getY() + (getHeight() - 8) / 2, 0xFFFFFFFF, true);
+            guiGraphics.drawString(AlinLib.MINECRAFT.font, id, getX() + getWidth() - AlinLib.MINECRAFT.font.width(id) - ((getHeight() - 8) / 2), getY() + (getHeight() - 8) / 2, 0xFFFFFFFF);
         }
          guiGraphics.fill(getX(), getBottom()-1, getRight(), getBottom(), loadFailed ? GROUPIE : CONVICT);
     }
@@ -109,9 +112,21 @@ public class WebImageWidget extends AbstractButton implements Description {
             double scale = (double)this.width / (double)getImageWidth();
             int imWidth = (int)((double)getImageWidth() * scale);
             int imHeight = (int)((double)getImageHeight() * scale);
-            guiGraphics.blit(RenderType::guiTextured, this.image, this.getX(), this.getY(), 0.0F, 0.0F, this.getWidth(), this.getHeight(), imWidth, imHeight);
+            guiGraphics.blit(
+                    //#if MC >= 12106
+                    RenderPipelines.GUI_TEXTURED,
+                    //#elseif MC >= 12102
+                    //$$ RenderType::guiTextured,
+                    //#endif
+                    this.image, this.getX(), this.getY(), 0.0F, 0.0F, this.getWidth(), this.getHeight(), imWidth, imHeight);
         } else {
-            guiGraphics.blit(RenderType::guiTextured, this.image, this.getX(), this.getY(), 0.0F, 0.0F, this.getWidth(), this.getHeight(), getImageWidth(), getImageHeight());
+            guiGraphics.blit(
+                    //#if MC >= 12106
+                    RenderPipelines.GUI_TEXTURED,
+                    //#elseif MC >= 12102
+                    //$$ RenderType::guiTextured,
+                    //#endif
+                    this.image, this.getX(), this.getY(), 0.0F, 0.0F, this.getWidth(), this.getHeight(), getImageWidth(), getImageHeight());
         }
     }
 

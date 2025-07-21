@@ -3,6 +3,9 @@ package ru.kelcuprum.pplhelper.gui.screens.message;
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+//#if MC >= 12106
+import net.minecraft.client.renderer.RenderPipelines;
+//#endif
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -100,7 +103,13 @@ public class ErrorScreen extends Screen {
         int startX = (int) -(fireSize*startFireX);
         for(int l = 0; true; l++){
             if(fireSize*l+startX > width) break;
-            guiGraphics.blitSprite(RenderType::guiTextured, GuiUtils.getResourceLocation("pplhelper", "error/fire_0"), fireSize*l+startX, height-fireSize, fireSize, fireSize);
+            guiGraphics.blitSprite(
+                    //#if MC >= 12106
+                    RenderPipelines.GUI_TEXTURED,
+                    //#elseif MC >= 12102
+                    //$$ RenderType::guiTextured,
+                    //#endif
+                    GuiUtils.getResourceLocation("pplhelper", "error/fire_0"), fireSize*l+startX, height-fireSize, fireSize, fireSize);
         }
         guiGraphics.fillGradient(0, 0, this.width, this.height, 0x7f245965, 0x7F9f1b46);
 

@@ -3,6 +3,9 @@ package ru.kelcuprum.pplhelper.gui.screens.message;
 import com.google.gson.JsonObject;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+//#if MC >= 12106
+import net.minecraft.client.renderer.RenderPipelines;
+//#endif
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.repository.Pack;
@@ -44,7 +47,12 @@ public class DownloadScreen extends Screen {
         super.renderBackground(guiGraphics, i, j, f);
         guiGraphics.fillGradient(0, 0, this.width, this.height, 0x7F0A2725, 0x7F134E4A);
         guiGraphics.blit(
-                RenderType::guiTextured, PepeLandHelper.Icons.WHITE_PEPE, guiGraphics.guiWidth() / 2 - 30, guiGraphics.guiHeight() / 2 - 30, 0, 0, 60, 60, 60, 60);
+                //#if MC >= 12106
+                RenderPipelines.GUI_TEXTURED,
+                //#elseif MC >= 12102
+                //$$ RenderType::guiTextured,
+                //#endif
+                PepeLandHelper.Icons.WHITE_PEPE, guiGraphics.guiWidth() / 2 - 30, guiGraphics.guiHeight() / 2 - 30, 0, 0, 60, 60, 60, 60);
     }
 
     @Override

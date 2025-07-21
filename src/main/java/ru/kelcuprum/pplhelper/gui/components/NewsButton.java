@@ -3,6 +3,9 @@ package ru.kelcuprum.pplhelper.gui.components;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+//#if MC >= 12106
+import net.minecraft.client.renderer.RenderPipelines;
+//#endif
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -30,7 +33,13 @@ public class NewsButton extends Button {
         if (getY() < guiGraphics.guiHeight() && !(getY() <= -getHeight())) {
             int x = 5;
             ResourceLocation icon = (news.icon != null && !news.icon.isEmpty()) ? TextureHelper.getTexture(news.icon, String.format("news_%s", news.id)) : WHITE_PEPE;
-            guiGraphics.blit(RenderType::guiTextured, icon, getX() + 2, getY() + 2, 0.0F, 0.0F, getHeight() - 4, getHeight() - 4, getHeight() - 4, getHeight() - 4);
+            guiGraphics.blit(
+                    //#if MC >= 12106
+                    RenderPipelines.GUI_TEXTURED,
+                    //#elseif MC >= 12102
+                    //$$ RenderType::guiTextured,
+                    //#endif
+                    icon, getX() + 2, getY() + 2, 0.0F, 0.0F, getHeight() - 4, getHeight() - 4, getHeight() - 4, getHeight() - 4);
             x += getHeight();
             renderString(guiGraphics, news.title, getX() + x, getY() + (news.description.isEmpty() ? 6 : 8));
             if (!news.description.isEmpty())
