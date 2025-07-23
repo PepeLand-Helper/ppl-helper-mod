@@ -69,10 +69,10 @@ public class ConfigScreen {
                 .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.timer.restart"), true).setConfig(PepeLandHelper.config,"TIMER.RESTART"))
                 .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.timer.join"), true).setConfig(PepeLandHelper.config,"TIMER.JOIN"));
 
-        builder.addWidget(new HorizontalRuleBuilder(Component.translatable("pplhelper.configs.updater")))
-                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.updater.notice"), true).setConfig(PepeLandHelper.config,"PPLH.NOTICE"))
-                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.updater.auto_update"), false).setConfig(PepeLandHelper.config,"PPLH.AUTO_UPDATE"))
-                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.q.two_dot_zero_update"), true).setConfig(PepeLandHelper.config,"UPDATER.FOLLOW_TWO_DOT_ZERO"));
+//        builder.addWidget(new HorizontalRuleBuilder(Component.translatable("pplhelper.configs.updater")))
+//                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.updater.notice"), true).setConfig(PepeLandHelper.config,"PPLH.NOTICE"))
+//                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.updater.auto_update"), false).setConfig(PepeLandHelper.config,"PPLH.AUTO_UPDATE"))
+//                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.q.two_dot_zero_update"), true).setConfig(PepeLandHelper.config,"UPDATER.FOLLOW_TWO_DOT_ZERO"));
         builder.addWidget(new HorizontalRuleBuilder(Component.translatable("pplhelper.configs.api")))
                 .addWidget(new EditBoxBuilder(Component.translatable("pplhelper.configs.api_url")).setValue("https://a-api.pplh.ru/").setConfig(PepeLandHelper.config, "API_URL"))
                 .addWidget(new EditBoxBuilder(Component.translatable("pplhelper.configs.auth_url")).setValue("https://auth.pplh.ru/").setConfig(PepeLandHelper.config, "oauth.url"))

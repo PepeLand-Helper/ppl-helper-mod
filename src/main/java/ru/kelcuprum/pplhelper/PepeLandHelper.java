@@ -46,13 +46,11 @@ import ru.kelcuprum.pplhelper.abi.ABIManager;
 import ru.kelcuprum.pplhelper.api.OAuth;
 import ru.kelcuprum.pplhelper.api.PepeLandAPI;
 import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
-import ru.kelcuprum.pplhelper.api.components.VersionInfo;
 import ru.kelcuprum.pplhelper.api.components.user.User;
 import ru.kelcuprum.pplhelper.command.PPLHelperCommand;
 import ru.kelcuprum.pplhelper.gui.screens.*;
 import ru.kelcuprum.pplhelper.gui.screens.configs.ConfigScreen;
 import ru.kelcuprum.pplhelper.gui.screens.message.NewUpdateScreen;
-import ru.kelcuprum.pplhelper.gui.screens.message.NewUpdateScreen$Helper;
 import ru.kelcuprum.pplhelper.gui.style.VanillaLikeStyle;
 import ru.kelcuprum.pplhelper.utils.FollowManager;
 import ru.kelcuprum.pplhelper.utils.TabHelper;
@@ -136,24 +134,6 @@ public class PepeLandHelper implements ClientModInitializer {
                         }, () -> {
                             s.setScreen(parent);
                             config.setBoolean("Q.END_9", true);
-                            checkModUpdates(s);
-                        }));
-                    });
-                } else if(!config.getBoolean("Q.TWO_DOT_ZERO_UPDATES_WARNING", false)){
-                    Screen parent = AlinLib.MINECRAFT.screen;
-                    s.execute(() -> {
-                        s.setScreen(new DialogScreen(parent, new String[]{
-                                "[Ты нашёл меня.]",
-                                "[Ты пошёл на риск ради общества.]",
-                                "[Будь на чеку, эта версия нестабильна.]",
-                                "[Она имеет свои данные, чтобы не затронуть стабильную машину.]",
-                                "[В любой момент, Мировая Машина может рухнуть.]",
-                                "[Надеюсь, ты меня понял.]",
-                                "[Удачи.]"
-                        }, () -> {
-                            s.setScreen(parent);
-                            config.setString("API_URL", "https://a-api.pplh.ru/");
-                            config.setBoolean("Q.TWO_DOT_ZERO_UPDATES_WARNING", true);
                             checkModUpdates(s);
                         }));
                     });
@@ -303,22 +283,23 @@ public class PepeLandHelper implements ClientModInitializer {
         return FabricLoader.getInstance().getModContainer("actionbarinfo").get().getMetadata().getVersion().getFriendlyString().startsWith("1.");
     }
     public static void checkModUpdates(Minecraft s){
-        if (PepeLandHelperAPI.apiAvailable()) {
-            VersionInfo versionInfo = PepeLandHelperAPI.getAutoUpdate(config.getBoolean("UPDATER.FOLLOW_TWO_DOT_ZERO", true));
-            if (versionInfo.state != VersionInfo.State.LATEST && PepeLandHelper.config.getBoolean("PPLH.NOTICE", true)) {
-                if (versionInfo.state == VersionInfo.State.NEW_UPDATE) {
-                    s.execute(() -> s.setScreen(new NewUpdateScreen$Helper(s.screen, versionInfo)));
-                } else {
-                    checkPackUpdates();
-                    if (!FabricLoader.getInstance().isDevelopmentEnvironment()) new ToastBuilder()
-                            .setTitle(Component.literal("PepeLand Helper"))
-                            .setMessage(Component.literal("У вас не опубликованная версия!"))
-                            .setIcon(WARNING)
-                            .setType(ToastBuilder.Type.ERROR)
-                            .buildAndShow();
-                }
-            } else checkPackUpdates();
-        } checkPackUpdates();
+//        if (PepeLandHelperAPI.apiAvailable()) {
+//            VersionInfo versionInfo = PepeLandHelperAPI.getAutoUpdate(config.getBoolean("UPDATER.FOLLOW_TWO_DOT_ZERO", true));
+//            if (versionInfo.state != VersionInfo.State.LATEST && PepeLandHelper.config.getBoolean("PPLH.NOTICE", true)) {
+//                if (versionInfo.state == VersionInfo.State.NEW_UPDATE) {
+//                    s.execute(() -> s.setScreen(new NewUpdateScreen$Helper(s.screen, versionInfo)));
+//                } else {
+//                    checkPackUpdates();
+//                    if (!FabricLoader.getInstance().isDevelopmentEnvironment()) new ToastBuilder()
+//                            .setTitle(Component.literal("PepeLand Helper"))
+//                            .setMessage(Component.literal("У вас не опубликованная версия!"))
+//                            .setIcon(WARNING)
+//                            .setType(ToastBuilder.Type.ERROR)
+//                            .buildAndShow();
+//                }
+//            } else checkPackUpdates();
+//        }
+        checkPackUpdates();
 
     }
     public static void checkPackUpdates() {

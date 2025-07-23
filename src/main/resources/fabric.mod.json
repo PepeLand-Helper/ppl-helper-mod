@@ -40,9 +40,6 @@
     "alinlib": "*",
     "minecraft": "${minecraft_dependency}"
   },
-  "recommends": {
-    "alinlib": "2.1.0-beta.2"
-  },
   "custom": {
     "modmenu": {
       "links": {
