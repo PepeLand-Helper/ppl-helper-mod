@@ -134,7 +134,7 @@ public class ProjectScreen extends Screen {
                 }).setPosition(x, y).setWidth(size).build());
             }
         }
-        if(season == null || season.isEmpty()) {
+        if((season == null || season.isEmpty()) && project.author != null) {
             panel_widgets.add(new HorizontalRuleBuilder().setTitle(Component.translatable("pplhelper.project.author")).build());
             panel_widgets.add(new UserCard(x, y, size, project.getAuthor(), true));
         }

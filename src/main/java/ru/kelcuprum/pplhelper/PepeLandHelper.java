@@ -9,11 +9,14 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.Camera;
+import net.minecraft.client.CameraType;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.LerpingBossEvent;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBossEventPacket;
 import net.minecraft.resources.ResourceLocation;
@@ -21,6 +24,7 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.BossEvent;
+import net.minecraft.world.entity.player.Player;
 import org.apache.logging.log4j.Level;
 import org.lwjgl.glfw.GLFW;
 import org.meteordev.starscript.value.Value;
@@ -492,7 +496,8 @@ public class PepeLandHelper implements ClientModInitializer {
     public static String getInstalledPackVersion() {
         String packVersion = "";
         for (Pack pack : AlinLib.MINECRAFT.getResourcePackRepository().getAvailablePacks()) {
-            if (Localization.clearFormatCodes(pack.getDescription().getString()).contains("PepeLand Pack") && AlinLib.MINECRAFT.getResourcePackRepository().getSelectedPacks().contains(pack)) {
+            String desc = Localization.clearFormatCodes(pack.getDescription().getString()).toLowerCase();
+            if (desc.contains("pepeland pack") && AlinLib.MINECRAFT.getResourcePackRepository().getSelectedPacks().contains(pack)) {
                 String[] info = Localization.clearFormatCodes(pack.getDescription().getString()).split("v");
                 if (info.length > 1) packVersion = info[1];
             }
@@ -540,7 +545,8 @@ public class PepeLandHelper implements ClientModInitializer {
     public static Pack getInstalledPack() {
         Pack packVersion = null;
         for (Pack pack : AlinLib.MINECRAFT.getResourcePackRepository().getAvailablePacks()) {
-            if (Localization.clearFormatCodes(pack.getDescription().getString()).contains("PepeLand Pack") && AlinLib.MINECRAFT.getResourcePackRepository().getSelectedPacks().contains(pack)) {
+            String desc = Localization.clearFormatCodes(pack.getDescription().getString()).toLowerCase();
+            if (desc.contains("pepeland pack") && AlinLib.MINECRAFT.getResourcePackRepository().getSelectedPacks().contains(pack)) {
                 String[] info = Localization.clearFormatCodes(pack.getDescription().getString()).split("v");
                 if (info.length > 1) packVersion = pack;
             }
