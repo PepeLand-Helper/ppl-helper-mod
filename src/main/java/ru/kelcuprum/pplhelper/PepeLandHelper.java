@@ -34,6 +34,7 @@ import ru.kelcuprum.alinlib.api.KeyMappingHelper;
 import ru.kelcuprum.alinlib.api.events.alinlib.LocalizationEvents;
 import ru.kelcuprum.alinlib.api.events.client.ClientLifecycleEvents;
 import ru.kelcuprum.alinlib.api.events.client.ClientTickEvents;
+import ru.kelcuprum.alinlib.api.events.client.GuiRenderEvents;
 import ru.kelcuprum.alinlib.config.Config;
 import ru.kelcuprum.alinlib.config.Localization;
 import ru.kelcuprum.alinlib.gui.Colors;
@@ -56,6 +57,9 @@ import ru.kelcuprum.pplhelper.gui.screens.*;
 import ru.kelcuprum.pplhelper.gui.screens.configs.ConfigScreen;
 import ru.kelcuprum.pplhelper.gui.screens.message.NewUpdateScreen;
 import ru.kelcuprum.pplhelper.gui.style.VanillaLikeStyle;
+import ru.kelcuprum.pplhelper.interactive.InteractiveManager;
+import ru.kelcuprum.pplhelper.test.GUIRender;
+import ru.kelcuprum.pplhelper.test.LevelTick;
 import ru.kelcuprum.pplhelper.utils.FollowManager;
 import ru.kelcuprum.pplhelper.utils.TabHelper;
 
@@ -149,6 +153,17 @@ public class PepeLandHelper implements ClientModInitializer {
         ClientLifecycleEvents.CLIENT_STOPPING.register((s) -> {
             OAuth.stop();
         });
+        //TODO: НЕ ЗАВЕРШЕНО !!!!!!!!!
+//        ClientTickEvents.START_CLIENT_TICK.register((s) -> {
+//            if(playerInPPL() && s.player != null){
+//                InteractiveManager.checkPlayerPosition(s.player);
+//            }
+//        });
+//        // -=-=-=- Тесты -=-=-=-
+//        if(isTestSubject()){
+//            GuiRenderEvents.RENDER.register(new GUIRender());
+//            ClientTickEvents.START_CLIENT_TICK.register(new LevelTick());
+//        }
         // -=-=-=- Команда -=-=-=-
         ClientCommandRegistrationCallback.EVENT.register(PPLHelperCommand::register);
         // -=-=-=- Бинды -=-=-=-

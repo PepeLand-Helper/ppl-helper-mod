@@ -10,16 +10,21 @@ import net.minecraft.Util;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.network.chat.Component;
 import ru.kelcuprum.alinlib.AlinLib;
+import ru.kelcuprum.alinlib.gui.screens.ConfirmScreen;
 import ru.kelcuprum.alinlib.info.Player;
 import ru.kelcuprum.alinlib.info.World;
 import ru.kelcuprum.pplhelper.PepeLandHelper;
+import ru.kelcuprum.pplhelper.api.PepeLandHelperAPI;
 import ru.kelcuprum.pplhelper.command.arguments.EmotesArgumentType;
 import ru.kelcuprum.pplhelper.command.arguments.FollowsArgumentType;
 import ru.kelcuprum.pplhelper.command.arguments.LevelArgumentType;
 import ru.kelcuprum.pplhelper.command.arguments.WorldArgumentType;
+import ru.kelcuprum.pplhelper.interactive.Interactive;
+import ru.kelcuprum.pplhelper.interactive.InteractiveManager;
 import ru.kelcuprum.pplhelper.utils.FollowManager;
 import ru.kelcuprum.pplhelper.utils.TabHelper;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -34,6 +39,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 import static ru.kelcuprum.pplhelper.api.PepeLandAPI.uriEncode;
 
 public class PPLHelperCommand {
+    public static HashMap<Integer, Boolean> unchecked = new HashMap<>();
     public static void register(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
         dispatcher.register(literal("pplh")
                 .then(literal("report")
@@ -162,6 +168,32 @@ public class PPLHelperCommand {
                             return 0;
                         })
                 )
+                //TODO: НЕ ЗАВЕРШЕНО !!!!!!!!!
+//                .then(literal("interactive")
+//                        .then(argument("project_id", integer())
+//                                .executes((s) -> {
+//                                    try {
+//                                        int id = getInteger(s, "project_id");
+//                                        JsonObject jsonObject = PepeLandHelperAPI.getProjectInteractive(id);
+//                                        Interactive interactive = new Interactive(String.valueOf(id), jsonObject);
+//                                        if(interactive.status.toLowerCase().contains("not_checked") && !unchecked.getOrDefault(id, false)) {
+//                                            sendFeedback(s, Component.literal("Интерактив не проверен!"));
+//                                            sendFeedback(s, Component.literal("Если вы уверены, что интерактив безопасен, пропишите повторно команду для активации"));
+//                                            unchecked.put(id, true);
+//                                        } else {
+//                                            sendFeedback(s, Component.literal("Интерактив активирован"));
+//                                            InteractiveManager.currentInteractive = interactive;
+//                                        }
+////                                        }
+//                                    } catch (Exception ex){
+//                                        sendFeedback(s, Component.literal("Произошла ошибка!"));
+//                                        sendFeedback(s, Component.literal(ex.getMessage()));
+//                                        ex.printStackTrace();
+//                                    }
+//                                    return 0;
+//                                })
+//                        )
+//                )
                 .executes(s -> {
                     sendFeedback(s, Component.literal(String.format("Привет, %s!", PepeLandHelper.user == null ? Player.getName() : PepeLandHelper.user.nickname == null ? PepeLandHelper.user.username : PepeLandHelper.user.nickname)));
                     return 0;

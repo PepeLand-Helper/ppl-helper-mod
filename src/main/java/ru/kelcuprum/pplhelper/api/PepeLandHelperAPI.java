@@ -243,10 +243,12 @@ public class PepeLandHelperAPI {
 
     public static SearchResult getProjects(String query, String world, String category, int page){
         try {
-            JsonObject projects = WebUtils.getJsonObject(getURI("projects?query="+uriEncode(query)+
+            HttpRequest.Builder builder = HttpRequest.newBuilder(new URI(getURI("projects?query="+uriEncode(query)+
                     "&page="+page+
                     (world.equalsIgnoreCase(Component.translatable("pplhelper.project.world.all").getString()) ? "" : "&world="+uriEncode(world))+
-                    (category.isEmpty() ? "" : "&category="+uriEncode(category)), false));
+                    (category.isEmpty() ? "" : "&category="+uriEncode(category)), false)));
+            builder.header("Authorization", "Bearer "+ PepeLandHelper.config.getString("oauth.access_token", ""));;
+            JsonObject projects = WebUtils.getJsonObject(builder);
             ArrayList<Project> list = new ArrayList<>();
             for(JsonElement element : projects.getAsJsonArray("page")) list.add(new Project(element.getAsJsonObject(), true));
             return new SearchResult(list, projects.getAsJsonObject("info").get("max_pages").getAsInt());
@@ -259,6 +261,16 @@ public class PepeLandHelperAPI {
     public static JsonObject getProject(int id){
         try {
             return WebUtils.getJsonObject(getURI(String.format("projects/%s", id), false));
+        } catch (Exception ex){
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public static JsonObject getProjectInteractive(int id){
+        try {
+            JsonObject jsonObject = WebUtils.getJsonObject(getURI(String.format("projects/%s/interactive", id), false));
+            if(isError(jsonObject)) throw getError(jsonObject);
+            else return jsonObject;
         } catch (Exception ex){
             throw new RuntimeException(ex);
         }
