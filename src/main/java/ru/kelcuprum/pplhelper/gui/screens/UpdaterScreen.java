@@ -43,7 +43,7 @@ public class UpdaterScreen {
                 builder.addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.pack_updates.only_emote"), false).setConfig(PepeLandHelper.config, "PACK_UPDATES.ONLY_EMOTE")); // .setActive(FabricLoader.getInstance().isModLoaded("citresewn"))
 
         try {
-            boolean modrinth = PepeLandHelperAPI.apiAvailable() && PepeLandHelper.config.getBoolean("PACK.MODRINTH", true);
+            boolean modrinth = PepeLandHelper.config.getBoolean("PACK.MODRINTH", true);
             JsonObject pack = PepeLandAPI.getPackInfo(PepeLandHelper.onlyEmotesCheck(), modrinth);
             if (packVersion.isBlank()) {
                 if (PepeLandHelper.getAvailablePack().isEmpty()) {

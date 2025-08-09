@@ -44,6 +44,9 @@ public class PepeLandHelperAPI {
     }
 
     public static boolean apiAvailable(){
+        if(PepeLandHelper.config.getBoolean("OFFLINE_MODE", false)){
+            return false;
+        }
         try {
             HttpClient httpClient = new DefaultHttpClient();
             final HttpParams httpParams = httpClient.getParams();
@@ -65,6 +68,9 @@ public class PepeLandHelperAPI {
     }
 
     public static Component getMessageFromBreakAPI(){
+        if(PepeLandHelper.config.getBoolean("OFFLINE_MODE", false)){
+            return Component.translatable("pplhelper.api.offline_mode");
+        }
         try {
             JsonObject content = WebUtils.getJsonObject(getURI("ping", false));
             if(content.has("error")) throw new Exception(getStringInJSON("error.message", content));

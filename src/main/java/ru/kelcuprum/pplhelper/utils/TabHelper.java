@@ -16,7 +16,8 @@ public class TabHelper {
             "Ресурсы",
             "Фермы",
             "Торговая Зона",
-            "Энд"
+            "Энд",
+            "PepeLand Awards"
     };
 
     public static Worlds getWorld() {
@@ -53,6 +54,7 @@ public class TabHelper {
             case "Фермы" -> Worlds.FARM;
             case "Торговая Зона" -> Worlds.TRADE;
             case "Энд" -> Worlds.END;
+            case "PepeLand Awards" -> Worlds.AWARDS;
             default -> null;
         };
     }
@@ -65,6 +67,7 @@ public class TabHelper {
             case "мф" -> Worlds.FARM;
             case "тз" -> Worlds.TRADE;
             case "знд" -> Worlds.END;
+            case "awards" -> Worlds.AWARDS;
             default -> null;
         };
     }
@@ -116,7 +119,8 @@ public class TabHelper {
         CONSTRUCTIONS_2(Component.translatable("pplhelper.world.constructions.2"), "МП2"),
         FARM(Component.translatable("pplhelper.world.farm"), "МФ"),
         TRADE(Component.translatable("pplhelper.world.trade"), "ТЗ"),
-        END(Component.translatable("pplhelper.world.end"), "Энд");
+        END(Component.translatable("pplhelper.world.end"), "Энд"),
+        AWARDS(Component.literal("PepeLand Awards"), "PPL Awards");
         public final Component title;
         public final String shortName;
 

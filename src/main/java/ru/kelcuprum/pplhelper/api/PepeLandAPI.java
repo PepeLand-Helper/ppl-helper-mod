@@ -1,5 +1,7 @@
 package ru.kelcuprum.pplhelper.api;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.apache.logging.log4j.Level;
 import ru.kelcuprum.alinlib.AlinLib;
@@ -11,11 +13,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.net.http.HttpRequest;
 import java.nio.charset.StandardCharsets;
 
 import static ru.kelcuprum.pplhelper.PepeLandHelper.toSHA;
+import static ru.kelcuprum.pplhelper.utils.WebUtils.getJsonArray;
 
 
 public class PepeLandAPI {
@@ -26,9 +31,40 @@ public class PepeLandAPI {
     public static String uriEncode(String uri){
         return URLEncoder.encode(uri, StandardCharsets.UTF_8);
     }
+    public static long lastReq = System.currentTimeMillis();
+    public static JsonObject info;
     public static JsonObject getPacksInfo(boolean modrinth){
         try {
-            if(modrinth) return WebUtils.getJsonObject(PepeLandHelperAPI.getURI("resourcepacks/versions", false));
+            if(modrinth) {
+                if(PepeLandHelperAPI.apiAvailable()) return WebUtils.getJsonObject(PepeLandHelperAPI.getURI("resourcepacks/versions", false));
+                else {
+                    if (lastReq > System.currentTimeMillis() && info != null) return info;
+                    else {
+                        try {
+                            JsonArray jsonObject = getJsonArray(HttpRequest.newBuilder().uri(URI.create("https://api.modrinth.com/v2/project/pepelandrp/version")));
+                            JsonObject resp = new JsonObject();
+                            for (JsonElement element : jsonObject) {
+                                JsonObject info = (JsonObject) element;
+                                String ver = info.get("version_number").getAsString();
+                                JsonObject add = new JsonObject();
+                                add.addProperty("version", ver);
+                                add.addProperty("url", info.get("files").getAsJsonArray().get(0).getAsJsonObject().get("url").getAsString());
+                                add.addProperty("checksum", info.get("files").getAsJsonArray().get(0).getAsJsonObject().get("hashes").getAsJsonObject().get("sha512").getAsString());
+                                if (ver.contains("e")) {
+                                    if (!resp.has("emotes")) resp.add("emotes", add);
+                                } else {
+                                    if (!resp.has("main")) resp.add("main", add);
+                                }
+                            }
+                            info = resp;
+                            lastReq = System.currentTimeMillis() + 120000;
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                        return info;
+                    }
+                }
+            }
             else return WebUtils.getJsonObject(getURI("resourcepack/latest.json"));
         } catch (Exception ex){
             throw new RuntimeException(ex);

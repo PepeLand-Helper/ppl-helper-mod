@@ -27,6 +27,7 @@
 
   "pplhelper.api": "PPL Helper API",
   "pplhelper.api.unavailable": "К сожалению, мы не можем подключиться к инфраструктуре PepeLand Helper",
+  "pplhelper.api.offline_mode": "У вас включен Offline Mode",
   "pplhelper.api.error": "Произошла ошибка API:\n%s",
 
   "pplhelper.key.open.projects": "Открыть проекты",
@@ -49,6 +50,7 @@
   "pplhelper.configs.sailstatus.art": "Иконка мира артов",
   "pplhelper.configs.sailstatus.art.old": "Иконка мира старых артов",
   "pplhelper.configs.api": "PepeLand Helper API",
+  "pplhelper.configs.offline_mode": "Offline Mode",
   "pplhelper.configs.api_url": "Адрес API",
   "pplhelper.configs.auth_url": "Адрес OAuth",
   "pplhelper.configs.chat": "Чат",
@@ -71,7 +73,7 @@
   "pplhelper.configs.pack_updates.auto_update": "Автообновление",
   "pplhelper.configs.pack_updates.only_emote": "Только эмоуты",
   "pplhelper.configs.pack_updates.modrinth": "Загружать информацию с Modrinth (API PPL Helper)",
-  "pplhelper.configs.pack_updates.modrinth.api_warn": "Временно отключено, так как API PPL Helper недоступен",
+  "pplhelper.configs.pack_updates.modrinth.api_warn": "На данный момент получение данных из Modrinth происходит через клиент. Так как API PPL Helper недоступен!",
   "pplhelper.configs.pack_updates.only_emote.citresewn_not_installed": "У вас не установлен CIT Resewn, поэтому мод будет загружать только эмоуты",
 
   "pplhelper.chat_filters": "Фильтры чата",

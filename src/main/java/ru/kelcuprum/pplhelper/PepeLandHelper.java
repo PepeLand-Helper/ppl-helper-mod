@@ -324,7 +324,7 @@ public class PepeLandHelper implements ClientModInitializer {
     public static void checkPackUpdates() {
         try {
             String packVersion = getInstalledPackVersion();
-            boolean modrinth = PepeLandHelperAPI.apiAvailable() && config.getBoolean("PACK.MODRINTH", true);
+            boolean modrinth = config.getBoolean("PACK.MODRINTH", true);
             if ((config.getBoolean("PACK_UPDATES.NOTICE", true) || config.getBoolean("PACK_UPDATES.AUTO_UPDATE", true)) && !packVersion.isEmpty()) {
                 JsonObject packInfo = PepeLandAPI.getPackInfo(onlyEmotesCheck(), modrinth);
                 if (config.getBoolean("PACK_UPDATES.NOTICE", true) && !config.getBoolean("PACK_UPDATES.AUTO_UPDATE", false)) {
@@ -337,7 +337,7 @@ public class PepeLandHelper implements ClientModInitializer {
                                 String fileName = String.format("pepeland-%1$s-v%2$s.zip", onlyEmotesCheck() ? "emotes" : "main", packInfo.get("version").getAsString());
                                 AlinLib.MINECRAFT.getResourcePackRepository().reload();
                                 for (Pack pack : AlinLib.MINECRAFT.getResourcePackRepository().getSelectedPacks()) {
-                                    if (pack.getDescription().getString().contains("PepeLand Pack"))
+                                    if (pack.getDescription().getString().toLowerCase().contains("pepeland pack"))
                                         AlinLib.MINECRAFT.getResourcePackRepository().removePack(pack.getId());
                                 }
                                 for (Pack pack : AlinLib.MINECRAFT.getResourcePackRepository().getAvailablePacks()) {
@@ -572,7 +572,7 @@ public class PepeLandHelper implements ClientModInitializer {
     public static String getAvailablePack() {
         String packId = "";
         for (Pack pack : AlinLib.MINECRAFT.getResourcePackRepository().getAvailablePacks()) {
-            if (Localization.clearFormatCodes(pack.getDescription().getString()).contains("PepeLand Pack") && !AlinLib.MINECRAFT.getResourcePackRepository().getSelectedPacks().contains(pack)) {
+            if (Localization.clearFormatCodes(pack.getDescription().getString()).toLowerCase().contains("pepeland pack") && !AlinLib.MINECRAFT.getResourcePackRepository().getSelectedPacks().contains(pack)) {
                 packId = pack.getId();
                 break;
             }

@@ -1,6 +1,7 @@
 package ru.kelcuprum.pplhelper.utils;
 
 import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.info.World;
@@ -124,5 +125,10 @@ public class FollowManager {
                 builder.append(" ").append(this.coordinates()[this.coordinates().length-1]);
                 return builder.toString();
             }
+        public Vec3 pos(){
+            if(coordinates.length == 2){
+                return new Vec3(coordinates[0]+0.5, AlinLib.MINECRAFT.player.position().y, coordinates[1]+0.5);
+            } else return new Vec3(coordinates[0]+0.5, coordinates[1]+0.5, coordinates[2]+0.5);
         }
+    }
 }

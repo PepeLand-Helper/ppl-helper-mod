@@ -9,8 +9,10 @@
     "ChatComponentMixin",
     "ChatScreenMixin",
     "PauseScreenMixin",
-    "mods.ABIMixin",
-    "SplashManagerMixin"
+    "SplashManagerMixin",
+    "locatorbar.GUIMixin",
+    "locatorbar.LocatorBarMixin",
+    "mods.ABIMixin"
   ],
   "injectors": {
     "defaultRequire": 1

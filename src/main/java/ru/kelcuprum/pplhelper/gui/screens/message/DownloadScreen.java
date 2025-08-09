@@ -75,7 +75,7 @@ public class DownloadScreen extends Screen {
             String fileName = String.format("pepeland-%1$s-v%2$s.zip", onlyEmote ? "emotes" : "main", packData.get("version").getAsString());
             AlinLib.MINECRAFT.getResourcePackRepository().reload();
             for(Pack pack : AlinLib.MINECRAFT.getResourcePackRepository().getSelectedPacks()){
-                if(pack.getDescription().getString().contains("PepeLand Pack"))
+                if(pack.getDescription().getString().toLowerCase().contains("pepeland pack"))
                     AlinLib.MINECRAFT.getResourcePackRepository().removePack(pack.getId());
             }
             for(Pack pack : AlinLib.MINECRAFT.getResourcePackRepository().getAvailablePacks()){
