@@ -1,8 +1,8 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "ru.kelcuprum.pplhelper.mixin",
-  "plugin": "ru.kelcuprum.pplhelper.mixin.PPLHelperMixinPlugin",
+  "package": "ru.pplh.mod.mixin",
+  "plugin": "ru.pplh.mod.mixin.PPLHelperMixinPlugin",
   "compatibilityLevel": "JAVA_17",
   "client": [
     "AccessorGridLayout",

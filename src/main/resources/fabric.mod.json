@@ -20,13 +20,13 @@
   "environment": "client",
   "entrypoints": {
     "preLaunch": [
-      "ru.kelcuprum.pplhelper.PepeLandHelperPreLaunch"
+      "ru.pplh.mod.PepeLandHelperPreLaunch"
     ],
     "client": [
-      "ru.kelcuprum.pplhelper.PepeLandHelper"
+      "ru.pplh.mod.PepeLandHelper"
     ],
     "modmenu": [
-      "ru.kelcuprum.pplhelper.gui.ModMenuIntegration"
+      "ru.pplh.mod.gui.ModMenuIntegration"
     ]
   },
   "mixins": [
