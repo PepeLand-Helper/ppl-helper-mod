@@ -18,6 +18,7 @@
     "camera.ItemInHandRendererMixin",
     "camera.LevelRendererMixin",
     "camera.LivingEntityRendererMixin",
+    "camera.MultiPlayerGameModeMixin",
     "locatorbar.GUIMixin",
     "locatorbar.LocatorBarMixin",
     "mods.ABIMixin"

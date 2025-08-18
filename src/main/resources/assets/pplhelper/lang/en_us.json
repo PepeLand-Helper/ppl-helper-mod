@@ -16,6 +16,7 @@
   "pplhelper.camera": "Камера",
   "pplhelper.camera.empty": "К этому монитору не подключены камеры!",
   "pplhelper.camera.button": "Камера #%s",
+  "pplhelper.camera.break": "Камера недоступна!",
 
   "pplhelper.oauth.login": "Войти в аккаунт",
   "pplhelper.oauth.profile": "Профиль",

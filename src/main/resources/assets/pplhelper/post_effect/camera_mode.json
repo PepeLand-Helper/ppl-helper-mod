@@ -70,7 +70,8 @@
       "inputs": [
         {
           "sampler_name": "In",
-          "target": "swap"
+          "target": "swap",
+          "bilinear": true
         }
       ],
       "output": "swap",
@@ -112,7 +113,8 @@
       "inputs": [
         {
           "sampler_name": "In",
-          "target": "swap"
+          "target": "swap",
+          "bilinear": true
         }
       ],
       "output": "minecraft:main",
@@ -126,7 +128,7 @@
           {
             "name": "MosaicSize",
             "type": "float",
-            "value": 2.0
+            "value": 4.0
           }
         ]
       }

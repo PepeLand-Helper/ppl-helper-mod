@@ -1,5 +1,6 @@
 package ru.pplh.mod.utils;
 
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.Tag;
@@ -53,6 +54,7 @@ public class CameraManager {
     public static void openMonitor(String name, BlockPos blockPos, Level level){
         int radius = 100;
         ArrayList<Camera> cameras = new ArrayList<>();
+//        level.
         for(int y = blockPos.getY()-radius;y<blockPos.getY()+radius;y++){
             for(int x = blockPos.getX()-radius;x<blockPos.getX()+radius;x++){
                 for(int z = blockPos.getZ()-radius;z<blockPos.getZ()+radius;z++){
@@ -79,7 +81,7 @@ public class CameraManager {
             }
         }
         if(cameras.isEmpty()) AlinLib.MINECRAFT.gui.getChat().addMessage(Component.translatable("pplhelper.camera.empty"));
-        else AlinLib.MINECRAFT.execute(() -> AlinLib.MINECRAFT.setScreen(new CameraScreen(AlinLib.MINECRAFT.screen, cameras)));
+        else if(!(AlinLib.MINECRAFT.screen instanceof CameraScreen)) AlinLib.MINECRAFT.execute(() -> AlinLib.MINECRAFT.setScreen(new CameraScreen(AlinLib.MINECRAFT.screen, cameras)));
     }
 
     public static float getRotate(int rotate){

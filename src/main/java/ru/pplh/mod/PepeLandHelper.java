@@ -111,8 +111,6 @@ public class PepeLandHelper implements ClientModInitializer {
     public static String[] sct = new String[]{"ppl9"};
     public static VanillaLikeStyle vanillaLikeStyle = new VanillaLikeStyle();
 
-    public static boolean isFucking = false;
-    public static long lastFucking = 0;
     @Override
     public void onInitializeClient() {
         LOG.log("-=-=-=-=-=-=-=-", Level.WARN);
@@ -158,36 +156,6 @@ public class PepeLandHelper implements ClientModInitializer {
 
         });
         // -=-=-=- Тесты -=-=-=-
-        UseBlockCallback.EVENT.register((playerEntity, world, _hand, blockHitResult) -> {
-            if(isFucking || System.currentTimeMillis()-lastFucking < 500){
-                isFucking = false;
-                return InteractionResult.PASS;
-            }
-            isFucking = true;
-            lastFucking = System.currentTimeMillis();
-            BlockPos blockPos = blockHitResult.getBlockPos();
-            BlockState blockState = world.getBlockState(blockPos);
-            if (blockState.is(Blocks.PLAYER_HEAD) || blockState.is(Blocks.PLAYER_WALL_HEAD)) {
-                BlockEntity blockEntity = world.getBlockEntity(blockPos);
-                assert blockEntity != null;
-                BlockDataAccessor dataAccessor = new BlockDataAccessor(blockEntity, blockPos);
-                Tag tag = dataAccessor.getData().get("custom_name");
-                if (tag != null) {
-                    String name = tag.asString().get();
-                    if(name.startsWith("monitor")){
-                        String[] args = name.split(":");
-                        if(args.length == 2){
-                            LOG.log("Test: [%s] %s %s %s", args[1], blockPos.getX(), blockPos.getY(), blockPos.getZ());
-                            new Thread(() -> {
-                                CameraManager.openMonitor(args[1], blockPos, world);
-                            }).start();
-                            return InteractionResult.SUCCESS;
-                        }
-                    }
-                }
-            }
-            return InteractionResult.PASS;
-        });
         if (isTestSubject()) {
             GuiRenderEvents.RENDER.register(new GUIRender());
             ClientTickEvents.START_CLIENT_TICK.register(new LevelTick());
