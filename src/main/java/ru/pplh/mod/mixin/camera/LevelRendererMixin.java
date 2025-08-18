@@ -46,8 +46,9 @@ public abstract class LevelRendererMixin {
     @Unique
     public ResourceLocation getPostEffect(CameraManager.CameraType type){
         return switch (type){
-            case RGB -> null;
-            case CREEPER -> ResourceLocation.withDefaultNamespace("creeper");
+            case RGB -> ResourceLocation.fromNamespaceAndPath("pplhelper","rgb_camera_mode");
+            case CREEPER -> ResourceLocation.fromNamespaceAndPath("pplhelper","creeper");
+            case CLEAR -> null;
             default -> ResourceLocation.fromNamespaceAndPath("pplhelper","camera_mode");
         };
     }

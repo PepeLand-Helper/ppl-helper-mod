@@ -37,12 +37,14 @@ public class CameraManager {
     public enum CameraType{
         DEFAULT,
         RGB,
-        CREEPER
+        CREEPER,
+        CLEAR
     }
 
     public static CameraType getCameraType(String type){
         return switch (type.toLowerCase()){
             case "rgb" -> CameraType.RGB;
+            case "clear" -> CameraType.CLEAR;
             case "creeper" -> CameraType.CREEPER;
             default -> CameraType.DEFAULT;
         };

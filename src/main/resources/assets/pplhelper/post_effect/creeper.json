@@ -80,9 +80,7 @@
             "name": "RedMatrix",
             "type": "vec3",
             "value": [
-              0.3,
-              0.59,
-              0.11
+              0,0,0
             ]
           },
           {
@@ -98,9 +96,7 @@
             "name": "BlueMatrix",
             "type": "vec3",
             "value": [
-              0.3,
-              0.59,
-              0.11
+              0, 0, 0
             ]
           }
         ]
