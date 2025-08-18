@@ -5,7 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.apache.logging.log4j.Level;
 import ru.kelcuprum.alinlib.AlinLib;
-import ru.pplh.mod.utils.WebUtils;
+import ru.kelcuprum.alinlib.WebAPI;
 import ru.pplh.mod.PepeLandHelper;
 
 import java.io.File;
@@ -19,8 +19,8 @@ import java.net.URLEncoder;
 import java.net.http.HttpRequest;
 import java.nio.charset.StandardCharsets;
 
+import static ru.kelcuprum.alinlib.WebAPI.getJsonArray;
 import static ru.pplh.mod.PepeLandHelper.toSHA;
-import static ru.pplh.mod.utils.WebUtils.getJsonArray;
 
 
 public class PepeLandAPI {
@@ -36,7 +36,7 @@ public class PepeLandAPI {
     public static JsonObject getPacksInfo(boolean modrinth){
         try {
             if(modrinth) {
-                if(PepeLandHelperAPI.apiAvailable()) return WebUtils.getJsonObject(PepeLandHelperAPI.getURI("resourcepacks/versions", false));
+                if(PepeLandHelperAPI.apiAvailable()) return WebAPI.getJsonObject(PepeLandHelperAPI.getURI("resourcepacks/versions", false));
                 else {
                     if (lastReq > System.currentTimeMillis() && info != null) return info;
                     else {
@@ -65,7 +65,7 @@ public class PepeLandAPI {
                     }
                 }
             }
-            else return WebUtils.getJsonObject(getURI("resourcepack/latest.json"));
+            else return WebAPI.getJsonObject(getURI("resourcepack/latest.json"));
         } catch (Exception ex){
             throw new RuntimeException(ex);
         }

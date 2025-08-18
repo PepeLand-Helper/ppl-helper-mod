@@ -132,7 +132,7 @@ public class FollowManager {
         }
 
     }
-    private static double getCord(int coordinate){
+    public static double getCord(int coordinate){
         return coordinate + (coordinate < 0 ? -0.5 : 0.5);
     }
 }

@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
@@ -14,13 +15,28 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.LerpingBossEvent;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBossEventPacket;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.commands.FillCommand;
+import net.minecraft.server.commands.data.BlockDataAccessor;
+import net.minecraft.server.commands.data.DataCommands;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.BossEvent;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.PlayerHeadItem;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.PlayerHeadBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import org.apache.logging.log4j.Level;
 import org.lwjgl.glfw.GLFW;
 import org.meteordev.starscript.value.Value;
@@ -56,6 +72,7 @@ import ru.pplh.mod.gui.style.VanillaLikeStyle;
 import ru.pplh.mod.interactive.InteractiveManager;
 import ru.pplh.mod.test.GUIRender;
 import ru.pplh.mod.test.LevelTick;
+import ru.pplh.mod.utils.CameraManager;
 import ru.pplh.mod.utils.FollowManager;
 import ru.pplh.mod.utils.TabHelper;
 
@@ -69,6 +86,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import static java.lang.Integer.parseInt;
+import static net.minecraft.core.component.DataComponents.CUSTOM_NAME;
 import static net.minecraft.world.item.Items.NETHER_STAR;
 import static ru.kelcuprum.alinlib.gui.Icons.*;
 import static ru.pplh.mod.PepeLandHelper.Icons.*;
@@ -80,7 +98,7 @@ public class PepeLandHelper implements ClientModInitializer {
     public static boolean isInstalledABI = FabricLoader.getInstance().isModLoaded("actionbarinfo");
     public static boolean isInstalledSailStatus = FabricLoader.getInstance().isModLoaded("sailstatus");
     public static boolean worldsLoaded = false;
-    public static String[] worlds = new String[]{"МП1","МП2","МР","МФ","ТЗ","Энд"};
+    public static String[] worlds = new String[]{"МП1", "МП2", "МР", "МФ", "ТЗ", "Энд"};
     public static JsonArray commands = new JsonArray();
     public static JsonArray mods = new JsonArray();
     // -=-=-=- Категории -=-=-=-
@@ -93,6 +111,8 @@ public class PepeLandHelper implements ClientModInitializer {
     public static String[] sct = new String[]{"ppl9"};
     public static VanillaLikeStyle vanillaLikeStyle = new VanillaLikeStyle();
 
+    public static boolean isFucking = false;
+    public static long lastFucking = 0;
     @Override
     public void onInitializeClient() {
         LOG.log("-=-=-=-=-=-=-=-", Level.WARN);
@@ -124,7 +144,7 @@ public class PepeLandHelper implements ClientModInitializer {
             new Thread(() -> {
                 loadStaticInformation();
 
-                    checkModUpdates(s);
+                checkModUpdates(s);
             }).start();
         });
         ClientLifecycleEvents.CLIENT_STOPPING.register((s) -> {
@@ -132,12 +152,43 @@ public class PepeLandHelper implements ClientModInitializer {
         });
         //TODO: НЕ ЗАВЕРШЕНО !!!!!!!!!
         ClientTickEvents.START_CLIENT_TICK.register((s) -> {
-            if(playerInPPL() && s.player != null){
+            if (playerInPPL() && s.player != null) {
                 InteractiveManager.checkPlayerPosition(s.player);
             }
+
         });
         // -=-=-=- Тесты -=-=-=-
-        if(isTestSubject()){
+        UseBlockCallback.EVENT.register((playerEntity, world, _hand, blockHitResult) -> {
+            if(isFucking || System.currentTimeMillis()-lastFucking < 500){
+                isFucking = false;
+                return InteractionResult.PASS;
+            }
+            isFucking = true;
+            lastFucking = System.currentTimeMillis();
+            BlockPos blockPos = blockHitResult.getBlockPos();
+            BlockState blockState = world.getBlockState(blockPos);
+            if (blockState.is(Blocks.PLAYER_HEAD) || blockState.is(Blocks.PLAYER_WALL_HEAD)) {
+                BlockEntity blockEntity = world.getBlockEntity(blockPos);
+                assert blockEntity != null;
+                BlockDataAccessor dataAccessor = new BlockDataAccessor(blockEntity, blockPos);
+                Tag tag = dataAccessor.getData().get("custom_name");
+                if (tag != null) {
+                    String name = tag.asString().get();
+                    if(name.startsWith("monitor")){
+                        String[] args = name.split(":");
+                        if(args.length == 2){
+                            LOG.log("Test: [%s] %s %s %s", args[1], blockPos.getX(), blockPos.getY(), blockPos.getZ());
+                            new Thread(() -> {
+                                CameraManager.openMonitor(args[1], blockPos, world);
+                            }).start();
+                            return InteractionResult.SUCCESS;
+                        }
+                    }
+                }
+            }
+            return InteractionResult.PASS;
+        });
+        if (isTestSubject()) {
             GuiRenderEvents.RENDER.register(new GUIRender());
             ClientTickEvents.START_CLIENT_TICK.register(new LevelTick());
         }
@@ -190,8 +241,10 @@ public class PepeLandHelper implements ClientModInitializer {
             updateCoordinatesBB();
             if (key1.consumeClick()) {
                 new Thread(() -> {
-                    if(PepeLandHelperAPI.apiAvailable()) AlinLib.MINECRAFT.execute(() -> AlinLib.MINECRAFT.setScreen(new ProjectsScreen(AlinLib.MINECRAFT.screen)));
-                    else new ToastBuilder().setTitle(Component.translatable("pplhelper.api")).setMessage(PepeLandHelperAPI.getMessageFromBreakAPI()).setType(ToastBuilder.Type.ERROR).setIcon(WHITE_PEPE).buildAndShow();
+                    if (PepeLandHelperAPI.apiAvailable())
+                        AlinLib.MINECRAFT.execute(() -> AlinLib.MINECRAFT.setScreen(new ProjectsScreen(AlinLib.MINECRAFT.screen)));
+                    else
+                        new ToastBuilder().setTitle(Component.translatable("pplhelper.api")).setMessage(PepeLandHelperAPI.getMessageFromBreakAPI()).setType(ToastBuilder.Type.ERROR).setIcon(WHITE_PEPE).buildAndShow();
                 }).start();
             }
             if (key2.consumeClick()) AlinLib.MINECRAFT.setScreen(new ConfigScreen().build(AlinLib.MINECRAFT.screen));
@@ -214,6 +267,7 @@ public class PepeLandHelper implements ClientModInitializer {
                         .set("pplhelper.max_online", () -> Value.number(TabHelper.getMaxOnline()))
         );
     }
+
     public static AbstractBuilder[] getPanelWidgets(Screen parent, Screen current) {
         boolean apiEnable = PepeLandHelperAPI.apiAvailable();
         AbstractBuilder[] buttons = new AbstractBuilder[]{
@@ -250,7 +304,7 @@ public class PepeLandHelper implements ClientModInitializer {
                 }).start()).setIcon(Icons.PACK_INFO).setCentered(false),
                 getProfileButton(parent)
         };
-        if(!apiEnable) buttons = new AbstractBuilder[]{
+        if (!apiEnable) buttons = new AbstractBuilder[]{
                 new TextBuilder(PepeLandHelperAPI.getMessageFromBreakAPI()).setType(TextBuilder.TYPE.BLOCKQUOTE).setColor(Colors.CLOWNFISH),
                 new ButtonBuilder(Component.translatable("pplhelper.emotes"))
                         .setOnPress((s) -> {
@@ -306,7 +360,8 @@ public class PepeLandHelper implements ClientModInitializer {
     public static boolean isABILegacy() {
         return FabricLoader.getInstance().getModContainer("actionbarinfo").get().getMetadata().getVersion().getFriendlyString().startsWith("1.");
     }
-    public static void checkModUpdates(Minecraft s){
+
+    public static void checkModUpdates(Minecraft s) {
 //        if (PepeLandHelperAPI.apiAvailable()) {
 //            VersionInfo versionInfo = PepeLandHelperAPI.getAutoUpdate(config.getBoolean("UPDATER.FOLLOW_TWO_DOT_ZERO", true));
 //            if (versionInfo.state != VersionInfo.State.LATEST && PepeLandHelper.config.getBoolean("PPLH.NOTICE", true)) {
@@ -326,6 +381,7 @@ public class PepeLandHelper implements ClientModInitializer {
         checkPackUpdates();
 
     }
+
     public static void checkPackUpdates() {
         try {
             String packVersion = getInstalledPackVersion();
@@ -365,6 +421,7 @@ public class PepeLandHelper implements ClientModInitializer {
             ex.printStackTrace();
         }
     }
+
     public static void loadStaticInformation() {
         new Thread(() -> {
             try {
@@ -395,7 +452,7 @@ public class PepeLandHelper implements ClientModInitializer {
     }
 
     public static boolean isAprilFool() {
-        return AlinLib.isAprilFool() || PepeLandHelper.config.getBoolean("IM_A_TEST_SUBJECT.APRIL", false);
+        return AlinLib.isAprilFool() || (user != null && user.role.TESTING_APRIL_FOOL && PepeLandHelper.config.getBoolean("IM_A_TEST_SUBJECT.APRIL", false));
     }
 
     public static boolean isPWGood() {
@@ -513,6 +570,7 @@ public class PepeLandHelper implements ClientModInitializer {
     public static boolean onlyEmotesCheck() {
         return config.getBoolean("PACK_UPDATES.ONLY_EMOTE", false); // !FabricLoader.getInstance().isModLoaded("citresewn") ||
     }
+
     public static String getInstalledPackVersion() {
         String packVersion = "";
         for (Pack pack : AlinLib.MINECRAFT.getResourcePackRepository().getAvailablePacks()) {
@@ -524,6 +582,7 @@ public class PepeLandHelper implements ClientModInitializer {
         }
         return packVersion;
     }
+
     public static String[] getEmotes() throws IOException {
         String[] emotes = new String[]{};
         if (getInstalledPack() == null) return emotes;
@@ -540,7 +599,9 @@ public class PepeLandHelper implements ClientModInitializer {
         }
         return emotes;
     }
+
     private static HashMap<String, String> lastEmotes = null;
+
     public static HashMap<String, String> getEmotesPath() throws IOException {
         HashMap<String, String> emotes = new HashMap<>();
         if (getInstalledPack() == null) return emotes;
@@ -588,7 +649,8 @@ public class PepeLandHelper implements ClientModInitializer {
     public static boolean playerInPPL() {
         return isTestSubject() || (AlinLib.MINECRAFT.getCurrentServer() != null && AlinLib.MINECRAFT.getCurrentServer().ip.contains("pepeland.net"));
     }
-    public static boolean isTestSubject(){
+
+    public static boolean isTestSubject() {
         return config.getBoolean("IM_A_TEST_SUBJECT", false) || FabricLoader.getInstance().isDevelopmentEnvironment();
     }
 

@@ -100,7 +100,7 @@ public class TabHelper {
 
     public static int getMaxOnline() {
         int tps = 0;
-        if ((AlinLib.MINECRAFT.getCurrentServer() == null || !AlinLib.MINECRAFT.getCurrentServer().ip.contains("pepeland.net")) || AlinLib.MINECRAFT.gui.getTabList().footer == null)
+        if (!PepeLandHelper.playerInPPL() || AlinLib.MINECRAFT.gui.getTabList().footer == null)
             return tps;
         String[] args = AlinLib.MINECRAFT.gui.getTabList().footer.getString().split("\n");
         for (String arg : args) {

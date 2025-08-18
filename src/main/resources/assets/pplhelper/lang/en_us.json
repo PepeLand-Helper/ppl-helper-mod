@@ -13,6 +13,9 @@
 
   "pplhelper.command.ie_gradient": "Содержимое было скопировано в буфер обмена:\n%s",
 
+  "pplhelper.camera": "Камера",
+  "pplhelper.camera.empty": "К этому монитору не подключены камеры!",
+  "pplhelper.camera.button": "Камера #%s",
 
   "pplhelper.oauth.login": "Войти в аккаунт",
   "pplhelper.oauth.profile": "Профиль",
@@ -94,6 +97,14 @@
   "pplhelper.test.im_a_test_subject.enable_world": "Замена мира",
   "pplhelper.test.im_a_test_subject.world": "Мир",
   "pplhelper.test.im_a_test_subject.project": "Тестовый проект",
+
+  "pplhelper.test.im_a_test_subject.april": "Тестирование модуля 1-ого апреля",
+  "pplhelper.test.im_a_test_subject.april.no_permission": "У вас нет прав на тестирование модуля 1-ого апреля!",
+  "pplhelper.test.im_a_test_subject.april.pwgood": "Тестирование от лица PWGood",
+  "pplhelper.test.im_a_test_subject.april.download": "Скачать модуль 1-ого апреля",
+  "pplhelper.test.im_a_test_subject.april.download.done": "Модуль был успешно скачан, перезагрузите игру!",
+  "pplhelper.test.im_a_test_subject.april.download.fail": "Не получилось получить модуль 1-ого апреля!",
+  "pplhelper.test.im_a_test_subject.april.download.not_found": "Для вашей версии игры не был найден нужный билд!",
 
 
   "pplhelper.pack": "Обновление ресурс-пака ППЛ",

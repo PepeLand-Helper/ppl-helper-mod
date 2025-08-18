@@ -28,13 +28,13 @@ public class PPLHelperMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        if(!mixinClassName.startsWith("ru.kelcuprum.pplhelper.mixin."))
+        if(!mixinClassName.startsWith("ru.pplh.mod.mixin."))
             return false;
-        if(mixinClassName.startsWith("ru.kelcuprum.pplhelper.mixin.mods.ABIMixin")){
+        if(mixinClassName.startsWith("ru.pplh.mod.mixin.mods.ABIMixin")){
             if(isInstalledABI && FabricLoader.getInstance().getModContainer("actionbarinfo").get().getMetadata().getVersion().getFriendlyString().startsWith("1.")) LOG.warn("Mixin %s for %s loaded, %s", mixinClassName, targetClassName, "Action Bar Info installed");
             return isInstalledABI && FabricLoader.getInstance().getModContainer("actionbarinfo").get().getMetadata().getVersion().getFriendlyString().startsWith("1.");
         }
-        if(mixinClassName.startsWith("ru.kelcuprum.pplhelper.mixin.mods.SailStatusMixin")){
+        if(mixinClassName.startsWith("ru.pplh.mod.mixin.mods.SailStatusMixin")){
             if(isInstalledSS) LOG.warn("Mixin %s for %s loaded, %s", mixinClassName, targetClassName, "Action Bar Info installed");
             return isInstalledSS;
         }
