@@ -72,7 +72,6 @@ import ru.pplh.mod.gui.style.VanillaLikeStyle;
 import ru.pplh.mod.interactive.InteractiveManager;
 import ru.pplh.mod.test.GUIRender;
 import ru.pplh.mod.test.LevelTick;
-import ru.pplh.mod.utils.CameraManager;
 import ru.pplh.mod.utils.FollowManager;
 import ru.pplh.mod.utils.TabHelper;
 
