@@ -24,10 +24,9 @@ public class ModsScreen {
         this.parent = parent;
         ScreenBuilder builder = new ScreenBuilder(parent, Component.translatable("pplhelper.mods"))
                 .addPanelWidgets(PepeLandHelper.getPanelWidgets(parent, parent));
-
+        if(!PepeLandHelper.modsLoaded) PepeLandHelper.loadStaticInformation();
         try {
-            JsonArray mods = PepeLandHelperAPI.getRecommendMods();
-            if(PepeLandHelperAPI.isError(mods)) throw PepeLandHelperAPI.getError(mods);
+            JsonArray mods = PepeLandHelper.mods;
             builder.addWidget(new TextBuilder(Component.translatable("pplhelper.mods.description")).setType(TextBuilder.TYPE.MESSAGE));
             for(JsonElement element : mods){
                 JsonObject data = element.getAsJsonObject();
@@ -37,8 +36,7 @@ public class ModsScreen {
             return new ErrorScreen(ex, parent);
         }
         try {
-            JsonArray mods = PepeLandHelperAPI.getRecommendPacks();
-            if(PepeLandHelperAPI.isError(mods)) throw PepeLandHelperAPI.getError(mods);
+            JsonArray mods = PepeLandHelper.resource_packs;
             builder.addWidget(new HorizontalRuleBuilder(Component.translatable("pplhelper.mods.packs")));
             for(JsonElement element : mods){
                 JsonObject data = element.getAsJsonObject();

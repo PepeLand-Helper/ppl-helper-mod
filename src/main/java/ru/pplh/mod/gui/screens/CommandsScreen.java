@@ -24,8 +24,8 @@ public class CommandsScreen {
                 .addPanelWidgets(PepeLandHelper.getPanelWidgets(parent, parent))
                 .addWidget(new TextBuilder(Component.translatable("pplhelper.commands.description")).setType(TextBuilder.TYPE.MESSAGE));
         try {
-            JsonArray mods = PepeLandHelperAPI.getCommands();
-            if(PepeLandHelperAPI.isError(mods)) throw PepeLandHelperAPI.getError(mods);
+            if(!PepeLandHelper.modsLoaded) PepeLandHelper.loadStaticInformation();
+            JsonArray mods = PepeLandHelper.commands;
             for(JsonElement element : mods){
                 JsonObject data = element.getAsJsonObject();
                 CategoryBox cat = new CategoryBox(Component.literal(Localization.fixFormatCodes("&l"+data.get("title").getAsString()+"&r")));

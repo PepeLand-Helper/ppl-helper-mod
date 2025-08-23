@@ -12,7 +12,9 @@ import net.minecraft.client.gui.contextualbar.LocatorBarRenderer;
 import ru.kelcuprum.alinlib.AlinLib;
 import ru.pplh.mod.utils.LocatorBarRender;
 
-@Mixin(LocatorBarRenderer.class)
+import static java.lang.Integer.MIN_VALUE;
+
+@Mixin(value = LocatorBarRenderer.class, priority = MIN_VALUE)
 public abstract class LocatorBarMixin implements ContextualBarRenderer {
     @Inject(method = "render", at=@At("RETURN"))
     public void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci){

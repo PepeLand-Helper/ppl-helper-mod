@@ -80,19 +80,12 @@ public class ArchivedProjectsScreen extends AbstractPPLScreen {
         if (apiAvailable) {
             if(!PepeLandHelper.worldsLoaded){
                 try {
-                    PepeLandHelper.worlds = PepeLandHelperAPI.getWorlds();
-                    PepeLandHelper.worldsLoaded = true;
+                    PepeLandHelper.loadStaticInformation();
                 } catch (Exception ignored){}
             }
             if(!PepeLandHelper.categoriesAndTags){
                 try {
-                    PepeLandHelper.pc = PepeLandHelperAPI.getProjectCategories();
-                    PepeLandHelper.pct = PepeLandHelperAPI.getProjectCategoriesTags();
-                    PepeLandHelper.nc = PepeLandHelperAPI.getNewsCategories();
-                    PepeLandHelper.nct = PepeLandHelperAPI.getNewsCategoriesTags();
-                    PepeLandHelper.sc = PepeLandHelperAPI.getArchivedSeasons();
-                    PepeLandHelper.sct = PepeLandHelperAPI.getArchivedSeasonsTags();
-                    PepeLandHelper.categoriesAndTags = true;
+                    PepeLandHelper.loadStaticInformation();
                 } catch (Exception ignored){}
             }
             loadInfo = new Thread(() -> {

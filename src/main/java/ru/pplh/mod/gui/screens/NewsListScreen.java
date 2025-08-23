@@ -61,11 +61,7 @@ public class NewsListScreen extends AbstractPPLScreen {
         if(apiAvailable) {
             if(!PepeLandHelper.categoriesAndTags){
                 try {
-                    PepeLandHelper.pc = PepeLandHelperAPI.getProjectCategories();
-                    PepeLandHelper.pct = PepeLandHelperAPI.getProjectCategoriesTags();
-                    PepeLandHelper.nc = PepeLandHelperAPI.getNewsCategories();
-                    PepeLandHelper.nct = PepeLandHelperAPI.getNewsCategoriesTags();
-                    PepeLandHelper.categoriesAndTags = true;
+                    PepeLandHelper.loadStaticInformation();
                 } catch (Exception ignored){}
             }
             loadInfo = new Thread(() -> {

@@ -74,6 +74,7 @@ import ru.pplh.mod.test.GUIRender;
 import ru.pplh.mod.test.LevelTick;
 import ru.pplh.mod.utils.FollowManager;
 import ru.pplh.mod.utils.TabHelper;
+import ru.pplh.mod.utils.TradeManager;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -88,6 +89,8 @@ import static java.lang.Integer.parseInt;
 import static net.minecraft.core.component.DataComponents.CUSTOM_NAME;
 import static net.minecraft.world.item.Items.NETHER_STAR;
 import static ru.kelcuprum.alinlib.gui.Icons.*;
+import static ru.kelcuprum.alinlib.utils.GsonHelper.getStringInJSON;
+import static ru.kelcuprum.alinlib.utils.GsonHelper.jsonElementIsNull;
 import static ru.pplh.mod.PepeLandHelper.Icons.*;
 
 public class PepeLandHelper implements ClientModInitializer {
@@ -97,9 +100,13 @@ public class PepeLandHelper implements ClientModInitializer {
     public static boolean isInstalledABI = FabricLoader.getInstance().isModLoaded("actionbarinfo");
     public static boolean isInstalledSailStatus = FabricLoader.getInstance().isModLoaded("sailstatus");
     public static boolean worldsLoaded = false;
+    public static boolean modsLoaded = false;
     public static String[] worlds = new String[]{"МП1", "МП2", "МР", "МФ", "ТЗ", "Энд"};
     public static JsonArray commands = new JsonArray();
     public static JsonArray mods = new JsonArray();
+    public static JsonArray resource_packs = new JsonArray();
+    public static JsonObject tradeRegistry = new JsonObject();
+    public static JsonObject trade = new JsonObject();
     // -=-=-=- Категории -=-=-=-
     public static boolean categoriesAndTags = false;
     public static String[] pc = new String[]{":("};
@@ -154,6 +161,7 @@ public class PepeLandHelper implements ClientModInitializer {
             }
 
         });
+//        net.theevilm.pochatok.PochatokClient
         // -=-=-=- Тесты -=-=-=-
         if (isTestSubject()) {
             GuiRenderEvents.RENDER.register(new GUIRender());
@@ -234,7 +242,6 @@ public class PepeLandHelper implements ClientModInitializer {
                         .set("pplhelper.max_online", () -> Value.number(TabHelper.getMaxOnline()))
         );
     }
-
     public static AbstractBuilder[] getPanelWidgets(Screen parent, Screen current) {
         boolean apiEnable = PepeLandHelperAPI.apiAvailable();
         AbstractBuilder[] buttons = new AbstractBuilder[]{
@@ -287,7 +294,6 @@ public class PepeLandHelper implements ClientModInitializer {
         };
         return buttons;
     }
-
     public static ButtonBuilder getProfileButton(Screen parent) {
         ButtonBuilder builder = new ButtonBuilder(Component.translatable(user == null ? "pplhelper.oauth.login" : "pplhelper.oauth.profile"));
         builder.setIcon(WIKI).setCentered(false);
@@ -298,7 +304,6 @@ public class PepeLandHelper implements ClientModInitializer {
         });
         return builder;
     }
-
     public static void loadUser(boolean withToast) {
         String token = config.getString("oauth.access_token", "");
         if (token.isBlank()) return;
@@ -306,7 +311,6 @@ public class PepeLandHelper implements ClientModInitializer {
         if (user != null && withToast)
             new ToastBuilder().setTitle(Component.translatable("pplhelper")).setMessage(Component.translatable("pplhelper.oauth.hello", user.nickname == null ? user.username : user.nickname)).setIcon(NETHER_STAR).buildAndShow();
     }
-
     public static void executeCommand(LocalPlayer player, String command) {
         if (command.startsWith("/")) {
             command = command.substring(1);
@@ -390,19 +394,26 @@ public class PepeLandHelper implements ClientModInitializer {
     }
 
     public static void loadStaticInformation() {
-        new Thread(() -> {
             try {
                 if (PepeLandHelperAPI.apiAvailable()) {
-                    commands = PepeLandHelperAPI.getCommands();
-                    mods = PepeLandHelperAPI.getRecommendMods();
+                    JsonObject common_info = PepeLandHelperAPI.getCommonInformation();
+                    tradeRegistry = common_info.getAsJsonObject("trade_registry");
+                    trade = common_info.getAsJsonObject("trade");
+                    TradeManager.loadInfo(trade);
+                    commands = common_info.getAsJsonArray("commands");
+                    mods = common_info.getAsJsonArray("recommend_mods");
+                    resource_packs = common_info.getAsJsonArray("resource_packs");
+                    modsLoaded = true;
                     //
-                    pc = PepeLandHelperAPI.getProjectCategories();
-                    pct = PepeLandHelperAPI.getProjectCategoriesTags();
-                    nc = PepeLandHelperAPI.getNewsCategories();
-                    nct = PepeLandHelperAPI.getNewsCategoriesTags();
+                    pc = categoriesShit(common_info.getAsJsonObject("categories").getAsJsonArray("projects"), true);
+                    pct = categoriesTagsShit(common_info.getAsJsonObject("categories").getAsJsonArray("projects"), true);
+                    nc = categoriesShit(common_info.getAsJsonObject("categories").getAsJsonArray("news"), true);
+                    nct = categoriesTagsShit(common_info.getAsJsonObject("categories").getAsJsonArray("news"), true);
+                    sc = categoriesShit(common_info.getAsJsonObject("categories").getAsJsonArray("seasons"),false);
+                    sct = categoriesTagsShit(common_info.getAsJsonObject("categories").getAsJsonArray("seasons"),false);
                     categoriesAndTags = true;
                     //
-                    worlds = PepeLandHelperAPI.getWorlds();
+                    worlds = jsonArrayToString(common_info.getAsJsonArray("worlds"));
                     worldsLoaded = true;
                 } else
                     new ToastBuilder().setTitle(Component.translatable("pplhelper.api"))
@@ -415,7 +426,36 @@ public class PepeLandHelper implements ClientModInitializer {
                 exc.printStackTrace();
                 new ToastBuilder().setTitle(Component.literal("Ошибка загрузки информации")).setMessage(Component.literal(ex.getMessage())).setIcon(WHITE_PEPE).setType(ToastBuilder.Type.ERROR).buildAndShow();
             }
-        }).start();
+    }
+    public static String[] jsonArrayToString(JsonArray jsonArray){
+        String[] strings = new String[jsonArray.size()];
+        int i = 0;
+        for(JsonElement jsonElement : jsonArray){
+            strings[i] = jsonElement.getAsString();
+            i++;
+        }
+        return strings;
+    }
+    public static String[] categoriesShit(JsonArray jsonArray, boolean needAddAll){
+        String[] categories = new String[jsonArray.size()+(needAddAll ? 1 : 0)];
+        if(needAddAll) categories[0] = Component.translatable("pplhelper.project.world.all").getString();
+        int size = (needAddAll ? 1 : 0);
+        for(JsonElement data : jsonArray) {
+            categories[size] = jsonElementIsNull("translatable", (JsonObject) data) ? getStringInJSON("name", (JsonObject) data, "")
+                    : Component.translatable(getStringInJSON("name", (JsonObject) data, "")).getString();
+            size++;
+        }
+        return categories;
+    }
+    public static String[] categoriesTagsShit(JsonArray jsonArray, boolean needAddAll){
+        String[] categories = new String[jsonArray.size()+(needAddAll ? 1 : 0)];
+        if(needAddAll) categories[0] = "";
+        int size = (needAddAll ? 1 : 0);
+        for(JsonElement data : jsonArray) {
+            categories[size] =  Component.translatable(getStringInJSON("tag", (JsonObject) data, "")).getString();
+            size++;
+        }
+        return categories;
     }
 
     public static boolean isAprilFool() {

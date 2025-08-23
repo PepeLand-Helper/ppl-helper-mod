@@ -9,7 +9,9 @@ import net.minecraft.client.gui.Gui;
 //#if MC >= 12106
 import net.minecraft.client.waypoints.ClientWaypointManager;
 import ru.kelcuprum.alinlib.AlinLib;
+import ru.pplh.mod.PepeLandHelper;
 import ru.pplh.mod.utils.FollowManager;
+import ru.pplh.mod.utils.TabHelper;
 //#endif
 
 @Mixin(Gui.class)
@@ -24,7 +26,7 @@ public class GUIMixin {
             )
     )
     private boolean getCurrentBarType(ClientWaypointManager instance, Operation<Boolean> original) {
-        if (AlinLib.MINECRAFT.player != null && FollowManager.getCurrentCoordinates() != null && FollowManager.playerInCurrentLevel() && FollowManager.playerInCurrentWorld()) {
+        if (AlinLib.MINECRAFT.player != null && ((FollowManager.getCurrentCoordinates() != null && FollowManager.playerInCurrentLevel() && FollowManager.playerInCurrentWorld() && PepeLandHelper.config.getBoolean("LOCATOR_BAR.FOLLOW", true)) || (TabHelper.getWorld() == TabHelper.Worlds.TRADE && PepeLandHelper.config.getBoolean("LOCATOR_BAR.TRADE", true)))) {
             return true;
         } else {
             return original.call(instance);

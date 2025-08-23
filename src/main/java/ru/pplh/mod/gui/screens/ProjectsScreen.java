@@ -81,17 +81,12 @@ public class ProjectsScreen extends AbstractPPLScreen {
         if (apiAvailable) {
                 if(!PepeLandHelper.worldsLoaded){
                     try {
-                        PepeLandHelper.worlds = PepeLandHelperAPI.getWorlds();
-                        PepeLandHelper.worldsLoaded = true;
+                        PepeLandHelper.loadStaticInformation();
                     } catch (Exception ignored){}
                 }
                 if(!PepeLandHelper.categoriesAndTags){
                     try {
-                        PepeLandHelper.pc = PepeLandHelperAPI.getProjectCategories();
-                        PepeLandHelper.pct = PepeLandHelperAPI.getProjectCategoriesTags();
-                        PepeLandHelper.nc = PepeLandHelperAPI.getNewsCategories();
-                        PepeLandHelper.nct = PepeLandHelperAPI.getNewsCategoriesTags();
-                        PepeLandHelper.categoriesAndTags = true;
+                        PepeLandHelper.loadStaticInformation();
                     } catch (Exception ignored){}
                 }
                 SearchResult projects = lastProjects == null ? PepeLandHelperAPI.getProjects(query, PepeLandHelper.worlds[world], PepeLandHelper.pct[category], currentPosition) : lastProjects;

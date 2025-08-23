@@ -1,7 +1,7 @@
 {
   "sprites": [
-    "pplhelper:project_0",
-    "pplhelper:project_1",
-    "pplhelper:project_2"
+    "pplhelper:project/project_0",
+    "pplhelper:project/project_1",
+    "pplhelper:project/project_2"
   ]
 }

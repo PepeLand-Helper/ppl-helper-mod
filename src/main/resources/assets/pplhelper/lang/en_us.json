@@ -45,6 +45,8 @@
   "pplhelper.configs.menu.lobby": "Кнопка лобби",
   "pplhelper.configs.menu.lobby.alinlib": "Кнопка лобби в стиле AlinLib",
   "pplhelper.configs.selected_project.auto_hide": "Радиус скрытия закрепленного проекта",
+  "pplhelper.configs.locator_bar.trade": "Точки \"Торговой зоны\"",
+  "pplhelper.configs.pochatok.use_registry": "Искать по табличкам в результате поиска по реестру ТЗ",
   "pplhelper.configs.abi.title": "Action Bar Info",
   "pplhelper.configs.abi": "Интеграция с ABI",
   "pplhelper.configs.abi.legacy": "У Вас установлена старая версия Action Bar Info, в скором времени поддержка данной версии прекратится в PepeLand Helper. Рекомендуем обновится до последней версии",

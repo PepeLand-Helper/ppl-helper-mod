@@ -6,9 +6,15 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.arguments.item.ItemArgument;
+import net.minecraft.commands.arguments.item.ItemInput;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.info.Player;
 import ru.kelcuprum.alinlib.info.World;
@@ -21,7 +27,9 @@ import ru.pplh.mod.command.arguments.WorldArgumentType;
 import ru.pplh.mod.interactive.Interactive;
 import ru.pplh.mod.interactive.InteractiveManager;
 import ru.pplh.mod.utils.FollowManager;
+import ru.pplh.mod.utils.PochatokUtils;
 import ru.pplh.mod.utils.TabHelper;
+import ru.pplh.mod.utils.TradeManager;
 
 import java.util.HashMap;
 import java.util.List;
@@ -35,12 +43,33 @@ import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
 import static com.mojang.brigadier.arguments.StringArgumentType.*;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static ru.pplh.mod.PepeLandHelper.LOG;
+import static ru.pplh.mod.PepeLandHelper.config;
 import static ru.pplh.mod.api.PepeLandAPI.uriEncode;
 
 public class PPLHelperCommand {
     public static HashMap<Integer, Boolean> unchecked = new HashMap<>();
     public static void register(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
         dispatcher.register(literal("pplh")
+                .then(literal("registry").then(argument("item", ItemArgument.item(registryAccess)).executes((s) -> {
+                    ItemInput itemInput = ItemArgument.getItem(s, "item");
+                    LOG.log(itemInput.getItem().getName());
+                    String[] args = itemInput.getItem().getDescriptionId().split("\\.");
+                    TradeManager.Category category = TradeManager.getItemCategory(args[args.length-1]);
+                    String itemName = TradeManager.getItemRussianName(args[args.length - 1]);
+                    if(itemName == null || itemName.isEmpty()) itemName = Component.translatable(itemInput.getItem().getDescriptionId()).getString();
+                    if(category == null) sendFeedback(s, Component.literal(String.format("%s не продаётся!", itemName)));
+                    else {
+                        sendFeedback(s, Component.empty().append(String.format("%s продаётся в категории ", itemName)).append(Component.literal(category.name()).setStyle(Style.EMPTY.withUnderlined(true).withBold(true))));
+                        if(TabHelper.getWorld() == TabHelper.Worlds.TRADE) {
+                            if (config.getBoolean("POCHATOK.USE_REGISTRY", true) && FabricLoader.getInstance().isModLoaded("pochatok"))
+                                PochatokUtils.setSignName(itemName);
+                            if (config.getBoolean("LOCATOR_BAR.TRADE", true))
+                                TradeManager.activeCategory = category;
+                        }
+                    }
+                    return 0;
+                })))
                 .then(literal("report")
                         .then(argument("description", greedyString()).executes((s) -> sendReport(s, getString(s, "description"))))
                         .executes((s) -> sendReport(s, "<описание>")))
