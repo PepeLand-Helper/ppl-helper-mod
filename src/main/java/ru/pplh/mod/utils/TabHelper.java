@@ -14,6 +14,8 @@ public class TabHelper {
             "Постройки #1",
             "Постройки #2",
             "Ресурсы",
+            "Ресурсы #1",
+            "Ресурсы #2",
             "Фермы",
             "Торговая Зона",
             "Энд",
@@ -51,6 +53,8 @@ public class TabHelper {
             case "Постройки #1" -> Worlds.CONSTRUCTIONS_1;
             case "Постройки #2" -> Worlds.CONSTRUCTIONS_2;
             case "Ресурсы" -> Worlds.RESOURCE;
+            case "Ресурсы #1" -> Worlds.RESOURCE_1;
+            case "Ресурсы #2" -> Worlds.RESOURCE_2;
             case "Фермы" -> Worlds.FARM;
             case "Торговая Зона" -> Worlds.TRADE;
             case "Энд" -> Worlds.END;
@@ -64,6 +68,8 @@ public class TabHelper {
             case "мп1" -> Worlds.CONSTRUCTIONS_1;
             case "мп2" -> Worlds.CONSTRUCTIONS_2;
             case "мр" -> Worlds.RESOURCE;
+            case "мр1" -> Worlds.RESOURCE_1;
+            case "мр2" -> Worlds.RESOURCE_2;
             case "мф" -> Worlds.FARM;
             case "тз" -> Worlds.TRADE;
             case "знд" -> Worlds.END;
@@ -115,6 +121,8 @@ public class TabHelper {
     public enum Worlds {
         LOBBY(Component.translatable("pplhelper.world.lobby"), "Лобби"),
         RESOURCE(Component.translatable("pplhelper.world.resource"), "МР"),
+        RESOURCE_1(Component.translatable("pplhelper.world.resource.1"), "МР1"),
+        RESOURCE_2(Component.translatable("pplhelper.world.resource.2"), "МР2"),
         CONSTRUCTIONS_1(Component.translatable("pplhelper.world.constructions.1"), "МП1"),
         CONSTRUCTIONS_2(Component.translatable("pplhelper.world.constructions.2"), "МП2"),
         FARM(Component.translatable("pplhelper.world.farm"), "МФ"),

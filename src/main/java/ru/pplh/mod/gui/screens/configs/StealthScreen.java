@@ -13,12 +13,14 @@ import ru.pplh.mod.PepeLandHelper;
 import ru.pplh.mod.utils.TabHelper;
 
 import static ru.kelcuprum.alinlib.gui.Icons.*;
+import static ru.pplh.mod.PepeLandHelper.Icons.WHITE_PEPE;
 
 public class StealthScreen {
     public Screen parent;
     public Screen build(Screen parent){
         this.parent = parent;
         ConfigScreenBuilder builder = new ConfigScreenBuilder(parent, Component.translatable("pplhelper"))
+                .setIcon(WHITE_PEPE)
                 .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.configs")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ConfigScreen().build(parent))).setIcon(OPTIONS))
                 .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.configs.chat")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ChatConfigsScreen().build(parent))).setIcon(LIST));
         if(!FabricLoader.getInstance().getModContainer("alinlib").get().getMetadata().getVersion().getFriendlyString().startsWith("2.1.0-alpha"))
@@ -26,7 +28,7 @@ public class StealthScreen {
         if(PepeLandHelper.isTestSubject())
             builder.addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.test"), (s) ->AlinLib.MINECRAFT.setScreen(new TestConfigScreen().build(parent))).setIcon(CLOWNFISH));
 
-        builder.addWidget(new TextBuilder(Component.translatable("pplhelper.configs.stealth.title")))
+        builder.setCategoryTitle(Component.translatable("pplhelper.configs.stealth.title"))
                 .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.stealth"), false).setConfig(PepeLandHelper.config, "STEALTH"))
                 .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.stealth.current_world"), true).setConfig(PepeLandHelper.config, "STEALTH.CURRENT_WORLD"));
 

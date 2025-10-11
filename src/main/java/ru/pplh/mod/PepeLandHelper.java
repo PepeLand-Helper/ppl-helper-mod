@@ -87,6 +87,7 @@ import java.util.UUID;
 
 import static java.lang.Integer.parseInt;
 import static net.minecraft.core.component.DataComponents.CUSTOM_NAME;
+import static net.minecraft.world.item.Items.LIGHT;
 import static net.minecraft.world.item.Items.NETHER_STAR;
 import static ru.kelcuprum.alinlib.gui.Icons.*;
 import static ru.kelcuprum.alinlib.utils.GsonHelper.getStringInJSON;
@@ -147,7 +148,6 @@ public class PepeLandHelper implements ClientModInitializer {
             gameStarted = true;
             new Thread(() -> {
                 loadStaticInformation();
-
                 checkModUpdates(s);
             }).start();
         });
@@ -361,7 +361,7 @@ public class PepeLandHelper implements ClientModInitializer {
                 JsonObject packInfo = PepeLandAPI.getPackInfo(onlyEmotesCheck(), modrinth);
                 if (config.getBoolean("PACK_UPDATES.NOTICE", true) && !config.getBoolean("PACK_UPDATES.AUTO_UPDATE", false)) {
                     if (!packInfo.get("version").getAsString().equals(packVersion))
-                        AlinLib.MINECRAFT.execute(() -> AlinLib.MINECRAFT.setScreen(new NewUpdateScreen(AlinLib.MINECRAFT.screen, packVersion, packInfo, modrinth)));
+                        new ToastBuilder().setTitle(Component.translatable("pplhelper")).setMessage(Component.translatable("pplhelper.pack.update.avalible")).setIcon(LIGHT).buildAndShow();
                 } else if (config.getBoolean("PACK_UPDATES.AUTO_UPDATE", false)) {
                     if (!packInfo.get("version").getAsString().equals(packVersion)) {
                         PepeLandHelper.downloadPack(packInfo, onlyEmotesCheck(), (ss) -> {

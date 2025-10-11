@@ -9,6 +9,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import org.lwjgl.glfw.GLFW;
 import ru.kelcuprum.alinlib.gui.Colors;
+import ru.kelcuprum.alinlib.gui.GuiUtils;
 import ru.kelcuprum.alinlib.gui.components.ConfigureScrolWidget;
 import ru.kelcuprum.alinlib.gui.components.ImageWidget;
 import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
@@ -189,14 +190,14 @@ public class NewsScreen extends Screen {
 
         int maxY = 35;
         if(scroller != null) for(AbstractWidget widget : scroller.widgets) maxY = widget.getY()+widget.getHeight()+5;
-        guiGraphics.fill(x - 5, 5, x + size + 5, Math.min(height-5, maxY), Colors.BLACK_ALPHA); // Затемнение
+        GuiUtils.getSelected().renderBackground(guiGraphics,x - 5, 5, x + size + 5, Math.min(height-5, maxY)); // Затемнение
 
         int maxPanelY = 35;
         if(panel_scroller != null) for(AbstractWidget widget : panel_scroller.widgets) maxPanelY = widget.getY()+widget.getHeight()+5;
-        guiGraphics.fill(5, 5, 5+panelSize-10, Math.min(height-5, maxPanelY), Colors.BLACK_ALPHA); // Затемнение
+        GuiUtils.getSelected().renderBackground(guiGraphics,5, 5, 5+panelSize-10, Math.min(height-5, maxPanelY)); // Затемнение
 
 //        guiGraphics.fill(x, 10, x + size, 30, Colors.BLACK_ALPHA);
-        guiGraphics.fill(10, 10, 5 + panelSize - 35, 30, Colors.BLACK_ALPHA);
+        GuiUtils.getSelected().renderTitleBackground(guiGraphics,10, 10, 5 + panelSize - 40, 30);
     }
 
     public void onClose() {

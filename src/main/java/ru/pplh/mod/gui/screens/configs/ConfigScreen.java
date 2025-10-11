@@ -17,6 +17,7 @@ import ru.pplh.mod.gui.screens.message.ErrorScreen;
 
 import static ru.kelcuprum.alinlib.gui.Colors.GROUPIE;
 import static ru.kelcuprum.alinlib.gui.Icons.*;
+import static ru.pplh.mod.PepeLandHelper.Icons.WHITE_PEPE;
 
 public class ConfigScreen {
     public Screen parent;
@@ -24,6 +25,7 @@ public class ConfigScreen {
     public Screen build(Screen parent) {
         this.parent = parent;
         ConfigScreenBuilder builder = new ConfigScreenBuilder(parent, Component.translatable("pplhelper"))
+                .setIcon(WHITE_PEPE)
                 .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.configs")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ConfigScreen().build(parent))).setIcon(OPTIONS))
                 .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.configs.chat")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ChatConfigsScreen().build(parent))).setIcon(LIST));
         if (!FabricLoader.getInstance().getModContainer("alinlib").get().getMetadata().getVersion().getFriendlyString().startsWith("2.1.0-alpha"))
@@ -45,7 +47,7 @@ public class ConfigScreen {
                 }
             }));
         }
-        builder.addWidget(new TextBuilder(Component.translatable("pplhelper.configs")))
+        builder.setCategoryTitle(Component.translatable("pplhelper.configs"))
                 .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.menu.lobby"), true).setConfig(PepeLandHelper.config, "MENU.LOBBY"))
                 .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.menu.lobby.alinlib"), false).setConfig(PepeLandHelper.config, "MENU.LOBBY.ALINLIB"))
                 .addWidget(new SliderBuilder(Component.translatable("pplhelper.configs.selected_project.auto_hide")).setDefaultValue(5).setMin(1).setMax(32).setConfig(PepeLandHelper.config, "SELECTED_PROJECT.AUTO_HIDE"));

@@ -17,12 +17,14 @@ import ru.pplh.mod.utils.FollowManager;
 
 import static ru.kelcuprum.alinlib.gui.Colors.GROUPIE;
 import static ru.kelcuprum.alinlib.gui.Icons.*;
+import static ru.pplh.mod.PepeLandHelper.Icons.WHITE_PEPE;
 import static ru.pplh.mod.utils.TabHelper.worlds;
 
 public class TestConfigScreen {
     public Screen parent;
     public Screen build(Screen parent){
         ConfigScreenBuilder builder = new ConfigScreenBuilder(parent, Component.translatable("pplhelper"))
+                .setIcon(CLOWNFISH)
                 .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.configs")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ConfigScreen().build(parent))).setIcon(OPTIONS))
                 .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.configs.chat")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ChatConfigsScreen().build(parent))).setIcon(LIST));
         if(!FabricLoader.getInstance().getModContainer("alinlib").get().getMetadata().getVersion().getFriendlyString().startsWith("2.1.0-alpha"))
@@ -30,7 +32,7 @@ public class TestConfigScreen {
         if(PepeLandHelper.isTestSubject())
             builder.addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.test"), (s) ->AlinLib.MINECRAFT.setScreen(new TestConfigScreen().build(parent))).setIcon(CLOWNFISH));
 
-        builder.addWidget(new TextBuilder(Component.translatable("pplhelper.test")))
+        builder.setCategoryTitle(Component.translatable("pplhelper.test"))
                 .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.test.im_a_test_subject"), false).setConfig(PepeLandHelper.config,"IM_A_TEST_SUBJECT"))
                 .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.test.im_a_test_subject.enable_world"), false).setConfig(PepeLandHelper.config,"IM_A_TEST_SUBJECT.ENABLE_WORLD"))
                 .addWidget(new SelectorBuilder(Component.translatable("pplhelper.test.im_a_test_subject.world")).setValue(worlds[0]).setList(worlds).setConfig(PepeLandHelper.config,"IM_A_TEST_SUBJECT.WORLD"))

@@ -309,12 +309,12 @@ public class AbstractPPLScreen extends Screen {
         assert this.minecraft != null;
         super.renderBackground(guiGraphics, i, j, f);
         // Panel
-        guiGraphics.fill(5, 5, this.builder.panelSize-5, 25, Colors.BLACK_ALPHA);
-        guiGraphics.fill(5, 30, this.builder.panelSize-5, yo, Colors.BLACK_ALPHA);
+        builder.getStyle().renderTitleBackground(guiGraphics, 5, 5, this.builder.panelSize-5, 25);
+        builder.getStyle().renderBackground(guiGraphics, 5, 30, this.builder.panelSize-5, yo);
         // Content
-        guiGraphics.fill(getX()-5, 5, getX()+getContentWidth()+5, yc, Colors.BLACK_ALPHA);
+        builder.getStyle().renderBackground(guiGraphics, getX()-5, 5, getX()+getContentWidth()+5, yc);
         // - Title
-        guiGraphics.fill(getX(), 10, getX()+getContentWidth(), 30, Colors.BLACK_ALPHA);
+        builder.getStyle().renderTitleBackground(guiGraphics, getX(), 10, getX()+getContentWidth(), 30);
     }
 
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {

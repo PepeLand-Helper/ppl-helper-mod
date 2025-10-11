@@ -46,7 +46,7 @@ public class ErrorScreen extends Screen {
 
             StringBuilder builder = new StringBuilder(String.format("%s > %s\n", error.getClass().getName(), error.getMessage()));
             for(StackTraceElement stack : error.getStackTrace()) builder.append(String.format("\n%s:%s - %s;", stack.getFileName(), stack.getLineNumber(), stack.getMethodName()));
-            descriptionBox = new DescriptionBox(7, 29, 176, height-86, Component.empty());
+            descriptionBox = new DescriptionBox(8, 29, 174, height-87, Component.empty());
             descriptionBox.setDescription(Component.literal(builder.toString()));
 
             addRenderableWidget(descriptionBox);
@@ -113,7 +113,7 @@ public class ErrorScreen extends Screen {
         guiGraphics.fillGradient(0, 0, this.width, this.height, 0x7f245965, 0x7F9f1b46);
 
         // Левая панель
-        if(error != null) guiGraphics.fill(5, 5, 185, height-55, BLACK_ALPHA);
+        if(error != null) GuiUtils.getSelected().renderBackground(guiGraphics,4, 5, 186, height-55);
     }
 
     @Override

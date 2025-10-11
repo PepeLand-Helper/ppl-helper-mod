@@ -52,12 +52,12 @@ public class ScreenBuilder {
         return this.title;
     }
     //
-    public ScreenBuilder setType(AbstractStyle style) {
+    public ScreenBuilder getStyle(AbstractStyle style) {
         this.style = style;
         return this;
     }
-    public AbstractStyle getType() {
-        return this.style;
+    public AbstractStyle getStyle() {
+        return this.style == null ? GuiUtils.getSelected() : this.style;
     }
     //
     public ScreenBuilder setPanelSize(int panelSize) {

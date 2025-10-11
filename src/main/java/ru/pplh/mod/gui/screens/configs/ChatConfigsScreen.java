@@ -15,6 +15,7 @@ import ru.pplh.mod.PepeLandHelper;
 import ru.pplh.mod.utils.TabHelper;
 
 import static ru.kelcuprum.alinlib.gui.Icons.*;
+import static ru.pplh.mod.PepeLandHelper.Icons.WHITE_PEPE;
 
 public class ChatConfigsScreen {
     public Screen parent;
@@ -22,6 +23,7 @@ public class ChatConfigsScreen {
     public Screen build(Screen parent) {
         this.parent = parent;
         ConfigScreenBuilder builder = new ConfigScreenBuilder(parent, Component.translatable("pplhelper"))
+                .setIcon(WHITE_PEPE)
                 .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.configs")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ConfigScreen().build(parent))).setIcon(OPTIONS))
                 .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.configs.chat")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ChatConfigsScreen().build(parent))).setIcon(LIST));
         if (!FabricLoader.getInstance().getModContainer("alinlib").get().getMetadata().getVersion().getFriendlyString().startsWith("2.1.0-alpha"))
@@ -29,7 +31,7 @@ public class ChatConfigsScreen {
         if (PepeLandHelper.isTestSubject())
             builder.addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.test"), (s) -> AlinLib.MINECRAFT.setScreen(new TestConfigScreen().build(parent))).setIcon(CLOWNFISH));
 
-        builder.addWidget(new TextBuilder(Component.translatable("pplhelper.configs.chat")))
+        builder.setCategoryTitle(Component.translatable("pplhelper.configs.chat"))
                 .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.chat.emote_convert"), true).setConfig(PepeLandHelper.config, "CHAT.EMOTE_CONVERT"))
                 .addWidget(new HorizontalRuleBuilder())
                 .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.chat.global"), false).setConfig(PepeLandHelper.config, "CHAT.GLOBAL"))
