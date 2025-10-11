@@ -28,6 +28,8 @@ import java.util.ArrayList;
 
 import static ru.kelcuprum.alinlib.gui.Colors.*;
 import static ru.kelcuprum.alinlib.gui.Icons.SEARCH;
+import static ru.pplh.mod.PepeLandHelper.categoriesShit;
+import static ru.pplh.mod.PepeLandHelper.categoriesTagsShit;
 
 public class ProjectsScreen extends AbstractPPLScreen {
     public ProjectsScreen(Screen screen) {
@@ -56,7 +58,7 @@ public class ProjectsScreen extends AbstractPPLScreen {
         addRenderableWidget(new SelectorBuilder(Component.translatable("pplhelper.project.world"), (s) -> {
             world = s.getPosition();
             search();
-        }).setList(PepeLandHelper.worlds).setValue(world).setPosition(getX(), y[0]).setWidth(searchSize).build());
+        }).setList(categoriesShit(PepeLandHelper.worlds, true)).setValue(world).setPosition(getX(), y[0]).setWidth(searchSize).build());
         addRenderableWidget(new SelectorBuilder(Component.translatable("pplhelper.project.category"), (s) -> {
             category = s.getPosition();
             search();
@@ -89,7 +91,7 @@ public class ProjectsScreen extends AbstractPPLScreen {
                         PepeLandHelper.loadStaticInformation();
                     } catch (Exception ignored){}
                 }
-                SearchResult projects = lastProjects == null ? PepeLandHelperAPI.getProjects(query, PepeLandHelper.worlds[world], PepeLandHelper.pct[category], currentPosition) : lastProjects;
+                SearchResult projects = lastProjects == null ? PepeLandHelperAPI.getProjects(query, categoriesTagsShit(PepeLandHelper.worlds,true)[world], PepeLandHelper.pct[category], currentPosition) : lastProjects;
                 lastProjects = projects;
                 if (projects.arrayList().isEmpty()) {
                     builder.addWidget(new TextBuilder(Component.translatable("pplhelper.news.not_found")).setType(TextBuilder.TYPE.BLOCKQUOTE).setColor(GROUPIE).setPosition(getX(), 55).setSize(getContentWidth(), 20).build());

@@ -6,6 +6,7 @@ import net.minecraft.network.chat.Component;
 import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBooleanBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBuilder;
+import ru.kelcuprum.alinlib.gui.components.builder.text.HorizontalRuleBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.text.TextBuilder;
 import ru.pplh.mod.PepeLandHelper;
 import ru.pplh.mod.api.PepeLandAPI;
@@ -67,6 +68,8 @@ public class UpdaterScreen {
                             ).build());
                 builder.addWidget(new ButtonBuilder(Component.translatable("pplhelper.pack.installed"), Component.literal("v" + packVersion)).setActive(false));
             }
+            builder.addWidget(new HorizontalRuleBuilder(Component.translatable("pplhelper.configs.pack_updates.other")))
+                    .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.pack_updates.replace_download_url"), true).setConfig(PepeLandHelper.config, "PACK_UPDATES.REPLACE_DOWNLOAD_URL"));
         } catch (Exception ex) {
             return new ErrorScreen(ex, parent);
         }

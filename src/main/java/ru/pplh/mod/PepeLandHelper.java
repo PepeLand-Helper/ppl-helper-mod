@@ -136,6 +136,10 @@ public class PepeLandHelper implements ClientModInitializer {
         World.register("minecraft:world_art", "Мир артов");
         World.register("minecraft:world_art_old", "Мир старых артов");
         if (isInstalledABI && !isABILegacy()) ABIManager.register();
+        if(config.getString("API_URL", "https://api.pplh.ru/").toLowerCase().contains("pplmods.ru"))
+            config.setString("API_URL", "https://api.pplh.ru/");
+        if(config.getString("oauth.url", "https://auth.pplh.ru/").toLowerCase().contains("pplmods.ru"))
+            config.setString("oauth.url", "https://auth.pplh.ru/");
         loadUser(false);
         // -=-=-=- -=-=-=-
         // -=-=-=- Ресурс пак -=-=-=-
@@ -443,6 +447,26 @@ public class PepeLandHelper implements ClientModInitializer {
         for(JsonElement data : jsonArray) {
             categories[size] = jsonElementIsNull("translatable", (JsonObject) data) ? getStringInJSON("name", (JsonObject) data, "")
                     : Component.translatable(getStringInJSON("name", (JsonObject) data, "")).getString();
+            size++;
+        }
+        return categories;
+    }
+    public static String[] categoriesShit(String[] jsonArray, boolean needAddAll){
+        String[] categories = new String[jsonArray.length+(needAddAll ? 1 : 0)];
+        if(needAddAll) categories[0] = Component.translatable("pplhelper.project.world.all").getString();
+        int size = (needAddAll ? 1 : 0);
+        for(String data : jsonArray) {
+            categories[size] = data;
+            size++;
+        }
+        return categories;
+    }
+    public static String[] categoriesTagsShit(String[] jsonArray, boolean needAddAll){
+        String[] categories = new String[jsonArray.length+(needAddAll ? 1 : 0)];
+        if(needAddAll) categories[0] = "";
+        int size = (needAddAll ? 1 : 0);
+        for(String data : jsonArray) {
+            categories[size] = data;
             size++;
         }
         return categories;

@@ -36,7 +36,18 @@ public class PepeLandAPI {
     public static JsonObject getPacksInfo(boolean modrinth){
         try {
             if(modrinth) {
-                if(PepeLandHelperAPI.apiAvailable()) return WebAPI.getJsonObject(PepeLandHelperAPI.getURI("resourcepacks/versions", false));
+                if(PepeLandHelperAPI.apiAvailable()){
+                    JsonObject jsonObject = WebAPI.getJsonObject(PepeLandHelperAPI.getURI("resourcepacks/versions", false));
+                    if(PepeLandHelper.config.getBoolean("PACK_UPDATES.REPLACE_DOWNLOAD_URL", true)){
+                        JsonObject jsonObjectM = jsonObject.getAsJsonObject("main");
+                        jsonObjectM.addProperty("url", PepeLandHelperAPI.getURI("resourcepacks/versions/file", false));
+                        jsonObject.add("main", jsonObjectM);
+                        JsonObject jsonObjectE = jsonObject.getAsJsonObject("emotes");
+                        jsonObjectE.addProperty("url", PepeLandHelperAPI.getURI("resourcepacks/versions/file?emotes=true", false));
+                        jsonObject.add("emotes", jsonObjectM);
+                    }
+                    return jsonObject;
+                }
                 else {
                     if (lastReq > System.currentTimeMillis() && info != null) return info;
                     else {
@@ -83,7 +94,7 @@ public class PepeLandAPI {
         HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
         int responseCode = httpConn.getResponseCode();
         String saveFilePath = saveDir + File.separator + filename;
-
+//        AlinLib.LOG.log(fileURL);
         if (responseCode == HttpURLConnection.HTTP_OK) {
             InputStream inputStream = httpConn.getInputStream();
             FileOutputStream outputStream = new FileOutputStream(saveFilePath);

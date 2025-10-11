@@ -81,6 +81,8 @@
   "pplhelper.configs.pack_updates.modrinth": "Загружать информацию с Modrinth (API PPL Helper)",
   "pplhelper.configs.pack_updates.modrinth.api_warn": "На данный момент получение данных из Modrinth происходит через клиент. Так как API PPL Helper недоступен!",
   "pplhelper.configs.pack_updates.only_emote.citresewn_not_installed": "У вас не установлен CIT Resewn, поэтому мод будет загружать только эмоуты",
+  "pplhelper.configs.pack_updates.other": "Другое",
+  "pplhelper.configs.pack_updates.replace_download_url": "Изменять ссылки скачивания с Modrinth на PepeLand Helper API",
 
   "pplhelper.chat_filters": "Фильтры чата",
 
