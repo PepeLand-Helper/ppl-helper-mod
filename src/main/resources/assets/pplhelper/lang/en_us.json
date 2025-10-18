@@ -73,6 +73,13 @@
   "pplhelper.configs.pack_updates.modrinth.api_warn": "Временно отключено, так как API PPL Helper недоступен",
   "pplhelper.configs.pack_updates.only_emote.citresewn_not_installed": "У вас не установлен CIT Resewn, поэтому мод будет загружать только эмоуты",
 
+  "pplhelper.configs.ds": "Дискорд активность",
+  "pplhelper.configs.ds.details": "Название",
+  "pplhelper.configs.ds.state": "Информация",
+
+  "pplhelper.configs.ds.details.default": "Играет на Pepeland - %playersCount% / %maxPlayers%",
+  "pplhelper.configs.ds.state.default": "%worldName%",
+
   "pplhelper.chat_filters": "Фильтры чата",
 
   "pplhelper.chat_filters.global": "Отключить глобальный чат",

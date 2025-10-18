@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
@@ -53,6 +54,7 @@ import ru.kelcuprum.pplhelper.gui.screens.configs.ConfigScreen;
 import ru.kelcuprum.pplhelper.gui.screens.message.NewUpdateScreen;
 import ru.kelcuprum.pplhelper.gui.screens.message.NewUpdateScreen$Helper;
 import ru.kelcuprum.pplhelper.gui.style.VanillaLikeStyle;
+import ru.kelcuprum.pplhelper.utils.DiscordActivityManager;
 import ru.kelcuprum.pplhelper.utils.FollowManager;
 import ru.kelcuprum.pplhelper.utils.TabHelper;
 
@@ -63,6 +65,7 @@ import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.UUID;
 
 import static java.lang.Integer.parseInt;
@@ -87,6 +90,9 @@ public class PepeLandHelper implements ClientModInitializer {
     public static String[] nc = new String[]{":("};
     public static String[] nct = new String[]{":("};
     public static VanillaLikeStyle vanillaLikeStyle = new VanillaLikeStyle();
+
+    // -=-=-=- Вермя последнего обновления дс активности -=-=-=-
+    private static long discordRpcLastUpdatedTime = 0;
 
     @Override
     public void onInitializeClient() {
@@ -200,6 +206,36 @@ public class PepeLandHelper implements ClientModInitializer {
                         .set("pplhelper.online", () -> Value.number(TabHelper.getOnline()))
                         .set("pplhelper.max_online", () -> Value.number(TabHelper.getMaxOnline()))
         );
+
+        // -=-=-=- Дискорд активность -=-=-=-
+        DiscordActivityManager.initialize();
+        ClientTickEvents.END_CLIENT_TICK.register(this::onClientTick);
+    }
+
+    private void onClientTick(Minecraft minecraft) {
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - discordRpcLastUpdatedTime < 1000) return;
+        if (TabHelper.getWorld() == null) DiscordActivityManager.clearPresence();
+
+        discordRpcLastUpdatedTime = currentTime;
+
+        if (TabHelper.getWorld() != null) {
+            updatePRC(minecraft);
+        }
+    }
+
+    private void updatePRC(Minecraft minecraft) {
+        try {
+            if (TabHelper.getWorld() == null || minecraft.getCurrentServer() == null || minecraft.getCurrentServer().players == null) return;
+
+            String worldName = TabHelper.getWorld().title.getString();
+            int onlinePlayers = minecraft.getCurrentServer().players.online();
+            int maxPlayers = minecraft.getCurrentServer().players.max();
+
+            DiscordActivityManager.updatePresence(worldName, onlinePlayers, maxPlayers);
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static AbstractBuilder[] getPanelWidgets(Screen parent, Screen current) {
