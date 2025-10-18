@@ -11,7 +11,8 @@
     "PauseScreenMixin",
     "SplashManagerMixin",
     "locatorbar.GUIMixin",
-    "locatorbar.LocatorBarMixin"
+    "locatorbar.LocatorBarMixin",
+    "mods.MinedowsMixin"
   ],
   "injectors": {
     "defaultRequire": 1

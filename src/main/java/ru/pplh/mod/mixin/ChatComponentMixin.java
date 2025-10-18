@@ -33,7 +33,9 @@ public abstract class ChatComponentMixin {
                     PepeLandHelper.restartTime = System.currentTimeMillis() + ((long) time * (parsed.contains("минут") ? 60 : 1) * 1000);
                 }
             } else if(parsed.contains("Рестарт случился") && parsed.split(" ").length == 2) PepeLandHelper.restartTime = System.currentTimeMillis();
-        } else if (test.contains("Вы еще не можете зайти на сервер") && TabHelper.getWorld() == TabHelper.Worlds.LOBBY && PepeLandHelper.config.getBoolean("TIMER.JOIN", true)) {
+        } else if ((test.contains("Вы еще не можете зайти на сервер")
+        || test.contains("Сервер заполнен. Вы не можете зайти!") || (test.startsWith("Unable to connect to ") && test.contains(": The server is full!")))
+                && TabHelper.getWorld() == TabHelper.Worlds.LOBBY && PepeLandHelper.config.getBoolean("TIMER.JOIN", true)) {
             int time = parseInt(test.replaceAll("[^0-9]", ""));
             PepeLandHelper.joinTime = System.currentTimeMillis() + ((long) time * (test.contains("минут") ? 60 : 1) * 1000);
         }

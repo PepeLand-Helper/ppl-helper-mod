@@ -18,6 +18,7 @@ import ru.pplh.mod.utils.FollowManager;
 import static ru.kelcuprum.alinlib.gui.Colors.GROUPIE;
 import static ru.kelcuprum.alinlib.gui.Icons.*;
 import static ru.pplh.mod.PepeLandHelper.Icons.WHITE_PEPE;
+import static ru.pplh.mod.PepeLandHelper.loadStaticInformation;
 import static ru.pplh.mod.utils.TabHelper.worlds;
 
 public class TestConfigScreen {
@@ -45,6 +46,9 @@ public class TestConfigScreen {
                 .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.test.im_a_test_subject.paticles.trade"), false).setConfig(PepeLandHelper.config,"IM_A_TEST_SUBJECT.PARTICLES.TRADE"))
                 .addWidget(new HorizontalRuleBuilder())
                 .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.test.im_a_test_subject.locator.trade"), false).setConfig(PepeLandHelper.config,"IM_A_TEST_SUBJECT.LOCATOR.TRADE"))
+                .addWidget(new ButtonBuilder(Component.translatable("pplhelper.reload_data"), (s) -> {
+                    loadStaticInformation();
+                }))
                 .addWidget(new HorizontalRuleBuilder(Component.literal("Первое апреля")));
         if(PepeLandHelper.user != null && PepeLandHelper.user.role.TESTING_APRIL_FOOL) {
             builder.addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.test.im_a_test_subject.april"), false).setConfig(PepeLandHelper.config, "IM_A_TEST_SUBJECT.APRIL"))

@@ -15,6 +15,7 @@ public class PPLHelperMixinPlugin implements IMixinConfigPlugin {
     public static final AlinLogger LOG = new AlinLogger("PPL Helper > Mixin");
     public static boolean isInstalledABI = FabricLoader.getInstance().isModLoaded("actionbarinfo");
     public static boolean isInstalledSS = FabricLoader.getInstance().isModLoaded("sailstatus");
+    public static boolean isInstalledMinedows = FabricLoader.getInstance().isModLoaded("minedows");
     public static Config config = new Config("config/pplhelper/config.json");
     @Override
     public void onLoad(String mixinPackage) {
@@ -35,8 +36,12 @@ public class PPLHelperMixinPlugin implements IMixinConfigPlugin {
             return isInstalledABI && FabricLoader.getInstance().getModContainer("actionbarinfo").get().getMetadata().getVersion().getFriendlyString().startsWith("1.");
         }
         if(mixinClassName.startsWith("ru.pplh.mod.mixin.mods.SailStatusMixin")){
-            if(isInstalledSS) LOG.warn("Mixin %s for %s loaded, %s", mixinClassName, targetClassName, "Action Bar Info installed");
+            if(isInstalledSS) LOG.warn("Mixin %s for %s loaded, %s", mixinClassName, targetClassName, "SailStatus installed");
             return isInstalledSS;
+        }
+        if(mixinClassName.startsWith("ru.pplh.mod.mixin.mods.MinedowsMixin")){
+            if(isInstalledMinedows) LOG.warn("Mixin %s for %s loaded, %s", mixinClassName, targetClassName, "Minedows installed");
+            return isInstalledMinedows;
         }
         return true;
     }

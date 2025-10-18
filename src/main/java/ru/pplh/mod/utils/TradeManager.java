@@ -22,6 +22,8 @@ public class TradeManager {
     public static Category activeCategory = null;
 
     public static void loadInfo(JsonObject jsonObject){
+        categories = new ArrayList<>();
+        mapCategories = new HashMap<>();
         JsonArray jsonArray = jsonObject.getAsJsonArray("categories");
         int radius = jsonObject.get("radius").getAsNumber().intValue();
         for(JsonElement jsonElement : jsonArray){

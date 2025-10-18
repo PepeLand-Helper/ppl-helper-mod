@@ -82,6 +82,7 @@ dependencies {
         modImplementation "maven.modrinth:litematica:${project.litematica}"
         modImplementation "maven.modrinth:malilib:${project.malilib}"
         modImplementation "maven.modrinth:sailstatus:${rootProject.sailstatus}"
+        modCompileOnly "maven.modrinth:minedows:${project.minedows}"
         modImplementation "ru.kelcuprum:AlinLib-fabric:${rootProject.alinlib}+mc${project.alinlib_minecraft_version == null ? project.minecraft_version : project.alinlib_minecraft_version}"
         modImplementation "ru.kelcuprum:ActionBarInfo-fabric:${rootProject.abi}+mc${project.abi_minecraft_version == null ? project.minecraft_version : project.abi_minecraft_version}"
     }
