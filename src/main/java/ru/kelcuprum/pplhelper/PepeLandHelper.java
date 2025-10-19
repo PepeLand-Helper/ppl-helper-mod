@@ -229,8 +229,8 @@ public class PepeLandHelper implements ClientModInitializer {
             if (TabHelper.getWorld() == null || minecraft.getCurrentServer() == null || minecraft.getCurrentServer().players == null) return;
 
             String worldName = TabHelper.getWorld().title.getString();
-            int onlinePlayers = minecraft.getCurrentServer().players.online();
-            int maxPlayers = minecraft.getCurrentServer().players.max();
+            int onlinePlayers = TabHelper.getOnline();
+            int maxPlayers = TabHelper.getMaxOnline();
 
             DiscordActivityManager.updatePresence(worldName, onlinePlayers, maxPlayers);
         } catch (RuntimeException e) {
