@@ -15,6 +15,7 @@ import ru.kelcuprum.alinlib.gui.components.builder.editbox.EditBoxBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.selector.SelectorBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.text.HorizontalRuleBuilder;
 import ru.kelcuprum.alinlib.gui.components.builder.text.TextBuilder;
+import ru.kelcuprum.alinlib.gui.screens.DialogScreen;
 import ru.pplh.mod.PepeLandHelper;
 import ru.pplh.mod.api.PepeLandHelperAPI;
 import ru.pplh.mod.api.components.SearchResult;
@@ -135,9 +136,14 @@ public class ProjectsScreen extends AbstractPPLScreen {
         long cur = System.currentTimeMillis();
         long limit = 750;
         if(cur - lastSearch <= limit){
-            if(count > (lastProjects == null ? 4 : lastProjects.pages())){
-                Util.getPlatform().openUri("https://wfu.kelcu.ru/vpEJaZQ");
-                AlinLib.MINECRAFT.setScreen(builder.parent);
+            if(count > (lastProjects == null ? 4 : lastProjects.pages()*2)){
+                AlinLib.MINECRAFT.setScreen(new DialogScreen(builder.parent, new String[]{
+                        "[...]",
+                        "[Ты долбишь как птица из этой ссылке -> i.clovi.art/vpEJaZQ]",
+                        "[Пожалуйста, не кликай так быстро.]",
+                        "[Иначе сервер на тебя обидится и мировая машина мигом рухнет.]",
+                        "[Надеюсь ты понял(а).]"
+                }, null));
             } else count++;
         } else if(cur - lastSearch > limit) {
             lastSearch = cur;
