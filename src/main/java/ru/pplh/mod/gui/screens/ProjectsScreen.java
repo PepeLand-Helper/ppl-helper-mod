@@ -139,10 +139,10 @@ public class ProjectsScreen extends AbstractPPLScreen {
             if(count > (lastProjects == null ? 4 : lastProjects.pages()*2)){
                 AlinLib.MINECRAFT.setScreen(new DialogScreen(builder.parent, new String[]{
                         "[...]",
-                        "[Ты долбишь как птица из этой ссылке -> i.clovi.art/vpEJaZQ]",
+                        "[Ты долбишь как птица из этой ссылки -> i.clovi.art/vpEJaZQ]",
                         "[Пожалуйста, не кликай так быстро.]",
-                        "[Иначе сервер на тебя обидится и мировая машина мигом рухнет.]",
-                        "[Надеюсь ты понял(а).]"
+                        "[Иначе сервер на тебя обидится, и Мировая Машина мигом рухнет.]",
+                        "[Надеюсь, ты понял(а).]"
                 }, null));
             } else count++;
         } else if(cur - lastSearch > limit) {
