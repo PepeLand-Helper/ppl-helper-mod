@@ -79,6 +79,10 @@ public class ConfigScreen {
                 .addWidget(new HorizontalRuleBuilder(Component.translatable("pplhelper.configs.urls")))
                 .addWidget(new EditBoxBuilder(Component.translatable("pplhelper.configs.modrinth_url")).setValue("https://modrinth.com/").setConfig(PepeLandHelper.config, "MODRINTH_URL"));
 
+        builder.addWidget(new HorizontalRuleBuilder(Component.translatable("pplhelper.configs.ds")))
+                .addWidget(new EditBoxBuilder(Component.translatable("pplhelper.configs.ds.details")).setValue("Играет на Pepeland - %playersCount% / %maxPlayers%").setConfig(PepeLandHelper.config, "DS_DETAILS"))
+                .addWidget(new EditBoxBuilder(Component.translatable("pplhelper.configs.ds.state")).setValue("%worldName%").setConfig(PepeLandHelper.config, "DS_STATE"));
+
         return builder.build();
     }
 }

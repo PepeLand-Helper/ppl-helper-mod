@@ -86,6 +86,9 @@ dependencies {
         modImplementation "ru.kelcuprum:ActionBarInfo-fabric:${rootProject.abi}+mc${project.abi_minecraft_version == null ? project.minecraft_version : project.abi_minecraft_version}"
     }
 
+    // https://mvnrepository.com/artifact/com.github.jncrmx/discord-game-sdk4j
+    modImplementation 'com.github.jncrmx:discord-game-sdk4j:0.5.5'
+    include 'com.github.jncrmx:discord-game-sdk4j:0.5.5'
 
     subprojects.each {
         implementation project(path: ":${it.name}", configuration: 'namedElements')
