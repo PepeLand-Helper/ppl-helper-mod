@@ -2,8 +2,8 @@
 Проект направленный на помощь игроку в ориентировании на сервере.
 
 ## Авто-обновление
-В моде реализовано авто-обновление официального ресурс пака PepeLand
-Эта функция сделана на основе проекта [PPL Pack Updater от AndcoolSystems](/mod/ppl-pack-updater/), отличия от его проекта в том, что здесь по другому реализованы функции и добавлены графические элементы
+В моде реализовано авто-обновление официального ресурс пака PepeLand.
+Эта функция сделана на основе проекта [PPL Pack Updater от AndcoolSystems](https://modrinth.com/mod/ppl-pack-updater). Отличия от его проекта в том, что здесь по другому реализованы функции и добавлены графические элементы
 <details> 
 <summary>Скриншоты</summary>
 
@@ -76,6 +76,6 @@
 </details>
 
 [![pepeland](https://wf.kelcu.ru/kel-budges/ppl/Made%20for.svg)](https://pepeland.net)
-[![alinlib](https://wf.kelcu.ru/kel-budges/alinlib/Requires.svg)](/mod/alinlib)
+[![alinlib](https://wf.kelcu.ru/kel-budges/alinlib/Requires.svg)](https://modrinth.com/mod/alinlib)
 
 > *Данный проект не является официальной частью сети серверов PepeLand.
