@@ -3,3 +3,4 @@
 - Добавлена интеграция с Discord (по PR #14)
 - Добавлена поддержка SailStatus 2.2.0-alpha.12
 - Добавлена локализация для модулей Action Bar Info
+- ![nyehehehe](https://cdn.7tv.app/emote/01H9CA48AR000EKTW7YX78MFRW/4x.png)
