@@ -74,6 +74,11 @@ dependencies {
     shade(implementation("ru.kelcuprum:java-express:0.2.4-dev.5"))
     implementation("meteordevelopment:starscript:0.3.4")
 
+
+    shade(implementation("com.kohlschutter.junixsocket:junixsocket-common:2.7.0"))
+    shade(implementation("com.kohlschutter.junixsocket:junixsocket-native-common:2.7.0"))
+    shade(implementation("io.github.cdagaming:DiscordIPC:0.11.0"))
+
     if (mod_brand == 'fabric') {
         modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
         modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
@@ -81,7 +86,8 @@ dependencies {
         modImplementation "maven.modrinth:pochatok:${project.pochatok}"
         modImplementation "maven.modrinth:litematica:${project.litematica}"
         modImplementation "maven.modrinth:malilib:${project.malilib}"
-        modImplementation "maven.modrinth:sailstatus:${rootProject.sailstatus}"
+        modCompileOnly "maven.modrinth:sailstatus:${rootProject.sailstatus}"
+//        modImplementation "ru.kelcuprum:SailStatus-fabric:2.2.0-alpha.12-dt.3+mc1.21.8"
         modCompileOnly "maven.modrinth:minedows:${project.minedows}"
         modImplementation "ru.kelcuprum:AlinLib-fabric:${rootProject.alinlib}+mc${project.alinlib_minecraft_version == null ? project.minecraft_version : project.alinlib_minecraft_version}"
         modImplementation "ru.kelcuprum:ActionBarInfo-fabric:${rootProject.abi}+mc${project.abi_minecraft_version == null ? project.minecraft_version : project.abi_minecraft_version}"

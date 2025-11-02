@@ -3,6 +3,7 @@ package ru.pplh.mod.gui.screens.configs;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import ru.kelcu.windows.screens.components.alinlib.ButtonBoolean;
 import ru.kelcuprum.abi.ActionBarInfo;
 import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.gui.components.builder.button.ButtonBooleanBuilder;
@@ -70,13 +71,17 @@ public class ConfigScreen {
                     .addWidget(new EditBoxBuilder(Component.translatable("pplhelper.configs.sailstatus.art")).setValue("https://wf.kelcu.ru/icons/mc_brush.png").setConfig(PepeLandHelper.config, "SAILSTATUS.ASSETS.WORLD_ART"))
                     .addWidget(new EditBoxBuilder(Component.translatable("pplhelper.configs.sailstatus.art.old")).setValue("https://wf.kelcu.ru/icons/mc_brush.png").setConfig(PepeLandHelper.config, "SAILSTATUS.ASSETS.WORLD_ART.OLD"));
         }
+        builder.addWidget(new HorizontalRuleBuilder(Component.translatable("pplhelper.configs.ds")))
+                .addWidget(new TextBuilder(Component.translatable("pplhelper.configs.discord.warning")).setType(TextBuilder.TYPE.BLOCKQUOTE))
+                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.discord.enable"), false).setConfig(PepeLandHelper.config, "DISCORD"))
+                .addWidget(new EditBoxBuilder(Component.translatable("pplhelper.configs.discord.details")).setValue(Component.translatable("pplhelper.configs.discord.details.default").getString()).setConfig(PepeLandHelper.config, "DISCORD.DETAILS"))
+                .addWidget(new EditBoxBuilder(Component.translatable("pplhelper.configs.discord.state")).setValue(Component.translatable("pplhelper.configs.discord.state.default").getString()).setConfig(PepeLandHelper.config, "DISCORD.STATE"));
         builder.addWidget(new HorizontalRuleBuilder(Component.translatable("pplhelper.project.schematic")))
                 .addWidget(new SliderBuilder(Component.translatable("pplhelper.project.schematic.total_blocks")).setMin(25).setMax(1000).setDefaultValue(50).setConfig(PepeLandHelper.config, "SCHEMATIC.MAX_SIZE"));
 
         builder.addWidget(new HorizontalRuleBuilder(Component.translatable("pplhelper.configs.timer")))
                 .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.timer.restart"), true).setConfig(PepeLandHelper.config, "TIMER.RESTART"))
                 .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.timer.join"), true).setConfig(PepeLandHelper.config, "TIMER.JOIN"));
-
 //        builder.addWidget(new HorizontalRuleBuilder(Component.translatable("pplhelper.configs.updater")))
 //                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.updater.notice"), true).setConfig(PepeLandHelper.config,"PPLH.NOTICE"))
 //                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.updater.auto_update"), false).setConfig(PepeLandHelper.config,"PPLH.AUTO_UPDATE"))

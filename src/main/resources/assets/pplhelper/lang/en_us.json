@@ -236,16 +236,15 @@
   "pplhelper.configs.stealth.current_world": "Стелс в определенных мирах",
   "pplhelper.configs.stealth.worlds": "Стелс в определенных мирах",
 
+  "pplhelper.configs.ds": "Дискорд активность",
+  "pplhelper.configs.discord.warning": "При изменении данного параметра, он применится после перезапуска.\nЕсли конечно у вас не установлен SailStatus",
+  "pplhelper.configs.discord.enable": "Включить активность Discord",
+  "pplhelper.configs.discord.details": "Название",
+  "pplhelper.configs.discord.state": "Информация",
 
+  "pplhelper.configs.discord.details.default": "Играет на PepeLand",
+  "pplhelper.configs.discord.state.default": "{pplhelper.world} • {pplhelper.tps}TPS • {pplhelper.online} / {pplhelper.max_online}",
 
-
-  "pwshot.single":    "Альт. мир",
-  "pwshot.start":     "Пуск",
-  "pwshot.start.alt": "Пуск (Альт)",
-  "pwshot.options":   "Параметры",
-  "pwshot.exit":      "Выход",
-  "pwshot.mods":      "Моды",
-
-  "pwshot.lobby":     "Переместиться",
-  "pwshot.other":     "Заметки"
+  "pplhelper.module.info": "Информация из таба (PepeLand)",
+  "pplhelper.module.follow_coordinates": "Отслеживаемые координаты"
 }

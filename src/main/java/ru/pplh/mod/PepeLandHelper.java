@@ -15,28 +15,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.LerpingBossEvent;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.entity.player.PlayerRenderer;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBossEventPacket;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.commands.FillCommand;
-import net.minecraft.server.commands.data.BlockDataAccessor;
-import net.minecraft.server.commands.data.DataCommands;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.BossEvent;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.PlayerHeadItem;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.PlayerHeadBlock;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 import org.apache.logging.log4j.Level;
 import org.lwjgl.glfw.GLFW;
 import org.meteordev.starscript.value.Value;
@@ -67,11 +52,12 @@ import ru.pplh.mod.command.PPLHelperCommand;
 import ru.pplh.mod.gui.screens.*;
 import ru.pplh.mod.gui.screens.*;
 import ru.pplh.mod.gui.screens.configs.ConfigScreen;
-import ru.pplh.mod.gui.screens.message.NewUpdateScreen;
 import ru.pplh.mod.gui.style.VanillaLikeStyle;
 import ru.pplh.mod.interactive.InteractiveManager;
+import ru.pplh.mod.sailstatus.SailStatusManager;
 import ru.pplh.mod.test.GUIRender;
 import ru.pplh.mod.test.LevelTick;
+import ru.pplh.mod.utils.DiscordActivityManager;
 import ru.pplh.mod.utils.FollowManager;
 import ru.pplh.mod.utils.TabHelper;
 import ru.pplh.mod.utils.TradeManager;
@@ -86,7 +72,6 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import static java.lang.Integer.parseInt;
-import static net.minecraft.core.component.DataComponents.CUSTOM_NAME;
 import static net.minecraft.world.item.Items.LIGHT;
 import static net.minecraft.world.item.Items.NETHER_STAR;
 import static ru.kelcuprum.alinlib.gui.Icons.*;
@@ -245,7 +230,33 @@ public class PepeLandHelper implements ClientModInitializer {
                         .set("pplhelper.online", () -> Value.number(TabHelper.getOnline()))
                         .set("pplhelper.max_online", () -> Value.number(TabHelper.getMaxOnline()))
         );
+
+        // -=-=-=- Дискорд активность -=-=-=-
+        if(isInstalledSailStatus) {
+            SailStatusManager.register();
+        } else if(config.getBoolean("DISCORD", false)) {
+            DiscordActivityManager.initialize();
+            ClientTickEvents.END_CLIENT_TICK.register(this::onClientTick);
+        }
     }
+    // -=-=-=- Вермя последнего обновления дс активности -=-=-=-
+    private static long discordRpcLastUpdatedTime = 0;
+    private void onClientTick(Minecraft minecraft) {
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - discordRpcLastUpdatedTime < 1000) return;
+        if (TabHelper.getWorld() == null) DiscordActivityManager.clearPresence();
+
+        discordRpcLastUpdatedTime = currentTime;
+
+        if (playerInPPL()) {
+            try {
+                DiscordActivityManager.updatePresence();
+            } catch (RuntimeException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
     public static AbstractBuilder[] getPanelWidgets(Screen parent, Screen current) {
         boolean apiEnable = PepeLandHelperAPI.apiAvailable();
         AbstractBuilder[] buttons = new AbstractBuilder[]{
@@ -678,6 +689,7 @@ public class PepeLandHelper implements ClientModInitializer {
     }
 
     public static boolean playerInPPL() {
+        if(AlinLib.MINECRAFT.level == null) return false;
         return isTestSubject() || (AlinLib.MINECRAFT.getCurrentServer() != null && AlinLib.MINECRAFT.getCurrentServer().ip.contains("pepeland.net"));
     }
 
