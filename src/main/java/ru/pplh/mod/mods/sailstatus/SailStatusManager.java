@@ -1,4 +1,4 @@
-package ru.pplh.mod.sailstatus;
+package ru.pplh.mod.mods.sailstatus;
 
 import ru.kelcuprum.sailstatus.SailStatus;
 

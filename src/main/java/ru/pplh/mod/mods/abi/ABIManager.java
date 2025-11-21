@@ -1,4 +1,4 @@
-package ru.pplh.mod.abi;
+package ru.pplh.mod.mods.abi;
 
 import ru.kelcuprum.abi.modules.ModulesManager;
 

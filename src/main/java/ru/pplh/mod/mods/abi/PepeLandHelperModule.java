@@ -1,4 +1,4 @@
-package ru.pplh.mod.abi;
+package ru.pplh.mod.mods.abi;
 
 import net.minecraft.network.chat.Component;
 import ru.kelcuprum.abi.ActionBarInfo;
