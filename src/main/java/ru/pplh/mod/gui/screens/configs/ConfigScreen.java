@@ -88,7 +88,7 @@ public class ConfigScreen {
 //                .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.q.two_dot_zero_update"), true).setConfig(PepeLandHelper.config,"UPDATER.FOLLOW_TWO_DOT_ZERO"));
         builder.addWidget(new HorizontalRuleBuilder(Component.translatable("pplhelper.configs.api")))
                 .addWidget(new ButtonBooleanBuilder(Component.translatable("pplhelper.configs.offline_mode"), false).setConfig(PepeLandHelper.config, "OFFLINE_MODE"))
-                .addWidget(new EditBoxBuilder(Component.translatable("pplhelper.configs.api_url")).setValue("https://a-api.pplh.ru/").setConfig(PepeLandHelper.config, "API_URL"))
+                .addWidget(new EditBoxBuilder(Component.translatable("pplhelper.configs.api_url")).setValue("https://api.pplh.ru/").setConfig(PepeLandHelper.config, "API_URL"))
                 .addWidget(new EditBoxBuilder(Component.translatable("pplhelper.configs.auth_url")).setValue("https://auth.pplh.ru/").setConfig(PepeLandHelper.config, "oauth.url"))
                 .addWidget(new HorizontalRuleBuilder(Component.translatable("pplhelper.configs.urls")))
                 .addWidget(new EditBoxBuilder(Component.translatable("pplhelper.configs.modrinth_url")).setValue("https://modrinth.com/").setConfig(PepeLandHelper.config, "MODRINTH_URL"));

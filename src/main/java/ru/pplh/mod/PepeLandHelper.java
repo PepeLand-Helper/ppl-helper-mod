@@ -3,6 +3,8 @@ package ru.pplh.mod;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.platform.DepthTestFunction;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -14,6 +16,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.LerpingBossEvent;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBossEventPacket;
 import net.minecraft.resources.ResourceLocation;
@@ -21,6 +24,7 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.BossEvent;
+import net.minecraft.world.level.block.entity.BeaconBlockEntity;
 import org.apache.logging.log4j.Level;
 import org.lwjgl.glfw.GLFW;
 import org.meteordev.starscript.value.Value;
@@ -56,10 +60,7 @@ import ru.pplh.mod.mods.minedows.MinedowsManager;
 import ru.pplh.mod.mods.sailstatus.SailStatusManager;
 import ru.pplh.mod.test.GUIRender;
 import ru.pplh.mod.test.LevelTick;
-import ru.pplh.mod.utils.DiscordActivityManager;
-import ru.pplh.mod.utils.FollowManager;
-import ru.pplh.mod.utils.TabHelper;
-import ru.pplh.mod.utils.TradeManager;
+import ru.pplh.mod.utils.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -102,11 +103,14 @@ public class PepeLandHelper implements ClientModInitializer {
     public static String[] sct = new String[]{"ppl9"};
     public static VanillaLikeStyle vanillaLikeStyle = new VanillaLikeStyle();
 
+
     @Override
     public void onInitializeClient() {
         LOG.log("-=-=-=-=-=-=-=-", Level.WARN);
         LOG.log("Данный проект не является официальной частью сети серверов PepeLand", Level.WARN);
         LOG.log("-=-=-=-=-=-=-=-", Level.WARN);
+        LevelRenderingUtils.init();
+//        Minecraft.getInstance().levelRenderer.
         StealthManager.registerActiveManager(() -> {
             boolean isActive = false;
             if (config.getBoolean("STEALTH", false) && playerInPPL() && TabHelper.getWorld() != null) {
@@ -148,7 +152,6 @@ public class PepeLandHelper implements ClientModInitializer {
             if (playerInPPL() && s.player != null) {
                 InteractiveManager.checkPlayerPosition(s.player);
             }
-
         });
 //        net.theevilm.pochatok.PochatokClient
         // -=-=-=- Тесты -=-=-=-
@@ -189,6 +192,11 @@ public class PepeLandHelper implements ClientModInitializer {
                 GLFW.GLFW_KEY_UNKNOWN, // The keycode of the key
                 "pplhelper"
         ));
+        KeyMapping key7 = KeyMappingHelper.register(new KeyMapping(
+                "pplhelper.key.lobby",
+                GLFW.GLFW_KEY_UNKNOWN, // The keycode of the key
+                "pplhelper"
+        ));
         ClientTickEvents.START_CLIENT_TICK.register((s) -> {
             if (gameStarted && loginAval != (user == null)) {
                 loginAval = user == null;
@@ -218,6 +226,7 @@ public class PepeLandHelper implements ClientModInitializer {
                 config.setBoolean(String.format("STEALTH.WORLD.%s", TabHelper.getWorld().shortName.toUpperCase()), !config.getBoolean(String.format("STEALTH.WORLD.%s", TabHelper.getWorld().shortName.toUpperCase()), true));
             if (key6.consumeClick())
                 config.setBoolean("STEALTH.CURRENT_WORLD", !config.getBoolean("STEALTH.CURRENT_WORLD", true));
+            if(key7.consumeClick() && playerInPPL()) PepeLandHelper.executeCommand(AlinLib.MINECRAFT.player, "/lobby");
         });
         // -=-=-=- Локализация -=-=-=-
         LocalizationEvents.DEFAULT_PARSER_INIT.register(starScript -> starScript.ss.set("pplhelper.world", () -> {

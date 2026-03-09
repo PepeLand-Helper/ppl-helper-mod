@@ -50,15 +50,13 @@ public class LocatorBarRender {
         if (relativeYaw <= -61.0 || relativeYaw > 60.0)  return;
 
         Waypoint.Icon config = new Waypoint.Icon();
-        config.style = ResourceKey.create(WaypointStyleAssets.ROOT_ID, ResourceLocation.fromNamespaceAndPath("pplhelper", "project"));
+        config.style = ResourceKey.create(WaypointStyleAssets.ROOT_ID, ResourceLocation.fromNamespaceAndPath("pplhelper", "star"));
 
         WaypointStyle waypointStyleAsset = client.getWaypointStyles().get(config.style);
         ResourceLocation ResourceLocation = waypointStyleAsset.sprite(
                 (float) Math.sqrt(lodestone.distanceToSqr(client.cameraEntity.position()))
         );
-        int color = config.color.orElseGet(() -> ARGB.setBrightness(
-                ARGB.color(255, -1), 0.9F
-        ));
+        int color = config.color.orElse(CONVICT);
 
         int x = Mth.ceil((context.guiWidth() - 9) / 2.0F) + (int)(relativeYaw * 173.0 / 2.0 / 60.0);
         context.blitSprite(RenderPipelines.GUI_TEXTURED, ResourceLocation, x, centerY - 2, 9, 9, color);

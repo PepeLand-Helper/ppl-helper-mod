@@ -61,25 +61,20 @@ public class TradeManager {
 
     public static Category getItemCategory(String id){
         Category category = null;
+        id = id.replace("minecraft:", "");
+        PepeLandHelper.LOG.log(id);
         if(PepeLandHelper.tradeRegistry.keySet().isEmpty()) return null;
         else {
             String finalCategoryName = "";
             for(String categoryName : PepeLandHelper.tradeRegistry.keySet()){
-                JsonArray jsonArray = PepeLandHelper.tradeRegistry.getAsJsonArray(categoryName);
+                PepeLandHelper.LOG.log(categoryName);
                 boolean isValidCategory = false;
-                for(JsonElement jsonElement : jsonArray){
-                    JsonObject jsonObject = (JsonObject) jsonElement;
-                    String itemID = getStringInJSON("registry", jsonObject, null);
-                    if(itemID == null) throw new RuntimeException("registry == null");
-                    else if(itemID.equalsIgnoreCase(id)){
-                        isValidCategory = true;
-                        break;
-                    }
+                if(categoryName.equalsIgnoreCase(id)){
+                    JsonArray jsonArray = PepeLandHelper.tradeRegistry.getAsJsonArray(categoryName);
+                    finalCategoryName = jsonArray.get(0).getAsJsonObject().get("registry").getAsString();
+                    isValidCategory = true;
                 }
-                if(isValidCategory){
-                    finalCategoryName = categoryName;
-                    break;
-                }
+                if(isValidCategory) break;
             }
 
             if(hasJSONElement(String.format("aligns.%s", finalCategoryName), PepeLandHelper.trade)){

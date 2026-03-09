@@ -60,7 +60,7 @@ public class ChatFilter {
     public static boolean isContainsNWords(String message) {
         boolean response = false;
         String[] args = message.split(" ");
-        String[] words = PepeLandHelper.config.getString("CHAT.FILTER.NWORDS", "хоккей, хоккейный, матч").replaceAll("[ ]", "").split(",");
+        String[] words = PepeLandHelper.config.getString("CHAT.FILTER.NWORDS", "").replaceAll("[ ]", "").split(",");
         for (String arg : args) {
             for (String word : words) {
                 if (arg.equals(word)) {
@@ -75,7 +75,7 @@ public class ChatFilter {
     public static boolean isContainsGandons(String message) {
         boolean response = false;
         message = message.replaceAll("\\[Мир: (.+?)] \\[G]", "").replace("[G] ", "").toLowerCase();
-        String[] words = PepeLandHelper.config.getString("CHAT.FILTER.GANDONS", "GaszovayaPlita").replaceAll("[ ]", "").split(",");
+        String[] words = PepeLandHelper.config.getString("CHAT.FILTER.GANDONS", "").replaceAll("[ ]", "").split(",");
         for (String word : words) {
             if (message.startsWith(word.toLowerCase()) && !mention(word)) {
                 response = true;

@@ -1,24 +1,18 @@
 apply plugin: 'maven-publish'
-apply plugin: 'dev.architectury.loom'
+apply plugin: 'fabric-loom'
 apply plugin: 'com.replaymod.preprocess'
 apply plugin: 'me.fallenbreath.yamlang'
 apply plugin: 'io.github.goooler.shadow'
 apply plugin: 'com.modrinth.minotaur'
 
-def mod_brand = project.name.endsWith("-common") ? 'common' : (loom.platform.get() as String).toLowerCase()
-assert mod_brand in ['fabric', 'forge', 'neoforge', 'common']
+def mod_brand = "fabric"
 archivesBaseName = (project.archives_base_name == null ? rootProject.archives_base_name : project.archives_base_name) + "-" + mod_brand
 group = rootProject.maven_group
 
 int mcVersion = 1
 preprocess {
     mcVersion = vars.get()["MC"] as int
-    tabIndentation = true
-    vars.put("WALTER", archivesBaseName.startsWith("Walter") ? 1 : 0)
     vars.put("MC", mcVersion)
-    vars.put("FABRIC", mod_brand == 'fabric' ? 1 : 0)
-    vars.put("FORGE", mod_brand == 'forge' ? 1 : 0)
-    vars.put("NEOFORGE", mod_brand == 'neoforge' ? 1 : 0)
 }
 
 repositories {
@@ -45,11 +39,6 @@ loom {
         vmArgs '-Dmixin.debug.export=true'
     }
     accessWidenerPath = file("../../src/main/resources/pplhelper.accesswidener")
-    if (mod_brand == 'forge') {
-        forge {
-            convertAccessWideners = true
-        }
-    }
 }
 remapJar {
 //    remapperIsolation = true
@@ -79,7 +68,6 @@ dependencies {
     shade(implementation("com.kohlschutter.junixsocket:junixsocket-native-common:2.7.0"))
     shade(implementation("io.github.cdagaming:DiscordIPC:0.11.0"))
 
-    if (mod_brand == 'fabric') {
         modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
         modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
         modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
@@ -91,7 +79,7 @@ dependencies {
         modCompileOnly "maven.modrinth:minedows:${project.minedows}"
         modImplementation "ru.kelcuprum:AlinLib-fabric:${rootProject.alinlib}+mc${project.alinlib_minecraft_version == null ? project.minecraft_version : project.alinlib_minecraft_version}"
         modImplementation "ru.kelcuprum:ActionBarInfo-fabric:${rootProject.abi}+mc${project.abi_minecraft_version == null ? project.minecraft_version : project.abi_minecraft_version}"
-    }
+
 
 
     subprojects.each {
@@ -133,25 +121,9 @@ version = project.mod_version + "+mc" + project.minecraft_version
 processResources {
     inputs.property "version", version
     inputs.property "minecraft_dependency", project.minecraft_dependency
-
-    [
-            'fabric'  : ['fabric.mod.json'],
-            'neoforge': ['META-INF/neoforge.mods.toml'],
-            'forge'   : ['META-INF/mods.toml', 'pack.mcmeta'],
-    ].forEach { brand, files ->
-        files.forEach { name ->
-            if (brand == mod_brand) {
-                filesMatching(name) {
-                    def valueMap = [
-                            "version"             : version,
-                            "minecraft_dependency": project.minecraft_dependency,
-                    ]
-                    expand valueMap
-                }
-            } else {
-                exclude name
-            }
-        }
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version,
+                "minecraft_dependency": project.minecraft_version
     }
 }
 
@@ -167,15 +139,11 @@ modrinth {
     project.modrinth_versions.split(", ").each {
         gameVersions.add it
     }
-    if(mod_brand == "fabric") loaders = ["fabric", "quilt"]
-    else loaders = [mod_brand]
+    loaders = ["fabric", "quilt"]
     dependencies {
         required.project "alinlib"
-//        required.version "mJtSihVH"
-        if(mod_brand == "fabric"){
             required.project "fabric-api"
             optional.project "modmenu"
-        }
         optional.project "litematica"
     }
 }

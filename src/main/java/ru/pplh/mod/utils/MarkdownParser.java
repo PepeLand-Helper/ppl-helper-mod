@@ -43,7 +43,11 @@ public class MarkdownParser {
                 }
                 int iWidth = width - 230;
                 int iHeight = 20;
-                widgets.add(new WebImageWidget(x, -Integer.MAX_VALUE, iWidth, iHeight, unparse(string.replaceAll("!\\[(.+?)]\\((.+?)\\)", "$2")), unparse(string.replaceAll("!\\[(.+?)]\\((.+?)\\)", "$1")), true, Component.empty()));
+                String url = unparse(string.replaceAll("!\\[(.+?)]\\((.+?)\\)", "$2"));
+                String[] path = url.split("/");
+                String id = String.format(idForImage,unparse(string.replaceAll("!\\[(.+?)]\\((.+?)\\)", "$1")));
+                id = id.replace("image.png", String.format(path[path[path.length-1].isEmpty() ? path.length-2 : path.length-1]));
+                widgets.add(new WebImageWidget(x, -Integer.MAX_VALUE, iWidth, iHeight, url, id, true, Component.empty()));
             } else if (string.startsWith("<hr") && string.endsWith(">")) {
                 if (lastIsPlain) {
                     lastIsPlain = false;
