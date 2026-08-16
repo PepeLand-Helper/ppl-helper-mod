@@ -5,15 +5,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.GsonHelper;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 import ru.kelcuprum.alinlib.AlinLib;
+import ru.kelcuprum.alinlib.WebAPI;
 import ru.pplh.mod.utils.WebUtils;
 import ru.pplh.mod.PepeLandHelper;
 import ru.pplh.mod.api.components.News;
@@ -53,16 +46,7 @@ public class PepeLandHelperAPI {
                 lastApiAvailable = false;
             }
             try {
-                HttpClient httpClient = new DefaultHttpClient();
-                final HttpParams httpParams = httpClient.getParams();
-
-                HttpConnectionParams.setConnectionTimeout(httpParams, 5000);
-                HttpConnectionParams.setSoTimeout(httpParams, 5000);
-
-                final HttpGet httpget = new HttpGet(getURI("ping"));
-                final HttpResponse response = httpClient.execute(httpget);
-                final HttpEntity entity = response.getEntity();
-                JsonObject content = GsonHelper.parse(new String(entity.getContent().readAllBytes()));
+                JsonObject content = WebAPI.getJsonObject(getURI("ping"));//GsonHelper.parse(new String(entity.getContent().readAllBytes()));
                 lastApiAvailable = content.has("message") && content.has("time");
             } catch (IOException ex) {
                 PepeLandHelper.LOG.error("Роскомнадзор дошёл и до хелпера... пупупу...");

@@ -1,13 +1,13 @@
 package ru.pplh.mod.gui.components;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 //#if MC >= 12106
 import net.minecraft.client.renderer.RenderPipelines;
 //#endif
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.gui.GuiUtils;
@@ -34,9 +34,9 @@ public class RPButton extends Button {
     }
 
     @Override
-    public void renderText(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void renderText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (getY() < guiGraphics.guiHeight() && !(getY() <= -getHeight())) {
-            ResourceLocation icon = track.icon.isBlank() ? PEPE : TextureHelper.getTexture(track.icon, track.id);
+            Identifier icon = track.icon.isBlank() ? PEPE : TextureHelper.getTexture(track.icon, track.id);
             guiGraphics.blit(
                     //#if MC >= 12106
                     RenderPipelines.GUI_TEXTURED,
@@ -49,14 +49,14 @@ public class RPButton extends Button {
         }
     }
 
-    protected void renderScrollingString(GuiGraphics guiGraphics, Font font, Component message, int y) {
+    protected void renderScrollingString(GuiGraphicsExtractor guiGraphics, Font font, Component message, int y) {
         int k = this.getX() + 5 + 40;
         int l = this.getX() + this.getWidth() - 5;
-        renderScrollingString(guiGraphics, font, message, k, y, l, y + font.lineHeight, -1);
+        guiGraphics.textRenderer().acceptScrollingWithDefaultCenter(message, k, l, y, y+font.lineHeight);
     }
 
-    protected void renderString(GuiGraphics guiGraphics, String text, int x, int y) {
+    protected void renderString(GuiGraphicsExtractor guiGraphics, String text, int x, int y) {
         if (getWidth() - 50 < AlinLib.MINECRAFT.font.width(text)) renderScrollingString(guiGraphics, AlinLib.MINECRAFT.font, Component.literal(text), y - 1);
-        else guiGraphics.drawString(AlinLib.MINECRAFT.font, text, x, y, -1);
+        else guiGraphics.text(AlinLib.MINECRAFT.font, text, x, y, -1);
     }
 }

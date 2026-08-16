@@ -1,7 +1,7 @@
 package ru.pplh.mod.gui.screens.message;
 
-import net.minecraft.Util;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.util.Util;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 //#if MC >= 12106
 import net.minecraft.client.renderer.RenderPipelines;
@@ -96,8 +96,8 @@ public class ErrorScreen extends Screen {
     }
     public double startFireX = Math.random();
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
-        super.renderBackground(guiGraphics, i, j, f);
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
+        super.extractBackground(guiGraphics, i, j, f);
         int fireSize = (int) Math.max(32, height * 0.35);
         int startX = (int) -(fireSize*startFireX);
         for(int l = 0; true; l++){
@@ -130,6 +130,6 @@ public class ErrorScreen extends Screen {
     @Override
     public void onClose() {
         assert this.minecraft != null;
-        this.minecraft.setScreen(parent);
+        this.minecraft.gui.setScreen(parent);
     }
 }

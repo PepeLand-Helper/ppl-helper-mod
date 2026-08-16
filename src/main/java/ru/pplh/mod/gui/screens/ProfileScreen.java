@@ -42,12 +42,12 @@ public class ProfileScreen extends AbstractPPLScreen {
                 .addPanelWidget(new UserCard(0, 0, 20, user))
                 .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.oauth.open_browser"))
                         .setIcon(WEB).setCentered(false).setOnPress((s) ->
-                                PepeLandHelper.confirmLinkNow(AlinLib.MINECRAFT.screen, getURI("me", false))))
+                                PepeLandHelper.confirmLinkNow(AlinLib.MINECRAFT.gui.screen(), getURI("me", false))))
                 .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.oauth.leave"))
                         .setIcon(EXIT).setCentered(false).setOnPress((s) -> {
                             PepeLandHelper.user = null;
                             PepeLandHelper.config.setString("oauth.access_token", "");
-                            AlinLib.MINECRAFT.setScreen(screen);
+                            AlinLib.MINECRAFT.gui.setScreen(screen);
                         })));
         this.user = user;
     }
@@ -67,7 +67,7 @@ public class ProfileScreen extends AbstractPPLScreen {
                         builder.addWidget(new ScaledTextBox(Component.translatable("pplhelper.oauth.news"), false, 1.2f));
                         if (user.role.CREATE_NEWS)
                             builder.addWidget(new ButtonBuilder(Component.translatable("pplhelper.oauth.news.create")).setIcon(ADD).setOnPress((s) ->
-                                    PepeLandHelper.confirmLinkNow(AlinLib.MINECRAFT.screen, getURI("news/create", false))));
+                                    PepeLandHelper.confirmLinkNow(AlinLib.MINECRAFT.gui.screen(), getURI("news/create", false))));
                         List<News> news = user.getNews();
                         if (news.isEmpty()) {
                             builder.addWidget(new TextBuilder(Component.translatable("pplhelper.oauth.news.empty")).setType(TextBuilder.TYPE.BLOCKQUOTE).setColor(GROUPIE).setPosition(getX(), 55).setSize(getContentWidth(), 20).build());
@@ -77,7 +77,7 @@ public class ProfileScreen extends AbstractPPLScreen {
                         builder.addWidget(new ScaledTextBox(Component.translatable("pplhelper.oauth.projects"), false, 1.2f));
                         if (user.role.CREATE_PROJECTS)
                             builder.addWidget(new ButtonBuilder(Component.translatable("pplhelper.oauth.projects.create")).setIcon(ADD).setOnPress((s) ->
-                                    PepeLandHelper.confirmLinkNow(AlinLib.MINECRAFT.screen, getURI("projects/create", false))));
+                                    PepeLandHelper.confirmLinkNow(AlinLib.MINECRAFT.gui.screen(), getURI("projects/create", false))));
                         List<Project> projects = user.getProjects();
                         if (projects.isEmpty()) {
                             builder.addWidget(new TextBuilder(Component.translatable("pplhelper.oauth.projects.empty")).setType(TextBuilder.TYPE.BLOCKQUOTE).setColor(GROUPIE).setPosition(getX(), 55).setSize(getContentWidth(), 20).build());
@@ -100,7 +100,7 @@ public class ProfileScreen extends AbstractPPLScreen {
                     loadInfo.start();
                 } catch (Exception ex) {
                     ex.printStackTrace();
-                    AlinLib.MINECRAFT.setScreen(new ErrorScreen(ex, builder.parent));
+                    AlinLib.MINECRAFT.gui.setScreen(new ErrorScreen(ex, builder.parent));
                 }
             }
         } else {

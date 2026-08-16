@@ -7,7 +7,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.arguments.item.ItemArgument;
@@ -41,8 +41,8 @@ import java.util.stream.IntStream;
 import static com.mojang.brigadier.arguments.IntegerArgumentType.getInteger;
 import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
 import static com.mojang.brigadier.arguments.StringArgumentType.*;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 import static ru.pplh.mod.PepeLandHelper.LOG;
 import static ru.pplh.mod.PepeLandHelper.config;
 import static ru.pplh.mod.api.PepeLandAPI.uriEncode;
@@ -53,11 +53,11 @@ public class PPLHelperCommand {
         dispatcher.register(literal("pplh")
                 .then(literal("registry").then(argument("item", ItemArgument.item(registryAccess)).executes((s) -> {
                     ItemInput itemInput = ItemArgument.getItem(s, "item");
-                    LOG.log(itemInput.getItem().getName());
-                    String[] args = itemInput.getItem().getDescriptionId().split("\\.");
+                    LOG.log(itemInput.item().getRegisteredName());
+                    String[] args = itemInput.item().getRegisteredName().split("\\.");
                     TradeManager.Category category = TradeManager.getItemCategory(args[args.length-1]);
                     String itemName = TradeManager.getItemRussianName(args[args.length - 1]);
-                    if(itemName == null || itemName.isEmpty()) itemName = Component.translatable(itemInput.getItem().getDescriptionId()).getString();
+                    if(itemName == null || itemName.isEmpty()) itemName = Component.translatable(itemInput.item().getRegisteredName()).getString();
                     if(category == null) sendFeedback(s, Component.literal(String.format("%s не продаётся!", itemName)));
                     else {
                         sendFeedback(s, Component.empty().append(String.format("%s продаётся в категории ", itemName)).append(Component.literal(category.name()).setStyle(Style.EMPTY.withUnderlined(true).withBold(true))));
@@ -99,14 +99,14 @@ public class PPLHelperCommand {
                                     if (!PepeLandHelper.playerInPPL() || TabHelper.getWorld() == null)
                                         sendFeedback(s, Component.literal("Вы не можете использовать команду вне сервера"));
                                     else {
-                                        FollowManager.setCoordinates("followed", TabHelper.getWorld(), AlinLib.MINECRAFT.player.level().dimension().location().toString(), getInteger(s, "x"), getInteger(s, "z"));
+                                        FollowManager.setCoordinates("followed", TabHelper.getWorld(), AlinLib.MINECRAFT.player.level().dimension().registry().toString(), getInteger(s, "x"), getInteger(s, "z"));
                                     }
                                     return 0;
                                 }).then(argument("world", new WorldArgumentType()).executes((s) -> {
                                     if (!PepeLandHelper.playerInPPL() || TabHelper.getWorld() == null)
                                         sendFeedback(s, Component.literal("Вы не можете использовать команду вне сервера"));
                                     else
-                                        FollowManager.setCoordinates("followed", TabHelper.getWorldByShortName(getString(s, "world")), AlinLib.MINECRAFT.player.level().dimension().location().toString(), getInteger(s, "x"), getInteger(s, "z"));
+                                        FollowManager.setCoordinates("followed", TabHelper.getWorldByShortName(getString(s, "world")), AlinLib.MINECRAFT.player.level().dimension().registry().toString(), getInteger(s, "x"), getInteger(s, "z"));
                                     return 0;
                                 })))
                         )
@@ -265,7 +265,7 @@ public class PPLHelperCommand {
             String playerName = Player.getName();
             if (playerName.replace("_", "").length() <= playerName.length() - 2)
                 playerName = String.format("`%s`", playerName);
-            String command = String.format(Locale.ROOT, "/execute in %s run tp @s %.2f %.2f %.2f %.2f %.2f", AlinLib.MINECRAFT.player.level().dimension().location(), AlinLib.MINECRAFT.player.getX(), AlinLib.MINECRAFT.player.getY(), AlinLib.MINECRAFT.player.getZ(), AlinLib.MINECRAFT.player.getYRot(), AlinLib.MINECRAFT.player.getXRot());
+            String command = String.format(Locale.ROOT, "/execute in %s run tp @s %.2f %.2f %.2f %.2f %.2f", AlinLib.MINECRAFT.player.level().dimension().registry(), AlinLib.MINECRAFT.player.getX(), AlinLib.MINECRAFT.player.getY(), AlinLib.MINECRAFT.player.getZ(), AlinLib.MINECRAFT.player.getYRot(), AlinLib.MINECRAFT.player.getXRot());
             String report = String.format(reportFormat, playerName, TabHelper.getWorld().shortName, command, reasons);
             s.getSource().getClient().keyboardHandler.setClipboard(report);
             sendFeedback(s, Component.literal(String.format("Сообщение репорта было скопировано в буфер обмена:\n%s", report)));

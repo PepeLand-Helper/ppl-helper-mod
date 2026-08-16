@@ -1,7 +1,7 @@
 package ru.pplh.mod.mixin;
 
-import net.minecraft.client.GuiMessageTag;
 import net.minecraft.client.gui.components.ChatComponent;
+import net.minecraft.client.multiplayer.chat.GuiMessageSource;
 import net.minecraft.network.chat.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -15,8 +15,8 @@ import static java.lang.Integer.parseInt;
 
 @Mixin(value = ChatComponent.class, priority = -1)
 public abstract class ChatComponentMixin {
-    @Inject(method = "addMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/MessageSignature;Lnet/minecraft/client/GuiMessageTag;)V", at = @At("HEAD"), cancellable = true)
-    public void addMessage(Component component, MessageSignature messageSignature, GuiMessageTag guiMessageTag, CallbackInfo ci) {
+    @Inject(method = "addMessage", at = @At("HEAD"), cancellable = true)
+    public void addMessage(Component component, MessageSignature signature, GuiMessageSource source, net.minecraft.client.multiplayer.chat.GuiMessageTag tag, CallbackInfo ci) {
         if (!PepeLandHelper.playerInPPL()) return;
         String test = component.getString();
 

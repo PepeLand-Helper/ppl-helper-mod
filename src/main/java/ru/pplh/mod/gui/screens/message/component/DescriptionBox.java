@@ -1,6 +1,6 @@
 package ru.pplh.mod.gui.screens.message.component;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
@@ -59,7 +59,7 @@ public class DescriptionBox extends AbstractWidget {
         super.setPosition(x, y);
     }
 
-    public void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
+    public void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
         List<FormattedCharSequence> list = AlinLib.MINECRAFT.font.split(this.description, this.width - 12);
         guiGraphics.fill(this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height, 1962934272);
         guiGraphics.enableScissor(this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height);
@@ -74,7 +74,7 @@ public class DescriptionBox extends AbstractWidget {
         }
 
         for(FormattedCharSequence text : list) {
-            guiGraphics.drawString(AlinLib.MINECRAFT.font, text, this.getX() + 6, (int)((double)y - this.scrollAmount), -1);
+            guiGraphics.text(AlinLib.MINECRAFT.font, text, this.getX() + 6, (int)((double)y - this.scrollAmount), -1);
             y += this.textSize;
         }
 

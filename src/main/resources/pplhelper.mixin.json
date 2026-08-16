@@ -9,14 +9,13 @@
     "ChatComponentMixin",
     "ChatScreenMixin",
     "PauseScreenMixin",
-    "SplashManagerMixin",
-    "locatorbar.GUIMixin",
-    "locatorbar.LocatorBarMixin"
+    "SplashManagerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
   },
-  "mixins": [
-    "mods.SailStatusMixin"
+  "archives": [
+    "locatorbar.GUIMixin",
+    "locatorbar.LocatorBarMixin"
   ]
 }

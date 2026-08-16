@@ -2,11 +2,11 @@ package ru.pplh.mod.utils;
 
 //#if MC >= 12106
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.WaypointStyle;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
@@ -20,18 +20,18 @@ import static ru.kelcuprum.alinlib.gui.Colors.CONVICT;
 import static ru.kelcuprum.alinlib.gui.Colors.SEADRIVE;
 
 public class LocatorBarRender {
-    private static final ResourceLocation ARROW_UP = ResourceLocation.withDefaultNamespace("hud/locator_bar_arrow_up");
-    private static final ResourceLocation ARROW_DOWN = ResourceLocation.withDefaultNamespace("hud/locator_bar_arrow_down");
+    private static final Identifier ARROW_UP = Identifier.withDefaultNamespace("hud/locator_bar_arrow_up");
+    private static final Identifier ARROW_DOWN = Identifier.withDefaultNamespace("hud/locator_bar_arrow_down");
 
-    public static void renderLodestoneWaypoints(Minecraft client, GuiGraphics context, int centerY) {
+    public static void renderLodestoneWaypoints(Minecraft client, GuiGraphicsExtractor context, int centerY) {
         FollowManager.Coordinates coordinates = FollowManager.getCurrentCoordinates();
-        if (client.player == null || client.cameraEntity == null) return;
+        if (client.player == null || client.getCameraEntity() == null) return;
         if(coordinates != null && FollowManager.playerInCurrentLevel() && FollowManager.playerInCurrentWorld()) {
             renderLodestoneWaypoint(client, context, centerY, coordinates.pos());
         }
         if(TabHelper.getWorld() == TabHelper.Worlds.TRADE && PepeLandHelper.config.getBoolean("LOCATOR_BAR.TRADE", true)){
             for(TradeManager.Category category : TradeManager.categories){
-                if(!playerInArea(AlinLib.MINECRAFT.player.position(), category.pos1(), category.pos2())) renderIconWaypoint(client, context, TradeManager.activeCategory == category ? ResourceLocation.parse("pplhelper:star") : category.icon(), TradeManager.activeCategory == category ? CONVICT : category.color(), category.name().substring(0, 3), centerY, category.center());
+                if(!playerInArea(AlinLib.MINECRAFT.player.position(), category.pos1(), category.pos2())) renderIconWaypoint(client, context, TradeManager.activeCategory == category ? Identifier.parse("pplhelper:star") : category.icon(), TradeManager.activeCategory == category ? CONVICT : category.color(), category.name().substring(0, 3), centerY, category.center());
                 else if(TradeManager.activeCategory == category) TradeManager.activeCategory = null;
             }
         }
@@ -43,28 +43,28 @@ public class LocatorBarRender {
                 (pos1.z <= playerPos.z && playerPos.z <= pos2.z));
     }
 
-    private static void renderLodestoneWaypoint(Minecraft client, GuiGraphics context, int centerY, Vec3 lodestone) {
-        if (client.player == null || client.cameraEntity == null) return;
+    private static void renderLodestoneWaypoint(Minecraft client, GuiGraphicsExtractor context, int centerY, Vec3 lodestone) {
+        if (client.player == null || client.getCameraEntity() == null) return;
 
-        double relativeYaw = getRelativeYaw(lodestone, client.gameRenderer.getMainCamera());
+        double relativeYaw = getRelativeYaw(lodestone, client.gameRenderer.mainCamera());
         if (relativeYaw <= -61.0 || relativeYaw > 60.0)  return;
 
         Waypoint.Icon config = new Waypoint.Icon();
-        config.style = ResourceKey.create(WaypointStyleAssets.ROOT_ID, ResourceLocation.fromNamespaceAndPath("pplhelper", "star"));
+        config.style = ResourceKey.create(WaypointStyleAssets.ROOT_ID, Identifier.fromNamespaceAndPath("pplhelper", "star"));
 
-        WaypointStyle waypointStyleAsset = client.getWaypointStyles().get(config.style);
-        ResourceLocation ResourceLocation = waypointStyleAsset.sprite(
-                (float) Math.sqrt(lodestone.distanceToSqr(client.cameraEntity.position()))
-        );
+//        WaypointStyle waypointStyleAsset = client.getWaypointStyles().get(config.style);
+//        Identifier ResourceLocation = waypointStyleAsset.sprite(
+//                (float) Math.sqrt(lodestone.distanceToSqr(client.getCameraEntity().position()))
+//        );
         int color = config.color.orElse(CONVICT);
 
         int x = Mth.ceil((context.guiWidth() - 9) / 2.0F) + (int)(relativeYaw * 173.0 / 2.0 / 60.0);
-        context.blitSprite(RenderPipelines.GUI_TEXTURED, ResourceLocation, x, centerY - 2, 9, 9, color);
+        context.blitSprite(RenderPipelines.GUI_TEXTURED, Identifier.parse("m:m"), x, centerY - 2, 9, 9, color);
 
         TrackedWaypoint.PitchDirection pitch = getPitch(lodestone, client.gameRenderer);
         if (pitch != TrackedWaypoint.PitchDirection.NONE) {
             int yOffset;
-            ResourceLocation texture;
+            Identifier texture;
             if (pitch == TrackedWaypoint.PitchDirection.DOWN) {
                 yOffset = 6;
                 texture = ARROW_DOWN;
@@ -76,29 +76,29 @@ public class LocatorBarRender {
             context.blitSprite(RenderPipelines.GUI_TEXTURED, texture, x + 1, centerY + yOffset, 7, 5);
         }
     }
-    private static void renderIconWaypoint(Minecraft client, GuiGraphics context, ResourceLocation resourceLocation, int point_color, String name, int centerY, Vec3 lodestone) {
-        if (client.player == null || client.cameraEntity == null) return;
+    private static void renderIconWaypoint(Minecraft client, GuiGraphicsExtractor context, Identifier resourceLocation, int point_color, String name, int centerY, Vec3 lodestone) {
+        if (client.player == null || client.getCameraEntity() == null) return;
 
-        double relativeYaw = getRelativeYaw(lodestone, client.gameRenderer.getMainCamera());
+        double relativeYaw = getRelativeYaw(lodestone, client.gameRenderer.mainCamera());
         if (relativeYaw <= -61.0 || relativeYaw > 60.0)  return;
 
         Waypoint.Icon config = new Waypoint.Icon();
         config.style = ResourceKey.create(WaypointStyleAssets.ROOT_ID, resourceLocation);
 
-        WaypointStyle waypointStyleAsset = client.getWaypointStyles().get(config.style);
-        ResourceLocation ResourceLocation = waypointStyleAsset.sprite(
-                (float) Math.sqrt(lodestone.distanceToSqr(client.cameraEntity.position()))
-        );
+//        WaypointStyle waypointStyleAsset = client.getWaypointStyles().get(config.style);
+//        Identifier ResourceLocation = waypointStyleAsset.sprite(
+//                (float) Math.sqrt(lodestone.distanceToSqr(client.getCameraEntity().position()))
+//        );
         int color = config.color.orElse(point_color);
 
         int x = Mth.ceil((context.guiWidth() - 9) / 2.0F) + (int)(relativeYaw * 173.0 / 2.0 / 60.0);
-        context.blitSprite(RenderPipelines.GUI_TEXTURED, ResourceLocation, x, centerY - 2, 9, 9, color);
-        if(PepeLandHelper.isTestSubject() && PepeLandHelper.config.getBoolean("IM_A_TEST_SUBJECT.LOCATOR.TRADE", false)) context.drawString(AlinLib.MINECRAFT.font, name, x, centerY-5, -1);
+        context.blitSprite(RenderPipelines.GUI_TEXTURED, Identifier.parse("m:m"), x, centerY - 2, 9, 9, color);
+        if(PepeLandHelper.isTestSubject() && PepeLandHelper.config.getBoolean("IM_A_TEST_SUBJECT.LOCATOR.TRADE", false)) context.text(AlinLib.MINECRAFT.font, name, x, centerY-5, -1);
 
         TrackedWaypoint.PitchDirection pitch = getPitch(lodestone, client.gameRenderer);
         if (pitch != TrackedWaypoint.PitchDirection.NONE) {
             int yOffset;
-            ResourceLocation texture;
+            Identifier texture;
             if (pitch == TrackedWaypoint.PitchDirection.DOWN) {
                 yOffset = 6;
                 texture = ARROW_DOWN;

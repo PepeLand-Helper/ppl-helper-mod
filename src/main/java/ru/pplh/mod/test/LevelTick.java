@@ -71,7 +71,8 @@ public class LevelTick implements ClientTickEvents.StartTick{
         sendParticle(x1, y2, z2, color);
     }
     public static void sendParticle(double x, double y, double z, int color){
-        AlinLib.MINECRAFT.levelRenderer.addParticle(
+        assert AlinLib.MINECRAFT.level != null;
+        AlinLib.MINECRAFT.level.addParticle(
                 new DustParticleOptions(color, 1.0f),
                 true, true, x+0.5, y+0.5, z+0.5, 0, 0, 0
         );

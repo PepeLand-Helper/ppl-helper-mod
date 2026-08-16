@@ -1,7 +1,7 @@
 package ru.pplh.mod.gui.screens.message;
 
 import com.google.gson.JsonObject;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 //#if MC >= 12106
 import net.minecraft.client.renderer.RenderPipelines;
@@ -42,8 +42,8 @@ public class DownloadScreen extends Screen {
     }
 
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
-        super.renderBackground(guiGraphics, i, j, f);
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
+        super.extractBackground(guiGraphics, i, j, f);
         guiGraphics.fillGradient(0, 0, this.width, this.height, 0x7F0A2725, 0x7F134E4A);
         guiGraphics.blit(
                 //#if MC >= 12106
@@ -55,19 +55,19 @@ public class DownloadScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int i, int j, float f) {
-        super.render(guiGraphics, i, j, f);
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
+        super.extractRenderState(guiGraphics, i, j, f);
         int y = height / 2 + 30;
-        guiGraphics.drawCenteredString(font, title, width/2, y, -1);
+        guiGraphics.centeredText(font, title, width/2, y, -1);
         long t = (System.currentTimeMillis()-start) % 4000;
         String dodo = t < 1000 ? "" : t < 2000 ? "." : t < 3000 ? ".." : "...";
-        guiGraphics.drawCenteredString(font, Component.empty().append(Component.translatable("pplhelper.pack.download_screen.wait")).append(dodo), width/2, y+15, -1);
+        guiGraphics.centeredText(font, Component.empty().append(Component.translatable("pplhelper.pack.download_screen.wait")).append(dodo), width/2, y+15, -1);
     }
 
     @Override
     public void tick() {
         if(exception != null) {
-            AlinLib.MINECRAFT.setScreen(new ErrorScreen(exception, parent));
+            AlinLib.MINECRAFT.gui.setScreen(new ErrorScreen(exception, parent));
             return;
         }
         if(downloaded) {
@@ -82,7 +82,7 @@ public class DownloadScreen extends Screen {
                     AlinLib.MINECRAFT.getResourcePackRepository().addPack(pack.getId());
             }
             AlinLib.MINECRAFT.options.updateResourcePacks(AlinLib.MINECRAFT.getResourcePackRepository());
-            AlinLib.MINECRAFT.setScreen(parent);
+            AlinLib.MINECRAFT.gui.setScreen(parent);
 
             new ToastBuilder().setTitle(Component.translatable("pplhelper"))
                     .setIcon(PepeLandHelper.Icons.WHITE_PEPE)
@@ -94,6 +94,6 @@ public class DownloadScreen extends Screen {
     public void onClose() {
         if(thread != null && !thread.isInterrupted()) thread.interrupt();
         assert this.minecraft != null;
-        this.minecraft.setScreen(parent);
+        this.minecraft.gui.setScreen(parent);
     }
 }

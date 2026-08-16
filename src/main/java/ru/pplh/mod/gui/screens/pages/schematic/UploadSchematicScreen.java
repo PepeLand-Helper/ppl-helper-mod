@@ -102,7 +102,7 @@ public class UploadSchematicScreen extends Screen {
 
         } catch (Exception ex){
             ex.printStackTrace();
-            AlinLib.MINECRAFT.setScreen(new ErrorScreen(ex, screen));
+            AlinLib.MINECRAFT.gui.setScreen(new ErrorScreen(ex, screen));
         }
     }
 
@@ -122,11 +122,11 @@ public class UploadSchematicScreen extends Screen {
         String result = TinyFileDialogs.tinyfd_openFileDialog(Component.translatable("waterplayer.editor.selector").getString(), defaultString, filters, Component.translatable("waterplayer.editor.selector.filter_description").getString(), false);
         if(result == null) return;
         File file = new File(result);
-        if(file.exists()) AlinLib.MINECRAFT.setScreen(new UploadSchematicScreen(parent, project, file));
+        if(file.exists()) AlinLib.MINECRAFT.gui.setScreen(new UploadSchematicScreen(parent, project, file));
     }
 
     @Override
     public void onClose() {
-        AlinLib.MINECRAFT.setScreen(screen);
+        AlinLib.MINECRAFT.gui.setScreen(screen);
     }
 }

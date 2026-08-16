@@ -25,11 +25,11 @@ public class TabHelper {
     public static Worlds getWorld() {
         if (!PepeLandHelper.playerInPPL()) return null;
         StringBuilder world = new StringBuilder();
-        if (AlinLib.MINECRAFT.gui.getTabList().header == null) {
+        if (AlinLib.MINECRAFT.gui.hud.getTabList().header == null) {
             if (PepeLandHelper.isTestSubject() && PepeLandHelper.config.getBoolean("IM_A_TEST_SUBJECT.ENABLE_WORLD", false))
                 world = new StringBuilder(PepeLandHelper.config.getString("IM_A_TEST_SUBJECT.WORLD", worlds[0]));
         } else {
-            String[] args = AlinLib.MINECRAFT.gui.getTabList().header.getString().split("\n");
+            String[] args = AlinLib.MINECRAFT.gui.hud.getTabList().header.getString().split("\n");
             for (String arg : args) {
                 if (arg.contains("Мир:")) {
                     String[] parsed = arg.replace("Мир:", "").replaceAll("[^A-Za-zА-Яа-я #0-9]", "").split(" ");
@@ -80,8 +80,8 @@ public class TabHelper {
 
     public static double getTPS() {
         double tps = 0;
-        if (!PepeLandHelper.playerInPPL() || AlinLib.MINECRAFT.gui.getTabList().footer == null) return tps;
-        String[] args = AlinLib.MINECRAFT.gui.getTabList().footer.getString().split("\n");
+        if (!PepeLandHelper.playerInPPL() || AlinLib.MINECRAFT.gui.hud.getTabList().footer == null) return tps;
+        String[] args = AlinLib.MINECRAFT.gui.hud.getTabList().footer.getString().split("\n");
         for (String arg : args) {
             if (arg.contains("TPS:")) {
                 String parsed = arg.replace("TPS:", "").replaceAll("[^0-9.]", "");
@@ -93,8 +93,8 @@ public class TabHelper {
 
     public static int getOnline() {
         int tps = 0;
-        if (!PepeLandHelper.playerInPPL() || AlinLib.MINECRAFT.gui.getTabList().footer == null) return tps;
-        String[] args = AlinLib.MINECRAFT.gui.getTabList().footer.getString().split("\n");
+        if (!PepeLandHelper.playerInPPL() || AlinLib.MINECRAFT.gui.hud.getTabList().footer == null) return tps;
+        String[] args = AlinLib.MINECRAFT.gui.hud.getTabList().footer.getString().split("\n");
         for (String arg : args) {
             if (arg.contains("Онлайн:")) {
                 String[] parsed = arg.replace("Онлайн:", "").replaceAll("[^0-9/]", "").split("/");
@@ -106,9 +106,9 @@ public class TabHelper {
 
     public static int getMaxOnline() {
         int tps = 0;
-        if (!PepeLandHelper.playerInPPL() || AlinLib.MINECRAFT.gui.getTabList().footer == null)
+        if (!PepeLandHelper.playerInPPL() || AlinLib.MINECRAFT.gui.hud.getTabList().footer == null)
             return tps;
-        String[] args = AlinLib.MINECRAFT.gui.getTabList().footer.getString().split("\n");
+        String[] args = AlinLib.MINECRAFT.gui.hud.getTabList().footer.getString().split("\n");
         for (String arg : args) {
             if (arg.contains("Онлайн:")) {
                 String[] parsed = arg.replace("Онлайн:", "").replaceAll("[^0-9/]", "").split("/");

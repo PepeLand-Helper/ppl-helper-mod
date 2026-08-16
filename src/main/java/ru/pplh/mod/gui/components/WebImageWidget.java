@@ -1,15 +1,21 @@
 package ru.pplh.mod.gui.components;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ActiveTextCollector;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.gui.navigation.CommonInputs;
+//import net.minecraft.client.gui.navigation.;
 //#if MC >= 12106
+import net.minecraft.client.input.InputWithModifiers;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 //#endif
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
+import org.lwjgl.glfw.GLFW;
 import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.gui.GuiUtils;
 import ru.kelcuprum.alinlib.gui.components.Description;
@@ -23,7 +29,7 @@ import static ru.pplh.mod.PepeLandHelper.Icons.PACK_INFO;
 import static ru.pplh.mod.PepeLandHelper.Icons.WHITE_PEPE;
 
 public class WebImageWidget extends AbstractButton implements Description {
-    public ResourceLocation image;
+    public Identifier image;
     public final OnPress onPress;
     public final boolean isScale;
     public Component description;
@@ -45,10 +51,10 @@ public class WebImageWidget extends AbstractButton implements Description {
         this.image = null;
         this.url = url;
         this.id = id;
-        this.onPress = (s) -> PepeLandHelper.confirmLinkNow(AlinLib.MINECRAFT.screen, url);
+        this.onPress = (s) -> PepeLandHelper.confirmLinkNow(AlinLib.MINECRAFT.gui.screen(), url);
     }
 
-    public ResourceLocation getImage(){
+    public Identifier getImage(){
         return TextureHelper.getTexture(url, id);
     }
 
@@ -80,9 +86,9 @@ public class WebImageWidget extends AbstractButton implements Description {
     // -=-=-=-=-=-
 
     @Override
-    protected void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
+    protected void extractContents(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
         if(!loadFailed) {
-            ResourceLocation img = TextureHelper.getTexture(url, id);
+            Identifier img = TextureHelper.getTexture(url, id);
             image = img == WHITE_PEPE ? null : img;
             loadFailed = image == PACK_INFO;
         }
@@ -95,18 +101,18 @@ public class WebImageWidget extends AbstractButton implements Description {
         return Component.empty().append(url).append(" ").append(id);
     }
 
-    public void renderButton(GuiGraphics guiGraphics, int i, int j, float f){
+    public void renderButton(GuiGraphicsExtractor guiGraphics, int i, int j, float f){
         GuiUtils.getSelected().renderBackground$widget(guiGraphics, getX(), getY(), getWidth(), getHeight(), this.active, this.isHoveredOrFocused());
         if (GuiUtils.isDoesNotFit(getMessage(), getWidth(), getHeight()))
-            this.renderScrollingString(guiGraphics, AlinLib.MINECRAFT.font, 2, 0xFFFFFFFF);
+            this.extractScrollingStringOverContents(guiGraphics.textRenderer(), getMessage(), 2);
          else {
-            guiGraphics.drawString(AlinLib.MINECRAFT.font, url, getX() + (getHeight() - 8) / 2, getY() + (getHeight() - 8) / 2, 0xFFFFFFFF, true);
-            guiGraphics.drawString(AlinLib.MINECRAFT.font, id, getX() + getWidth() - AlinLib.MINECRAFT.font.width(id) - ((getHeight() - 8) / 2), getY() + (getHeight() - 8) / 2, 0xFFFFFFFF);
+            guiGraphics.text(AlinLib.MINECRAFT.font, url, getX() + (getHeight() - 8) / 2, getY() + (getHeight() - 8) / 2, 0xFFFFFFFF, true);
+            guiGraphics.text(AlinLib.MINECRAFT.font, id, getX() + getWidth() - AlinLib.MINECRAFT.font.width(id) - ((getHeight() - 8) / 2), getY() + (getHeight() - 8) / 2, 0xFFFFFFFF);
         }
          guiGraphics.fill(getX(), getBottom()-1, getRight(), getBottom(), loadFailed ? GROUPIE : CONVICT);
     }
 
-    public void renderImage(GuiGraphics guiGraphics){
+    public void renderImage(GuiGraphicsExtractor guiGraphics){
         if (this.isScale) {
             double scale = (double)this.width / (double)getImageWidth();
             int imWidth = (int)((double)getImageWidth() * scale);
@@ -132,19 +138,19 @@ public class WebImageWidget extends AbstractButton implements Description {
     // -=-=-=-=-=-
 
     @Override
-    public void onPress() {
+    public void onPress(InputWithModifiers i) {
         if(this.onPress != null) this.onPress.onPress(this);
     }
     @Override
-    public void onClick(double d, double e) {
-        this.onPress();
+    public void onClick(MouseButtonEvent event, boolean b) {
+        this.onPress(event);
     }
     @Override
-    public boolean keyPressed(int i, int j, int k) {
+    public boolean keyPressed(KeyEvent keyEvent) {
         if (this.active && this.visible) {
-            if (CommonInputs.selected(i)) {
+            if (keyEvent.key() == GLFW.GLFW_KEY_ENTER) {
                 this.playDownSound(AlinLib.MINECRAFT.getSoundManager());
-                this.onPress();
+                this.onPress(keyEvent);
                 return true;
             } else {
                 return false;

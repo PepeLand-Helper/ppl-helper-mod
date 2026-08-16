@@ -1,9 +1,12 @@
 package ru.pplh.mod.gui.screens.message;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.MouseHandler;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
 import ru.kelcuprum.alinlib.AlinLib;
@@ -34,16 +37,16 @@ public class DialogScreen extends Screen {
 
 
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
-        if(screen != null && !(screen instanceof TitleScreen)) screen.renderBackground(guiGraphics, i, j, f);
-        else super.renderBackground(guiGraphics, i, j, f);
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
+        if(screen != null && !(screen instanceof TitleScreen)) screen.extractBackground(guiGraphics, i, j, f);
+        else super.extractBackground(guiGraphics, i, j, f);
         long cur = System.currentTimeMillis();
         int back = (int) (127.5F * (Math.clamp((double) (cur - startTime) / timeShow, 0.0, 1.0))) << 24;
         if (isClose) back = (int) (127.5F - (127.5F * (Math.clamp((double) (cur - startTime) / timeShow, 0.0, 1.0)))) << 24;
         guiGraphics.fillGradient(0, 0, guiGraphics.guiWidth(), guiGraphics.guiHeight(), back, back);
         if (startTimeText+100 < cur && !isRevertText ) {
             int backT = replaceAlpha(0xFFFFFFFF, (int) (255 * Math.clamp((double) (cur - startTimeText) / timeShow, 0.0, 1.0)));
-            guiGraphics.drawCenteredString(minecraft.font, dialog[pos], width / 2, height / 2 - minecraft.font.lineHeight / 2, backT);
+            guiGraphics.centeredText(minecraft.font, dialog[pos], width / 2, height / 2 - minecraft.font.lineHeight / 2, backT);
         }
     }
 
@@ -53,15 +56,15 @@ public class DialogScreen extends Screen {
 
 
     @Override
-    public boolean keyPressed(int i, int j, int k) {
-        if(i == GLFW.GLFW_KEY_SPACE || i == GLFW.GLFW_KEY_Z){
+    public boolean keyPressed(KeyEvent k) {
+        if(k.key() == GLFW.GLFW_KEY_SPACE || k.key() == GLFW.GLFW_KEY_Z){
             changePosition();
             return false;
-        } else return super.keyPressed(i, j, k);
+        } else return super.keyPressed(k);
     }
 
     @Override
-    public boolean mouseClicked(double d, double e, int i) {
+    public boolean mouseClicked(MouseButtonEvent e, boolean b) {
         changePosition();
         return false;
     }
@@ -82,15 +85,10 @@ public class DialogScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int i, int j, float f) {
-        super.render(guiGraphics, i, j, f);
-    }
-
-    @Override
     public void onClose() {
         if (isClose) {
             if (runnable != null) runnable.run();
-            else AlinLib.MINECRAFT.setScreen(screen);
+            else AlinLib.MINECRAFT.gui.setScreen(screen);
         }
     }
 }

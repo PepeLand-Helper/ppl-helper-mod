@@ -2,6 +2,7 @@ package ru.pplh.mod.mixin.locatorbar;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import net.minecraft.client.gui.Hud;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import net.minecraft.client.gui.Gui;
@@ -14,7 +15,7 @@ import ru.pplh.mod.utils.FollowManager;
 import ru.pplh.mod.utils.TabHelper;
 //#endif
 
-@Mixin(Gui.class)
+@Mixin(Hud.class)
 public class GUIMixin {
 
     //#if MC >= 12106

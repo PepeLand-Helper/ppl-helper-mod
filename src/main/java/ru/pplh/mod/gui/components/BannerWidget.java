@@ -1,17 +1,19 @@
 package ru.pplh.mod.gui.components;
 
 import com.mojang.blaze3d.platform.NativeImage;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 //#if MC >= 12106
 import net.minecraft.client.renderer.RenderPipelines;
 //#endif
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.gui.GuiUtils;
 import ru.pplh.mod.gui.TextureHelper;
+
+import java.math.BigDecimal;
 
 import static ru.kelcuprum.alinlib.gui.Colors.BLACK;
 import static ru.pplh.mod.PepeLandHelper.Icons.PACK_INFO;
@@ -38,8 +40,8 @@ public class BannerWidget extends AbstractWidget {
         return (int) (nativeImage.getHeight()/scale);
     }
     @Override
-    protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        ResourceLocation image = TextureHelper.getBanner(url, id);
+    protected void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+        Identifier image = TextureHelper.getBanner(url, id);
         if(image == PACK_INFO && !loadFailed) {
             loadFailed = true;
         }
@@ -64,7 +66,7 @@ public class BannerWidget extends AbstractWidget {
                 }
                 guiGraphics.disableScissor();
                 guiGraphics.fillGradient(getX(), getY(), getRight(), getBottom(), 0x7f245965, 0x7F9f1b46);
-                guiGraphics.drawCenteredString(AlinLib.MINECRAFT.font, "Он пропал. НЕТ! У НАС ЕГО УКРАЛИ!", getX()+(getWidth()/2), getY()+(getHeight()/2 - AlinLib.MINECRAFT.font.lineHeight / 2), -1);
+                guiGraphics.centeredText(AlinLib.MINECRAFT.font, "Он пропал. НЕТ! У НАС ЕГО УКРАЛИ!", getX()+(getWidth()/2), getY()+(getHeight()/2 - AlinLib.MINECRAFT.font.lineHeight / 2), -1);
             };
         }
         else guiGraphics.blit(

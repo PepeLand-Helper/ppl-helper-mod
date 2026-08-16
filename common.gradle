@@ -1,12 +1,14 @@
 apply plugin: 'maven-publish'
-apply plugin: 'fabric-loom'
+apply plugin: 'net.fabricmc.fabric-loom'
 apply plugin: 'com.replaymod.preprocess'
 apply plugin: 'me.fallenbreath.yamlang'
 apply plugin: 'io.github.goooler.shadow'
 apply plugin: 'com.modrinth.minotaur'
 
 def mod_brand = "fabric"
-archivesBaseName = (project.archives_base_name == null ? rootProject.archives_base_name : project.archives_base_name) + "-" + mod_brand
+base {
+    archivesName = (project.archives_base_name == null ? rootProject.archives_base_name : project.archives_base_name) + "-" + mod_brand
+}
 group = rootProject.maven_group
 
 int mcVersion = 1
@@ -40,10 +42,6 @@ loom {
     }
     accessWidenerPath = file("../../src/main/resources/pplhelper.accesswidener")
 }
-remapJar {
-//    remapperIsolation = true
-//    injectAccessWidener = true
-}
 
 configurations {
     shade
@@ -56,9 +54,6 @@ dependencies {
     // loom
     implementation("com.google.code.gson:gson:2.10.1")
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings loom.layered() {
-        officialMojangMappings()
-    }
 
     shade(implementation("ru.kelcuprum:java-express:0.2.4-dev.5"))
     implementation("meteordevelopment:starscript:0.3.4")
@@ -66,19 +61,19 @@ dependencies {
 
     shade(implementation("com.kohlschutter.junixsocket:junixsocket-common:2.7.0"))
     shade(implementation("com.kohlschutter.junixsocket:junixsocket-native-common:2.7.0"))
-    shade(implementation("io.github.cdagaming:DiscordIPC:0.11.0"))
+    shade(implementation("io.github.cdagaming:DiscordIPC:0.11.3"))
 
-        modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
-        modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
-        modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
-        modImplementation "maven.modrinth:pochatok:${project.pochatok}"
-        modImplementation "maven.modrinth:litematica:${project.litematica}"
-        modImplementation "maven.modrinth:malilib:${project.malilib}"
-        modCompileOnly "maven.modrinth:sailstatus:${rootProject.sailstatus}"
+        implementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
+        implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+        implementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+        implementation "maven.modrinth:pochatok:${project.pochatok}"
+        implementation "maven.modrinth:litematica:${project.litematica}"
+        implementation "maven.modrinth:malilib:${project.malilib}"
 //        modImplementation "ru.kelcuprum:SailStatus-fabric:2.2.0-alpha.12-dt.3+mc1.21.8"
-        modCompileOnly "maven.modrinth:minedows:${project.minedows}"
-        modImplementation "ru.kelcuprum:AlinLib-fabric:${rootProject.alinlib}+mc${project.alinlib_minecraft_version == null ? project.minecraft_version : project.alinlib_minecraft_version}"
-        modImplementation "ru.kelcuprum:ActionBarInfo-fabric:${rootProject.abi}+mc${project.abi_minecraft_version == null ? project.minecraft_version : project.abi_minecraft_version}"
+        compileOnly "maven.modrinth:minedows:${project.minedows}"
+        implementation "maven.modrinth:cloth-config:Nv3xnWXd"
+        implementation "ru.kelcuprum:AlinLib-fabric:${rootProject.alinlib}+mc${project.alinlib_minecraft_version == null ? project.minecraft_version : project.alinlib_minecraft_version}"
+        implementation "maven.modrinth:abi:${rootProject.abi}"
 
 
 
@@ -89,9 +84,7 @@ dependencies {
     }
 }
 
-int JAVA_COMPATIBILITY
-if (mcVersion >= 12005) JAVA_COMPATIBILITY = 21
-else JAVA_COMPATIBILITY = 17
+int JAVA_COMPATIBILITY = 25;
 
 tasks.withType(JavaCompile).configureEach {
     it.options.encoding = "UTF-8"
@@ -101,11 +94,6 @@ tasks.withType(JavaCompile).configureEach {
 shadowJar {
     configurations = [project.configurations.shade]
     destinationDirectory.set(layout.buildDirectory.dir('devlibs'))
-}
-
-remapJar {
-    dependsOn tasks.shadowJar
-    inputFile.set(tasks.shadowJar.archiveFile)
 }
 
 components.java.withVariantsFromConfiguration(configurations.shadowRuntimeElements) { skip() }
@@ -135,7 +123,7 @@ modrinth {
     changelog = file("../../changelog.md").text
     versionNumber = rootProject.mod_version
     versionType = rootProject.version_type // This is the default -- can also be `beta` or `alpha`
-    uploadFile = remapJar // With Loom, this MUST be set to `remapJar` instead of `jar`!
+    uploadFile = jar // With Loom, this MUST be set to `remapJar` instead of `jar`!
     project.modrinth_versions.split(", ").each {
         gameVersions.add it
     }

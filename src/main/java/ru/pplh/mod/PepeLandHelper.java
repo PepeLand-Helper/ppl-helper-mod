@@ -3,8 +3,6 @@ package ru.pplh.mod;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.platform.DepthTestFunction;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -19,7 +17,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBossEventPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.util.GsonHelper;
@@ -57,7 +55,6 @@ import ru.pplh.mod.gui.screens.configs.ConfigScreen;
 import ru.pplh.mod.gui.style.VanillaLikeStyle;
 import ru.pplh.mod.interactive.InteractiveManager;
 import ru.pplh.mod.mods.minedows.MinedowsManager;
-import ru.pplh.mod.mods.sailstatus.SailStatusManager;
 import ru.pplh.mod.test.GUIRender;
 import ru.pplh.mod.test.LevelTick;
 import ru.pplh.mod.utils.*;
@@ -102,6 +99,7 @@ public class PepeLandHelper implements ClientModInitializer {
     public static String[] sc = new String[]{"PepeLand 9"};
     public static String[] sct = new String[]{"ppl9"};
     public static VanillaLikeStyle vanillaLikeStyle = new VanillaLikeStyle();
+    public static KeyMapping.Category keybindCategory = KeyMapping.Category.register(Identifier.parse("pplhelper"));
 
 
     @Override
@@ -109,7 +107,7 @@ public class PepeLandHelper implements ClientModInitializer {
         LOG.log("-=-=-=-=-=-=-=-", Level.WARN);
         LOG.log("Данный проект не является официальной частью сети серверов PepeLand", Level.WARN);
         LOG.log("-=-=-=-=-=-=-=-", Level.WARN);
-        LevelRenderingUtils.init();
+//        LevelRenderingUtils.init();
 //        Minecraft.getInstance().levelRenderer.
         StealthManager.registerActiveManager(() -> {
             boolean isActive = false;
@@ -165,37 +163,37 @@ public class PepeLandHelper implements ClientModInitializer {
         KeyMapping key1 = KeyMappingHelper.register(new KeyMapping(
                 "pplhelper.key.open.projects",
                 GLFW.GLFW_KEY_H, // The keycode of the key
-                "pplhelper"
+                keybindCategory
         ));
         KeyMapping key2 = KeyMappingHelper.register(new KeyMapping(
                 "pplhelper.key.open.config",
                 GLFW.GLFW_KEY_UNKNOWN, // The keycode of the key
-                "pplhelper"
+                keybindCategory
         ));
         KeyMapping key3 = KeyMappingHelper.register(new KeyMapping(
                 "pplhelper.key.unfollow_project",
                 GLFW.GLFW_KEY_UNKNOWN, // The keycode of the key
-                "pplhelper"
+                keybindCategory
         ));
         KeyMapping key4 = KeyMappingHelper.register(new KeyMapping(
                 "pplhelper.key.stealth",
                 GLFW.GLFW_KEY_UNKNOWN, // The keycode of the key
-                "pplhelper"
+                keybindCategory
         ));
         KeyMapping key5 = KeyMappingHelper.register(new KeyMapping(
                 "pplhelper.key.stealth.world",
                 GLFW.GLFW_KEY_UNKNOWN, // The keycode of the key
-                "pplhelper"
+                keybindCategory
         ));
         KeyMapping key6 = KeyMappingHelper.register(new KeyMapping(
                 "pplhelper.key.stealth.common_world",
                 GLFW.GLFW_KEY_UNKNOWN, // The keycode of the key
-                "pplhelper"
+                keybindCategory
         ));
         KeyMapping key7 = KeyMappingHelper.register(new KeyMapping(
                 "pplhelper.key.lobby",
                 GLFW.GLFW_KEY_UNKNOWN, // The keycode of the key
-                "pplhelper"
+                keybindCategory
         ));
         ClientTickEvents.START_CLIENT_TICK.register((s) -> {
             if (gameStarted && loginAval != (user == null)) {
@@ -214,12 +212,12 @@ public class PepeLandHelper implements ClientModInitializer {
             if (key1.consumeClick()) {
                 new Thread(() -> {
                     if (PepeLandHelperAPI.apiAvailable())
-                        AlinLib.MINECRAFT.execute(() -> AlinLib.MINECRAFT.setScreen(new ProjectsScreen(AlinLib.MINECRAFT.screen)));
+                        AlinLib.MINECRAFT.execute(() -> AlinLib.MINECRAFT.gui.setScreen(new ProjectsScreen(AlinLib.MINECRAFT.gui.screen())));
                     else
                         new ToastBuilder().setTitle(Component.translatable("pplhelper.api")).setMessage(PepeLandHelperAPI.getMessageFromBreakAPI()).setType(ToastBuilder.Type.ERROR).setIcon(WHITE_PEPE).buildAndShow();
                 }).start();
             }
-            if (key2.consumeClick()) AlinLib.MINECRAFT.setScreen(new ConfigScreen().build(AlinLib.MINECRAFT.screen));
+            if (key2.consumeClick()) AlinLib.MINECRAFT.gui.setScreen(new ConfigScreen().build(AlinLib.MINECRAFT.gui.screen()));
             if (key3.consumeClick() && FollowManager.getCurrentCoordinates() != null) FollowManager.resetCoordinates();
             if (key4.consumeClick()) config.setBoolean("STEALTH", !config.getBoolean("STEALTH", false));
             if (key5.consumeClick() && TabHelper.getWorld() != null && config.getBoolean("STEALTH.CURRENT_WORLD", true))
@@ -241,9 +239,7 @@ public class PepeLandHelper implements ClientModInitializer {
         );
 
         // -=-=-=- Дискорд активность -=-=-=-
-        if(isInstalledSailStatus) {
-            SailStatusManager.register();
-        } else if(config.getBoolean("DISCORD", false)) {
+        if(config.getBoolean("DISCORD", false)) {
             DiscordActivityManager.initialize();
             ClientTickEvents.END_CLIENT_TICK.register(this::onClientTick);
         }
@@ -271,34 +267,34 @@ public class PepeLandHelper implements ClientModInitializer {
         AbstractBuilder[] buttons = new AbstractBuilder[]{
                 new ButtonBuilder(Component.translatable("pplhelper.news")).setOnPress((s) -> new Thread(() -> {
                     Screen screen = new NewsListScreen(current);
-                    AlinLib.MINECRAFT.execute(() -> AlinLib.MINECRAFT.setScreen(screen));
+                    AlinLib.MINECRAFT.execute(() -> AlinLib.MINECRAFT.gui.setScreen(screen));
                 }).start()).setIcon(WIKI).setCentered(false),
                 new ButtonBuilder(Component.translatable("pplhelper.projects")).setOnPress((s) -> new Thread(() -> {
                     Screen screen = new ProjectsScreen(current);
-                    AlinLib.MINECRAFT.execute(() -> AlinLib.MINECRAFT.setScreen(screen));
+                    AlinLib.MINECRAFT.execute(() -> AlinLib.MINECRAFT.gui.setScreen(screen));
                 }).start()).setIcon(PROJECTS).setCentered(false),
                 new ButtonBuilder(Component.translatable("pplhelper.projects.archived")).setOnPress((s) -> new Thread(() -> {
                     Screen screen = new ArchivedProjectsScreen(current);
-                    AlinLib.MINECRAFT.execute(() -> AlinLib.MINECRAFT.setScreen(screen));
+                    AlinLib.MINECRAFT.execute(() -> AlinLib.MINECRAFT.gui.setScreen(screen));
                 }).start()).setIcon(WHITE_PEPE).setCentered(false),
                 new ButtonBuilder(Component.translatable("pplhelper.commands")).setOnPress((s) -> new Thread(() -> {
                     Screen screen = new CommandsScreen().build(parent);
-                    AlinLib.MINECRAFT.execute(() -> AlinLib.MINECRAFT.setScreen(screen));
+                    AlinLib.MINECRAFT.execute(() -> AlinLib.MINECRAFT.gui.setScreen(screen));
                 }).start()).setIcon(COMMANDS).setCentered(false),
                 new ButtonBuilder(Component.translatable("pplhelper.emotes"))
                         .setOnPress((s) -> new Thread(() -> {
                             Screen screen = new EmotesScreen().build(parent);
-                            AlinLib.MINECRAFT.execute(() -> AlinLib.MINECRAFT.setScreen(screen));
+                            AlinLib.MINECRAFT.execute(() -> AlinLib.MINECRAFT.gui.setScreen(screen));
                         }).start())
                         .setIcon(getInstalledPack() == null ? CLOWNFISH : GuiUtils.getResourceLocation("myemotes", "textures/font/emotes/clueless.png"))
                         .setCentered(false).setActive(getInstalledPack() != null),
                 new ButtonBuilder(Component.translatable("pplhelper.mods")).setOnPress((s) -> new Thread(() -> {
                     Screen screen = new ModsScreen().build(parent);
-                    AlinLib.MINECRAFT.execute(() -> AlinLib.MINECRAFT.setScreen(screen));
+                    AlinLib.MINECRAFT.execute(() -> AlinLib.MINECRAFT.gui.setScreen(screen));
                 }).start()).setIcon(Icons.MODS).setCentered(false),
                 new ButtonBuilder(Component.translatable("pplhelper.pack")).setOnPress((s) -> new Thread(() -> {
                     Screen screen = new UpdaterScreen().build(parent);
-                    AlinLib.MINECRAFT.execute(() -> AlinLib.MINECRAFT.setScreen(screen));
+                    AlinLib.MINECRAFT.execute(() -> AlinLib.MINECRAFT.gui.setScreen(screen));
                 }).start()).setIcon(Icons.PACK_INFO).setCentered(false),
                 getProfileButton(parent)
         };
@@ -307,13 +303,13 @@ public class PepeLandHelper implements ClientModInitializer {
                 new ButtonBuilder(Component.translatable("pplhelper.emotes"))
                         .setOnPress((s) -> {
                             Screen screen = new EmotesScreen().build(parent);
-                            AlinLib.MINECRAFT.execute(() -> AlinLib.MINECRAFT.setScreen(screen));
+                            AlinLib.MINECRAFT.execute(() -> AlinLib.MINECRAFT.gui.setScreen(screen));
                         })
                         .setIcon(getInstalledPack() == null ? CLOWNFISH : GuiUtils.getResourceLocation("myemotes", "textures/font/emotes/clueless.png"))
                         .setCentered(false).setActive(getInstalledPack() != null),
                 new ButtonBuilder(Component.translatable("pplhelper.pack")).setOnPress((s) -> new Thread(() -> {
                     Screen screen = new UpdaterScreen().build(parent);
-                    AlinLib.MINECRAFT.execute(() -> AlinLib.MINECRAFT.setScreen(screen));
+                    AlinLib.MINECRAFT.execute(() -> AlinLib.MINECRAFT.gui.setScreen(screen));
                 }).start()).setIcon(Icons.PACK_INFO).setCentered(false)
         };
         return buttons;
@@ -323,8 +319,8 @@ public class PepeLandHelper implements ClientModInitializer {
         builder.setIcon(WIKI).setCentered(false);
         builder.setOnPress((s) -> {
             if (user == null)
-                confirmLinkNow(AlinLib.MINECRAFT.screen, String.format("http://localhost:%s", parseInt(config.getString("oauth.port", "11430"))));
-            else AlinLib.MINECRAFT.setScreen(new ProfileScreen(parent, user));
+                confirmLinkNow(AlinLib.MINECRAFT.gui.screen(), String.format("http://localhost:%s", parseInt(config.getString("oauth.port", "11430"))));
+            else AlinLib.MINECRAFT.gui.setScreen(new ProfileScreen(parent, user));
         });
         return builder;
     }
@@ -507,7 +503,7 @@ public class PepeLandHelper implements ClientModInitializer {
     }
 
     public static boolean isPWGood() {
-        return AlinLib.MINECRAFT.getGameProfile().getName().equals("PWGoood") || AlinLib.MINECRAFT.getGameProfile().getName().equals("_PWGood_") || AlinLib.MINECRAFT.getGameProfile().getName().equals("CyCeKu") || PepeLandHelper.config.getBoolean("IM_A_TEST_SUBJECT.PWGOOD", false);
+        return AlinLib.MINECRAFT.getGameProfile().name().equals("PWGoood") || AlinLib.MINECRAFT.getGameProfile().name().equals("_PWGood_") || AlinLib.MINECRAFT.getGameProfile().name().equals("CyCeKu") || PepeLandHelper.config.getBoolean("IM_A_TEST_SUBJECT.PWGOOD", false);
     }
 
     public static boolean isPPLStreamer() {
@@ -526,12 +522,12 @@ public class PepeLandHelper implements ClientModInitializer {
             restartTime = -1;
             if (rtBossBar != null) {
                 rtBossBar = null;
-                AlinLib.MINECRAFT.gui.getBossOverlay().update(ClientboundBossEventPacket.createRemovePacket(rtUUID));
+                AlinLib.MINECRAFT.gui.hud.getBossOverlay().update(ClientboundBossEventPacket.createRemovePacket(rtUUID));
             }
         } else if (!playerInPPL()) {
             if (rtBossBar != null) {
                 rtBossBar = null;
-                AlinLib.MINECRAFT.gui.getBossOverlay().update(ClientboundBossEventPacket.createRemovePacket(rtUUID));
+                AlinLib.MINECRAFT.gui.hud.getBossOverlay().update(ClientboundBossEventPacket.createRemovePacket(rtUUID));
             }
         } else {
             long rest = restartTime - System.currentTimeMillis();
@@ -541,7 +537,7 @@ public class PepeLandHelper implements ClientModInitializer {
                 rtBossBar = new LerpingBossEvent(rtUUID, Component.translatable("pplhelper.restart", getTimestamp(rest)), Math.min((float) rest / 300000, 1),
                         (rest >= 180000 ? BossEvent.BossBarColor.GREEN : rest >= 60000 ? BossEvent.BossBarColor.YELLOW : BossEvent.BossBarColor.RED),
                         BossEvent.BossBarOverlay.NOTCHED_20, false, false, false);
-                AlinLib.MINECRAFT.gui.getBossOverlay().update(ClientboundBossEventPacket.createAddPacket(rtBossBar));
+                AlinLib.MINECRAFT.gui.hud.getBossOverlay().update(ClientboundBossEventPacket.createAddPacket(rtBossBar));
             }
         }
 
@@ -549,12 +545,12 @@ public class PepeLandHelper implements ClientModInitializer {
             joinTime = -1;
             if (jtBossBar != null) {
                 jtBossBar = null;
-                AlinLib.MINECRAFT.gui.getBossOverlay().update(ClientboundBossEventPacket.createRemovePacket(jtUUID));
+                AlinLib.MINECRAFT.gui.hud.getBossOverlay().update(ClientboundBossEventPacket.createRemovePacket(jtUUID));
             }
         } else if (!playerInPPL() || TabHelper.getWorld() != TabHelper.Worlds.LOBBY) {
             if (jtBossBar != null) {
                 jtBossBar = null;
-                AlinLib.MINECRAFT.gui.getBossOverlay().update(ClientboundBossEventPacket.createRemovePacket(jtUUID));
+                AlinLib.MINECRAFT.gui.hud.getBossOverlay().update(ClientboundBossEventPacket.createRemovePacket(jtUUID));
             }
         } else {
             long rest = joinTime - System.currentTimeMillis();
@@ -564,7 +560,7 @@ public class PepeLandHelper implements ClientModInitializer {
                 jtBossBar = new LerpingBossEvent(jtUUID, Component.translatable("pplhelper.join", getTimestamp(rest)), (float) rest / 15000,
                         BossEvent.BossBarColor.RED,
                         BossEvent.BossBarOverlay.PROGRESS, false, false, false);
-                AlinLib.MINECRAFT.gui.getBossOverlay().update(ClientboundBossEventPacket.createAddPacket(jtBossBar));
+                AlinLib.MINECRAFT.gui.hud.getBossOverlay().update(ClientboundBossEventPacket.createAddPacket(jtBossBar));
             }
         }
     }
@@ -579,7 +575,7 @@ public class PepeLandHelper implements ClientModInitializer {
             if (spBossBar != null) {
                 spBossBar = null;
                 lastMaxNear = 0;
-                AlinLib.MINECRAFT.gui.getBossOverlay().update(ClientboundBossEventPacket.createRemovePacket(spUUID));
+                AlinLib.MINECRAFT.gui.hud.getBossOverlay().update(ClientboundBossEventPacket.createRemovePacket(spUUID));
             }
         } else {
             if (TabHelper.getWorld() == null) return;
@@ -602,7 +598,7 @@ public class PepeLandHelper implements ClientModInitializer {
                 spBossBar = new LerpingBossEvent(spUUID, Component.translatable("pplhelper.selected_project", coordinates.world().shortName, parsedCoordinates, huy), (float) near / lastMaxNear,
                         BossEvent.BossBarColor.GREEN,
                         BossEvent.BossBarOverlay.PROGRESS, false, false, false);
-                AlinLib.MINECRAFT.gui.getBossOverlay().update(ClientboundBossEventPacket.createAddPacket(spBossBar));
+                AlinLib.MINECRAFT.gui.hud.getBossOverlay().update(ClientboundBossEventPacket.createAddPacket(spBossBar));
             }
         }
     }
@@ -637,7 +633,7 @@ public class PepeLandHelper implements ClientModInitializer {
     public static String[] getEmotes() throws IOException {
         String[] emotes = new String[]{};
         if (getInstalledPack() == null) return emotes;
-        InputStream is = getInstalledPack().open().getResource(PackType.CLIENT_RESOURCES, ResourceLocation.withDefaultNamespace("font/uniform.json")).get();
+        InputStream is = getInstalledPack().open().getResource(PackType.CLIENT_RESOURCES, Identifier.withDefaultNamespace("font/uniform.json")).get();
         JsonObject font = GsonHelper.parse(isToString(is));
         JsonArray provider = font.getAsJsonArray("providers");
         emotes = new String[provider.size()];
@@ -657,7 +653,7 @@ public class PepeLandHelper implements ClientModInitializer {
         HashMap<String, String> emotes = new HashMap<>();
         if (getInstalledPack() == null) return emotes;
         if (lastEmotes == null) {
-            InputStream is = getInstalledPack().open().getResource(PackType.CLIENT_RESOURCES, ResourceLocation.withDefaultNamespace("font/uniform.json")).get();
+            InputStream is = getInstalledPack().open().getResource(PackType.CLIENT_RESOURCES, Identifier.withDefaultNamespace("font/uniform.json")).get();
             JsonObject font = GsonHelper.parse(isToString(is));
             JsonArray provider = font.getAsJsonArray("providers");
             for (JsonElement element : provider) {
@@ -707,13 +703,13 @@ public class PepeLandHelper implements ClientModInitializer {
     }
 
     public interface Icons {
-        ResourceLocation WHITE_PEPE = GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/white_pepe.png");
-        ResourceLocation PEPE = GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/pepe.png");
-        ResourceLocation PACK_INFO = GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/pack_info.png");
-        ResourceLocation PROJECTS = GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/projects.png");
-        ResourceLocation COMMANDS = GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/commands.png");
-        ResourceLocation MODS = GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/mods.png");
-        ResourceLocation WEB = GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/web.png");
+        Identifier WHITE_PEPE = GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/white_pepe.png");
+        Identifier PEPE = GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/pepe.png");
+        Identifier PACK_INFO = GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/pack_info.png");
+        Identifier PROJECTS = GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/projects.png");
+        Identifier COMMANDS = GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/commands.png");
+        Identifier MODS = GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/mods.png");
+        Identifier WEB = GuiUtils.getResourceLocation("pplhelper", "textures/gui/sprites/web.png");
     }
 
     public static Thread downloadPack(JsonObject packData, boolean onlyEmote, BooleanConsumer consumer, boolean modrinth) {
@@ -764,6 +760,6 @@ public class PepeLandHelper implements ClientModInitializer {
 
     public static void confirmLinkNow(Screen screen, String link) {
         Minecraft minecraft = Minecraft.getInstance();
-        minecraft.setScreen(new ConfirmScreen(screen, Icons.WHITE_PEPE, Component.translatable("pplhelper"), Component.translatable("chat.link.confirmTrusted"), link));
+        minecraft.gui.setScreen(new ConfirmScreen(screen, Icons.WHITE_PEPE, Component.translatable("pplhelper"), Component.translatable("chat.link.confirmTrusted"), link));
     }
 }

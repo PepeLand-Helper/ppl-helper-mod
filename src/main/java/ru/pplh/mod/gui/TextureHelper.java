@@ -5,7 +5,7 @@ import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.gui.GuiUtils;
 import ru.pplh.mod.PepeLandHelper;
@@ -21,12 +21,12 @@ import static ru.pplh.mod.PepeLandHelper.Icons.PACK_INFO;
 import static ru.pplh.mod.PepeLandHelper.Icons.WHITE_PEPE;
 
 public class TextureHelper {
-    public static HashMap<String, ResourceLocation> resourceLocationMap = new HashMap<>();
+    public static HashMap<String, Identifier> resourceLocationMap = new HashMap<>();
     public static HashMap<String, Boolean> urls = new HashMap<>();
     public static HashMap<String, DynamicTexture> urlsTextures = new HashMap<>();
     public static HashMap<String, NativeImage> urlsImages = new HashMap<>();
     // Internet
-    public static ResourceLocation getTexture(String url, String id) {
+    public static Identifier getTexture(String url, String id) {
         id = formatUrls(id.toLowerCase());
         if (resourceLocationMap.containsKey(id)) return resourceLocationMap.get(id);
         else {
@@ -39,7 +39,7 @@ public class TextureHelper {
         }
     }
 
-    public static void registerTexture(String url, String id, TextureManager textureManager, ResourceLocation textureId) {
+    public static void registerTexture(String url, String id, TextureManager textureManager, Identifier textureId) {
         PepeLandHelper.LOG.debug(String.format("REGISTER: %s %s", url, id));
         AtomicReference<DynamicTexture> texture = new AtomicReference<>();
         if (urlsTextures.containsKey(url)) {
@@ -73,7 +73,7 @@ public class TextureHelper {
         }
     }
 
-    public static ResourceLocation getBanner(String url, String id) {
+    public static Identifier getBanner(String url, String id) {
         id = formatUrls(id.toLowerCase());
         if (resourceLocationMap.containsKey(id)) return resourceLocationMap.get(id);
         else {
@@ -86,7 +86,7 @@ public class TextureHelper {
         }
     }
 
-    public static void registerBanner(String url, String id, TextureManager textureManager, ResourceLocation textureId) {
+    public static void registerBanner(String url, String id, TextureManager textureManager, Identifier textureId) {
         PepeLandHelper.LOG.debug(String.format("REGISTER: %s %s", url, id));
         AtomicReference<DynamicTexture> texture = new AtomicReference<>();
         if (urlsTextures.containsKey(url))

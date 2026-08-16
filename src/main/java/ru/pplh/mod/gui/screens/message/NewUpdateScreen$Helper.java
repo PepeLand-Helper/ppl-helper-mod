@@ -1,6 +1,6 @@
 package ru.pplh.mod.gui.screens.message;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import ru.kelcuprum.alinlib.AlinLib;
@@ -48,20 +48,20 @@ public class NewUpdateScreen$Helper extends Screen {
             PepeLandHelperPreLaunch.installUpdates(versionInfo);
         } catch (Exception ex){
             ex.printStackTrace();
-            AlinLib.MINECRAFT.setScreen(new ErrorScreen(ex, parent));
+            AlinLib.MINECRAFT.gui.setScreen(new ErrorScreen(ex, parent));
         }
     }
 
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
-        super.renderBackground(guiGraphics, i, j, f);
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
+        super.extractBackground(guiGraphics, i, j, f);
         guiGraphics.fillGradient(0, 0, this.width, this.height, 0x7F0A2725, 0x7F134E4A);
     }
 
     @Override
     public void onClose() {
         assert this.minecraft != null;
-        this.minecraft.setScreen(parent);
+        this.minecraft.gui.setScreen(parent);
         PepeLandHelper.checkPackUpdates();
     }
 }

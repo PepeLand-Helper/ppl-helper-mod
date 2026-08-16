@@ -1,10 +1,13 @@
 package ru.pplh.mod.gui.screens.builder;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.MouseHandler;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
@@ -106,16 +109,16 @@ public class AbstractPPLScreen extends Screen {
         }));
         yo = Math.min(heigthScroller, height-30);
         options = addRenderableWidget(new ButtonBuilder(Component.translatable("pplhelper.configs")).setOnPress((OnPress) -> {
-            this.minecraft.setScreen(new ConfigScreen().build(this));
+            this.minecraft.gui.setScreen(new ConfigScreen().build(this));
         }).setSprite(OPTIONS).setSize(20, 20).setPosition(5, yo+5).build());
 
         back = addRenderableWidget(new ButtonBuilder(CommonComponents.GUI_BACK).setOnPress((OnPress) -> {
             assert this.minecraft != null;
-            this.minecraft.setScreen(builder.parent);
+            this.minecraft.gui.setScreen(builder.parent);
         }).setIcon(AlinLib.isAprilFool() ? EXIT : null).setPosition(30, yo+5).setSize(this.builder.panelSize - 25 - (builder.isResetable ? 35 : 10), 20).build());
 
         if(builder.isResetable) reset = addRenderableWidget(new ButtonBuilder(Component.translatable("alinlib.component.reset")).setOnPress((OnPress) -> {
-            this.minecraft.setScreen(new ConfirmScreen(this, RESET, Component.translatable("alinlib.title.reset"), Component.translatable("alinlib.title.reset.description"), (bl) -> {
+            this.minecraft.gui.setScreen(new ConfirmScreen(this, RESET, Component.translatable("alinlib.title.reset"), Component.translatable("alinlib.title.reset.description"), (bl) -> {
                 if(bl){
                     for (AbstractWidget widget : builder.widgets)
                         if (widget instanceof Resetable) ((Resetable) widget).resetValue();
@@ -231,18 +234,18 @@ public class AbstractPPLScreen extends Screen {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if(keyCode == GLFW.GLFW_KEY_ESCAPE){
+    public boolean keyPressed(KeyEvent keyEvent) {
+        if(keyEvent.key() == GLFW.GLFW_KEY_ESCAPE){
             if(getFocused() != null && getFocused().isFocused()) {
                 getFocused().setFocused(false);
                 return true;
             }
         }
-        if(keyCode == GLFW.GLFW_KEY_D && (modifiers & GLFW.GLFW_MOD_SHIFT) != 0 && !(getFocused() instanceof EditBox))
-            AlinLib.MINECRAFT.setScreen(new ThanksScreen(this));
-        if(keyCode == GLFW.GLFW_KEY_T && (modifiers & GLFW.GLFW_MOD_SHIFT) != 0 && !(getFocused() instanceof EditBox))
-            AlinLib.MINECRAFT.setScreen(new TestConfigScreen().build(this));
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        if(keyEvent.key() == GLFW.GLFW_KEY_D && (keyEvent.modifiers() & GLFW.GLFW_MOD_SHIFT) != 0 && !(getFocused() instanceof EditBox))
+            AlinLib.MINECRAFT.gui.setScreen(new ThanksScreen(this));
+        if(keyEvent.key() == GLFW.GLFW_KEY_T && (keyEvent.modifiers() & GLFW.GLFW_MOD_SHIFT) != 0 && !(getFocused() instanceof EditBox))
+            AlinLib.MINECRAFT.gui.setScreen(new TestConfigScreen().build(this));
+        return super.keyPressed(keyEvent);
     }
 
     // Рендер, скролл, прослушивание кей-биндов
@@ -255,19 +258,19 @@ public class AbstractPPLScreen extends Screen {
     }
 
     @Override
-    public boolean mouseClicked(double d, double e, int i) {
+    public boolean mouseClicked(MouseButtonEvent m, boolean b) {
         boolean st = true;
         GuiEventListener selected = null;
         for (GuiEventListener guiEventListener : this.children()) {
             if (scroller_panel != null && scroller_panel.widgets.contains(guiEventListener)) {
-                if ((d >= 10 && d <= builder.panelSize-10) && (e >= 35 && e <= height-35)) {
-                    if (guiEventListener.mouseClicked(d, e, i)) {
+                if ((m.x() >= 10 && m.x() <= builder.panelSize-10) && (m.y() >= 35 && m.y() <= height-35)) {
+                    if (guiEventListener.mouseClicked(m, b)) {
                         st = false;
                         selected = guiEventListener;
                         break;
                     }
                 }
-            } else if (guiEventListener.mouseClicked(d, e, i)) {
+            } else if (guiEventListener.mouseClicked(m, b)) {
                 st = false;
                 selected = guiEventListener;
                 break;
@@ -275,7 +278,7 @@ public class AbstractPPLScreen extends Screen {
         }
 
         this.setFocused(selected);
-        if (i == 0) {
+        if (m.button() == 0) {
             this.setDragging(true);
         }
 
@@ -301,13 +304,13 @@ public class AbstractPPLScreen extends Screen {
 
     public void onClose() {
         assert this.minecraft != null;
-        this.minecraft.setScreen(builder.parent);
+        this.minecraft.gui.setScreen(builder.parent);
     }
     // --- render
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
         assert this.minecraft != null;
-        super.renderBackground(guiGraphics, i, j, f);
+        super.extractBackground(guiGraphics, i, j, f);
         // Panel
         builder.getStyle().renderTitleBackground(guiGraphics, 5, 5, this.builder.panelSize-5, 25);
         builder.getStyle().renderBackground(guiGraphics, 5, 30, this.builder.panelSize-5, yo);
@@ -317,15 +320,15 @@ public class AbstractPPLScreen extends Screen {
         builder.getStyle().renderTitleBackground(guiGraphics, getX(), 10, getX()+getContentWidth(), 30);
     }
 
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
         try {
             guiGraphics.enableScissor(10, 35, builder.panelSize-10, yo-5);
-            if (scroller_panel != null) for (AbstractWidget widget : scroller_panel.widgets) widget.render(guiGraphics, mouseX, mouseY, partialTicks);
+            if (scroller_panel != null) for (AbstractWidget widget : scroller_panel.widgets) widget.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
             guiGraphics.disableScissor();
 
             guiGraphics.enableScissor(0, builder.contentY, width, yc-5);
-            if (scroller != null) for (AbstractWidget widget : scroller.widgets) widget.render(guiGraphics, mouseX, mouseY, partialTicks);
+            if (scroller != null) for (AbstractWidget widget : scroller.widgets) widget.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
             guiGraphics.disableScissor();
         } catch (Exception ex) {
             PepeLandHelper.LOG.error(ex.getMessage());

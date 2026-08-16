@@ -4,9 +4,10 @@ import com.google.gson.JsonObject;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.level.Level;
 import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.gui.screens.DialogScreen;
 
@@ -54,24 +55,24 @@ public class Action {
         if(!isExecuted || type.equals("particle_circle")){
             isExecuted = true;
             switch (type){
-                case "dialog" -> AlinLib.MINECRAFT.setScreen(new DialogScreen(AlinLib.MINECRAFT.screen, content.split("\n"), null));
-                case "chat" -> AlinLib.MINECRAFT.getChatListener().handleSystemMessage(Component.literal(content), false);
-                case "actionbar" -> AlinLib.MINECRAFT.getChatListener().handleSystemMessage(Component.literal(content), true);
+                case "dialog" -> AlinLib.MINECRAFT.gui.setScreen(new DialogScreen(AlinLib.MINECRAFT.gui.screen(), content.split("\n"), null));
+                case "chat" -> AlinLib.MINECRAFT.gui.chatListener().handleSystemMessage(Component.literal(content), false);
+                case "actionbar" -> AlinLib.MINECRAFT.gui.chatListener().handleSystemMessage(Component.literal(content), true);
                 case "sound" ->
-                    AlinLib.MINECRAFT.level.playLocalSound(AlinLib.MINECRAFT.player, new SoundEvent(ResourceLocation.parse(content), Optional.of(1f)), SoundSource.MASTER, 1f, 1f);
+                    AlinLib.MINECRAFT.level.playLocalSound(AlinLib.MINECRAFT.player, new SoundEvent(Identifier.parse(content), Optional.of(1f)), SoundSource.MASTER, 1f, 1f);
                 case "stop_sound" -> {
                     if(content.isEmpty()) AlinLib.MINECRAFT.getSoundManager().stop();
-                    else AlinLib.MINECRAFT.getSoundManager().stop(ResourceLocation.parse(content), SoundSource.MASTER);
+                    else AlinLib.MINECRAFT.getSoundManager().stop(Identifier.parse(content), SoundSource.MASTER);
                 }
                 case "particle_circle" -> {
                     int[] coordinates = area.getFirst();
-                    particleCircle(AlinLib.MINECRAFT.levelRenderer, coordinates[0], coordinates[1], coordinates[2], parseInt(content.split(", ")[0]), (int) parseLong(content.split(", ")[1], 16));
+                    particleCircle(AlinLib.MINECRAFT.level, coordinates[0], coordinates[1], coordinates[2], parseInt(content.split(", ")[0]), (int) parseLong(content.split(", ")[1], 16));
                 }
-                default -> AlinLib.MINECRAFT.getChatListener().handleSystemMessage(Component.literal(String.format("[PPL Helper] Действие %s с контентом \"%s\" не поддерживается", type, content)), false);
+                default -> AlinLib.MINECRAFT.gui.chatListener().handleSystemMessage(Component.literal(String.format("[PPL Helper] Действие %s с контентом \"%s\" не поддерживается", type, content)), false);
             }
         }
     }
-    public static void particleCircle(LevelRenderer level, double x, double y, double z, double r, int color){
+    public static void particleCircle(Level level, double x, double y, double z, double r, int color){
         long i = System.currentTimeMillis() % 2000;
         long j = i >= 1000 ? -(1000-i) : i-1000;
         double h = ((double) j /1000);

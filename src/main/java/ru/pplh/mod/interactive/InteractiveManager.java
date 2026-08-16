@@ -32,7 +32,7 @@ public class InteractiveManager {
             }
             if(executed == currentInteractive.actions.size()){
                 currentInteractive = null;
-                AlinLib.MINECRAFT.getChatListener().handleSystemMessage(Component.literal("[PPL Helper] Интерактив завершен!"), false);
+                AlinLib.MINECRAFT.gui.chatListener().handleSystemMessage(Component.literal("[PPL Helper] Интерактив завершен!"), false);
             }
         }
     }

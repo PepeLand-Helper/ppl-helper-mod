@@ -1,6 +1,7 @@
 package ru.pplh.mod.gui.screens;
 
-import net.minecraft.Util;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.util.Util;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
@@ -95,14 +96,14 @@ public class NewsListScreen extends AbstractPPLScreen {
     }
 
     @Override
-    public boolean keyPressed(int i, int j, int k) {
-        if(i == GLFW.GLFW_KEY_ENTER){
+    public boolean keyPressed(KeyEvent keyEvent) {
+        if(keyEvent.key() == GLFW.GLFW_KEY_ENTER){
             if (getFocused() != null && getFocused().isFocused() && getFocused() instanceof EditBox) {
                 search();
                 return true;
             }
         }
-        return super.keyPressed(i, j, k);
+        return super.keyPressed(keyEvent);
     }
     private long lastSearch = System.currentTimeMillis();
     private int count = 0;
@@ -114,7 +115,7 @@ public class NewsListScreen extends AbstractPPLScreen {
             if(count > 4){
 //                Util.getPlatform().openUri("https://wfu.kelcu.ru/vpEJaZQ");
 //                AlinLib.MINECRAFT.setScreen(builder.parent);
-                AlinLib.MINECRAFT.setScreen(new DialogScreen(builder.parent, new String[]{
+                AlinLib.MINECRAFT.gui.setScreen(new DialogScreen(builder.parent, new String[]{
                         "[...]",
                         "[Ты долбишь как птица из этой ссылки -> i.clovi.art/vpEJaZQ]",
                         "[Пожалуйста, не кликай так быстро.]",

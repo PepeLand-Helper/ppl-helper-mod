@@ -1,6 +1,6 @@
 package ru.pplh.mod.gui.components;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.network.chat.Component;
 //#if MC >= 12106
@@ -53,7 +53,7 @@ public class ScaledTextBox extends TextBox {
         this.setHeight((int) (height*scale));
     }
 
-    public void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
+    public void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
         //#if MC >= 12106
         guiGraphics.pose().pushMatrix();
         //#elseif MC >= 12102
@@ -70,8 +70,8 @@ public class ScaledTextBox extends TextBox {
                 //#endif
         );
         if(isDoesNotFit()){
-            if(isCentered) guiGraphics.drawCenteredString(AlinLib.MINECRAFT.font, AlinLib.MINECRAFT.font.plainSubstrByWidth(this.getMessage().getString(), (int) ((width-30)/scale))+"...", width/2, 0, -1);
-            else guiGraphics.drawString(AlinLib.MINECRAFT.font, AlinLib.MINECRAFT.font.plainSubstrByWidth(this.getMessage().getString(), (int) ((width-30)/scale))+"...", 0, 0, -1);
+            if(isCentered) guiGraphics.centeredText(AlinLib.MINECRAFT.font, AlinLib.MINECRAFT.font.plainSubstrByWidth(this.getMessage().getString(), (int) ((width-30)/scale))+"...", width/2, 0, -1);
+            else guiGraphics.text(AlinLib.MINECRAFT.font, AlinLib.MINECRAFT.font.plainSubstrByWidth(this.getMessage().getString(), (int) ((width-30)/scale))+"...", 0, 0, -1);
             if(isHovered) {
                 //#if MC >= 12106
                 guiGraphics.setTooltipForNextFrame(AlinLib.MINECRAFT.font, getMessage(), i, j);
@@ -83,8 +83,8 @@ public class ScaledTextBox extends TextBox {
                 //$$ guiGraphics.pose().scale(scale, scale, scale);
                 //#endif
             }
-        } else if (this.isCentered) guiGraphics.drawCenteredString(AlinLib.MINECRAFT.font, this.getMessage(), width/2, 0, -1);
-        else guiGraphics.drawString(AlinLib.MINECRAFT.font, this.getMessage(), 0,0, -1);
+        } else if (this.isCentered) guiGraphics.centeredText(AlinLib.MINECRAFT.font, this.getMessage(), width/2, 0, -1);
+        else guiGraphics.text(AlinLib.MINECRAFT.font, this.getMessage(), 0,0, -1);
 
         guiGraphics.pose()
                 //#if MC >= 12106

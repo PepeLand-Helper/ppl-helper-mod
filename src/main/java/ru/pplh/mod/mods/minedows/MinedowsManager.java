@@ -11,12 +11,13 @@ import java.util.ArrayList;
 
 public class MinedowsManager {
     public static void register(){
-        ModManager.registerModActions(() -> {
-            ArrayList<Action> actions = new ArrayList<>();
-            if(PepeLandHelper.playerInPPL() && TabHelper.getWorld() != TabHelper.Worlds.LOBBY){
-                actions.add(new Action(() -> PepeLandHelper.executeCommand(AlinLib.MINECRAFT.player, "/lobby"), Component.literal("Lobby"), PepeLandHelper.Icons.PEPE));
-            }
-            return actions;
-        }, true);
+        // TODO: Влюкчить после обновления Minedows!!!!
+//        ModManager.registerModActions(() -> {
+//            ArrayList<Action> actions = new ArrayList<>();
+//            if(PepeLandHelper.playerInPPL() && TabHelper.getWorld() != TabHelper.Worlds.LOBBY){
+//                actions.add(new Action(() -> PepeLandHelper.executeCommand(AlinLib.MINECRAFT.player, "/lobby"), Component.literal("Lobby"), PepeLandHelper.Icons.PEPE));
+//            }
+//            return actions;
+//        }, true);
     }
 }

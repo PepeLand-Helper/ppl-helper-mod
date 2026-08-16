@@ -1,10 +1,12 @@
 package ru.pplh.mod.gui.screens.pages;
 
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -60,7 +62,7 @@ public class ProjectScreen extends Screen {
                 pages = new Page[0];
             }
         } catch (Exception ex){
-            AlinLib.MINECRAFT.setScreen(new ErrorScreen(ex, screen));
+            AlinLib.MINECRAFT.gui.setScreen(new ErrorScreen(ex, screen));
         }
     }
 
@@ -222,21 +224,24 @@ public class ProjectScreen extends Screen {
 
 
     @Override
-    public void render(GuiGraphics guiGraphics, int i, int j, float f) {
-        super.render(guiGraphics, i, j, f);
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
+        super.extractRenderState(guiGraphics, i, j, f);
         int size = Math.min(maxSize, width - 15 - panelSize);
         int x = (width - size - panelSize) / 2 + panelSize;
         guiGraphics.enableScissor(x, 10, x+size, 30);
-        if (scroller_pages != null) for (AbstractWidget widget : scroller_pages.widgets) widget.render(guiGraphics, i, j, f);
+        if (scroller_pages != null) for (AbstractWidget widget : scroller_pages.widgets) widget.extractRenderState(guiGraphics, i, j, f);
         guiGraphics.disableScissor();
         guiGraphics.enableScissor(0, 35, width, this.height-5);
-        if (scroller != null) for (AbstractWidget widget : scroller.widgets) widget.render(guiGraphics, i, j, f);
-        if (panel_scroller != null) for (AbstractWidget widget : panel_scroller.widgets) widget.render(guiGraphics, i, j, f);
+        if (scroller != null) for (AbstractWidget widget : scroller.widgets) widget.extractRenderState(guiGraphics, i, j, f);
+        if (panel_scroller != null) for (AbstractWidget widget : panel_scroller.widgets) widget.extractRenderState(guiGraphics, i, j, f);
         guiGraphics.disableScissor();
     }
 
     @Override
-    public boolean mouseClicked(double d, double e, int i) {
+    public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean doubleC) {
+        double d = mouseButtonEvent.x();
+        double e = mouseButtonEvent.y();
+        int i = mouseButtonEvent.button();
         int size = Math.min(maxSize, width - 15 - panelSize);
         int x = (width - size - panelSize) / 2 + panelSize;
 
@@ -246,26 +251,26 @@ public class ProjectScreen extends Screen {
         for (GuiEventListener guiEventListener : this.children()) {
             if (scroller != null && scroller.widgets.contains(guiEventListener)) {
                 if ((d >= x && d <= x + size) && e >= 30)
-                    if (guiEventListener.mouseClicked(d, e, i)) {
+                    if (guiEventListener.mouseClicked(mouseButtonEvent, doubleC)) {
                         st = false;
                         selected = guiEventListener;
                         break;
                     }
             } else if (panel_scroller != null && panel_scroller.widgets.contains(guiEventListener)) {
                 if ((d >= panelX && d <= panelX + panel_size) && e >= 30)
-                    if (guiEventListener.mouseClicked(d, e, i)) {
+                    if (guiEventListener.mouseClicked(mouseButtonEvent, doubleC)) {
                         st = false;
                         selected = guiEventListener;
                         break;
                     }
             } else  if (scroller_pages != null && scroller_pages.widgets.contains(guiEventListener)) {
                 if ((d >= x && d <= x + size) && e <= 30)
-                    if (guiEventListener.mouseClicked(d, e, i)) {
+                    if (guiEventListener.mouseClicked(mouseButtonEvent, doubleC)) {
                         st = false;
                         selected = guiEventListener;
                         break;
                     }
-            } else if (guiEventListener.mouseClicked(d, e, i)) {
+            } else if (guiEventListener.mouseClicked(mouseButtonEvent, doubleC)) {
                 st = false;
                 selected = guiEventListener;
                 break;
@@ -279,8 +284,8 @@ public class ProjectScreen extends Screen {
         return st;
     }
 
-    public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
-        super.renderBackground(guiGraphics, i, j, f);
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
+        super.extractBackground(guiGraphics, i, j, f);
         int size = Math.min(maxSize, width - 15 - panelSize);
         int x = (width - size - panelSize) / 2 + panelSize;
 
@@ -298,7 +303,7 @@ public class ProjectScreen extends Screen {
 
     public void onClose() {
         assert this.minecraft != null;
-        this.minecraft.setScreen(parent);
+        this.minecraft.gui.setScreen(parent);
     }
 
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
@@ -318,15 +323,15 @@ public class ProjectScreen extends Screen {
     }
 
     @Override
-    public boolean keyPressed(int i, int j, int k) {
-        if (i == GLFW.GLFW_KEY_ESCAPE) {
+    public boolean keyPressed(KeyEvent keyEvent) {
+        if (keyEvent.key() == GLFW.GLFW_KEY_ESCAPE) {
             if (getFocused() != null && getFocused().isFocused()) {
                 getFocused().setFocused(false);
                 return true;
             }
-        } else if (i == GLFW.GLFW_KEY_F5) {
+        } else if (keyEvent.key() == GLFW.GLFW_KEY_F5) {
             rebuildWidgets();
         }
-        return super.keyPressed(i, j, k);
+        return super.keyPressed(keyEvent);
     }
 }

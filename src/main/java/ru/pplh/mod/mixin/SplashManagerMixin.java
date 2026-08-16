@@ -2,6 +2,7 @@ package ru.pplh.mod.mixin;
 
 import net.minecraft.client.gui.components.SplashRenderer;
 import net.minecraft.client.resources.SplashManager;
+import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -13,7 +14,7 @@ import ru.pplh.mod.PepeLandHelper;
 public class SplashManagerMixin {
     @Inject(method="getSplash", at=@At("HEAD"), cancellable = true)
     public void getSplash(CallbackInfoReturnable<SplashRenderer> cir){
-        if(PepeLandHelper.isTestSubject()) cir.setReturnValue(new SplashRenderer("\uE699 PepeLand Helper 2.0 Test mode"));
-        else if(PepeLandHelper.isPWGood()) cir.setReturnValue(new SplashRenderer(String.format("%s, не используй альфа версии 2.0!!!!!", Player.getName())));
+        if(PepeLandHelper.isTestSubject()) cir.setReturnValue(new SplashRenderer(Component.literal("\uE699 PepeLand Helper 2.0 Test mode")));
+        else if(PepeLandHelper.isPWGood()) cir.setReturnValue(new SplashRenderer(Component.literal(String.format("%s, не используй альфа версии 2.0!!!!!", Player.getName()))));
     }
 }

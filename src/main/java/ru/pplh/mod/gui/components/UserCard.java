@@ -1,13 +1,13 @@
 package ru.pplh.mod.gui.components;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 //#if MC >= 12106
 import net.minecraft.client.renderer.RenderPipelines;
 //#endif
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 import ru.kelcuprum.alinlib.AlinLib;
 import ru.kelcuprum.alinlib.gui.GuiUtils;
@@ -40,9 +40,9 @@ public class UserCard extends Button {
     }
 
     @Override
-    public void renderText(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void renderText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (getY() < guiGraphics.guiHeight() && !(getY() <= -getHeight())) {
-            ResourceLocation icon = track.avatar.isBlank() ? PEPE : TextureHelper.getTexture(OAuth.getURI(track.avatar,false), "avatarka_"+track.id);
+            Identifier icon = track.avatar.isBlank() ? PEPE : TextureHelper.getTexture(OAuth.getURI(track.avatar,false), "avatarka_"+track.id);
             guiGraphics.blit(
                     //#if MC >= 12106
                     RenderPipelines.GUI_TEXTURED,
@@ -59,18 +59,19 @@ public class UserCard extends Button {
     }
 
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void renderBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
 
     }
 
-    protected void renderScrollingString(GuiGraphics guiGraphics, Font font, Component message, int y) {
+    protected void renderScrollingString(GuiGraphicsExtractor guiGraphics, Font font, Component message, int y) {
         int k = this.getX() + 5 + getHeight();
         int l = this.getX() + this.getWidth() - 5;
-        renderScrollingString(guiGraphics, font, message, k, y, l, y + font.lineHeight, -1);
+        guiGraphics.textRenderer().acceptScrollingWithDefaultCenter(message, k, l, y, y+font.lineHeight);
+//        renderScrollingString(guiGraphics, font, message, k, y, l, y + font.lineHeight, -1);
     }
 
-    protected void renderString(GuiGraphics guiGraphics, String text, int x, int y) {
+    protected void renderString(GuiGraphicsExtractor guiGraphics, String text, int x, int y) {
         if (getWidth() - (10+getHeight()) < AlinLib.MINECRAFT.font.width(text)) renderScrollingString(guiGraphics, AlinLib.MINECRAFT.font, Component.literal(text), y - 1);
-        else guiGraphics.drawString(AlinLib.MINECRAFT.font, text, x, y, -1);
+        else guiGraphics.text(AlinLib.MINECRAFT.font, text, x, y, -1);
     }
 }

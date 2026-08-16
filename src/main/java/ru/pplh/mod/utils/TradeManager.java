@@ -3,7 +3,8 @@ package ru.pplh.mod.utils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec3;
 import ru.kelcuprum.alinlib.AlinLib;
 import ru.pplh.mod.PepeLandHelper;
@@ -53,7 +54,7 @@ public class TradeManager {
             Vec3 pos1 = new Vec3(vec3.x-(size[0]/2), vec3.y-(size[1]/2), vec3.z-(size[2]/2));
             Vec3 pos2 = new Vec3(vec3.x+(size[0]/2), vec3.y+(size[1]/2), vec3.z+(size[2]/2));
             int color = (int) Long.parseLong(getStringInJSON("color", jsonObject1, "FFFFFFFF").toUpperCase(), 16);
-            Category category = new Category(jsonObject1.get("name").getAsString(), ResourceLocation.parse(jsonObject1.get("icon").getAsString()), color,vec3, pos1, pos2);
+            Category category = new Category(jsonObject1.get("name").getAsString(), Identifier.parse(jsonObject1.get("icon").getAsString()), color,vec3, pos1, pos2);
             categories.add(category);
             mapCategories.put(category.name, category);
         }
@@ -104,5 +105,5 @@ public class TradeManager {
         return finalCategoryName;
     }
 
-    public record Category(String name, ResourceLocation icon, int color, Vec3 center, Vec3 pos1, Vec3 pos2){}
+    public record Category(String name, Identifier icon, int color, Vec3 center, Vec3 pos1, Vec3 pos2){}
 }

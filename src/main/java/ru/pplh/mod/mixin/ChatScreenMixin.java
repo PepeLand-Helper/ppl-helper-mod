@@ -1,9 +1,10 @@
 package ru.pplh.mod.mixin;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
@@ -38,8 +39,8 @@ public abstract class ChatScreenMixin extends Screen {
     }
 
     @Inject(method = "keyPressed", at = @At("HEAD"), cancellable = true)
-    public void keyPressed(int i, int j, int k, CallbackInfoReturnable<Boolean> cir) {
-        if (i == GLFW.GLFW_KEY_G && k == GLFW.GLFW_MOD_CONTROL && PepeLandHelper.playerInPPL()) {
+    public void keyPressed(KeyEvent event, CallbackInfoReturnable<Boolean> cir) {
+        if (event.key() == GLFW.GLFW_KEY_G && event.modifiers() == GLFW.GLFW_MOD_CONTROL && PepeLandHelper.playerInPPL()) {
             if (PepeLandHelper.playerInPPL()) changeGlobalChat();
             cir.setReturnValue(true);
         }
@@ -54,11 +55,11 @@ public abstract class ChatScreenMixin extends Screen {
         }
     }
 
-    @Inject(method = "render", at = @At("RETURN"))
-    public void render(GuiGraphics guiGraphics, int i, int j, float f, CallbackInfo ci) {
+    @Inject(method = "extractRenderState", at = @At("RETURN"))
+    public void render(GuiGraphicsExtractor guiGraphics, int i, int j, float f, CallbackInfo ci) {
         assert minecraft != null;
         if (isGlobalChat && PepeLandHelper.playerInPPL()) {
-            guiGraphics.drawString(minecraft.font, Component.translatable("pplhelper.chat.global.on"), 5, input.getY() - 5 - minecraft.font.lineHeight, -1);
+            guiGraphics.text(minecraft.font, Component.translatable("pplhelper.chat.global.on"), 5, input.getY() - 5 - minecraft.font.lineHeight, -1);
             guiGraphics.fill(2, height - 2, width - 2, height - 1, SEADRIVE);
         }
     }
@@ -81,7 +82,7 @@ public abstract class ChatScreenMixin extends Screen {
             if (!string.startsWith("/") && isGlobalChat) string = "/g " + string;
         }
         if (!string.isEmpty()) {
-            if (bl) this.minecraft.gui.getChat().addRecentChat(string);
+            if (bl) this.minecraft.gui.hud.getChat().addRecentChat(string);
             if (string.startsWith("/")) this.minecraft.player.connection.sendCommand(string.substring(1));
             else this.minecraft.player.connection.sendChat(string);
         }

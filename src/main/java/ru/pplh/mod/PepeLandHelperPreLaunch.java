@@ -69,7 +69,7 @@ public class PepeLandHelperPreLaunch implements PreLaunchEntrypoint  {
                         if(downloaded) {
                             LOG.log("Файл загружен");
                             String message = "Обновление l;ajksda было успешно загружено!\nБудьте добры, перезагрузите игру.\n\nChange-log:\n- ladlkajdljasldad\n- s;kljda;ldasl;dja\n- l;69696969";
-                            TinyFileDialogs.tinyfd_messageBox("????Land Helper | lhafdals;l;hasfd", message, "ok", "info", false);
+                            TinyFileDialogs.tinyfd_messageBox("????Land Helper | lhafdals;l;hasfd", message, "ok", "info", 0);
                             System.exit(0);
                         }
                     } catch (Exception e) {
@@ -80,7 +80,7 @@ public class PepeLandHelperPreLaunch implements PreLaunchEntrypoint  {
             if(april.isPresent()){
                 try {
                     april.get().getOrigin().getPaths().getFirst().toFile().delete();
-                    TinyFileDialogs.tinyfd_messageBox("PepeLand Helper", "Перезагрузите игру, пожалуйста.", "ok", "info", false);
+                    TinyFileDialogs.tinyfd_messageBox("PepeLand Helper", "Перезагрузите игру, пожалуйста.", "ok", "info", 0);
                     System.exit(0);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
@@ -108,7 +108,7 @@ public class PepeLandHelperPreLaunch implements PreLaunchEntrypoint  {
         }
 
         String message = "Обновление "+versionInfo.latestVersion+" было успешно загружено!\nБудьте добры, перезагрузите игру.\n\nChange-log:\n"+versionInfo.changelog;
-        TinyFileDialogs.tinyfd_messageBox("PepeLand Helper | Автообновление", message, "ok", "info", false);
+        TinyFileDialogs.tinyfd_messageBox("PepeLand Helper | Автообновление", message, "ok", "info", 0);
         System.exit(0);
     }
 

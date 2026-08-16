@@ -28,11 +28,11 @@ public class UpdaterScreen {
                 .setOnTick((s) -> {
                     if (isEmotes != PepeLandHelper.config.getBoolean("PACK_UPDATES.ONLY_EMOTE", false)) {
                         isEmotes = PepeLandHelper.config.getBoolean("PACK_UPDATES.ONLY_EMOTE", false);
-                        AlinLib.MINECRAFT.setScreen(build(parent));
+                        AlinLib.MINECRAFT.gui.setScreen(build(parent));
                     }
                     if (!packVersion.contains(PepeLandHelper.getInstalledPackVersion())) {
                         packVersion = PepeLandHelper.getInstalledPackVersion();
-                        AlinLib.MINECRAFT.setScreen(build(parent));
+                        AlinLib.MINECRAFT.gui.setScreen(build(parent));
                     }
                 })
                 .addPanelWidgets(PepeLandHelper.getPanelWidgets(parent, parent))
@@ -51,20 +51,20 @@ public class UpdaterScreen {
                     builder.addWidget(new TextBuilder(Component.translatable("pplhelper.pack.not_installed")));
                     builder.addWidget(new ButtonBuilder(Component.translatable("pplhelper.pack.download"), Component.literal("v" + pack.get("version").getAsString()))
                             .setOnPress((s) ->
-                                    AlinLib.MINECRAFT.setScreen(new DownloadScreen(build(parent), pack, PepeLandHelper.onlyEmotesCheck(), modrinth))
+                                    AlinLib.MINECRAFT.gui.setScreen(new DownloadScreen(build(parent), pack, PepeLandHelper.onlyEmotesCheck(), modrinth))
                             ).build());
                 } else {
                     builder.addWidget(new ButtonBuilder(Component.translatable("pplhelper.pack.not_selected")).setOnPress((s) -> {
                         AlinLib.MINECRAFT.getResourcePackRepository().addPack(PepeLandHelper.getAvailablePack());
                         AlinLib.MINECRAFT.options.updateResourcePacks(AlinLib.MINECRAFT.getResourcePackRepository());
-                        AlinLib.MINECRAFT.setScreen(parent);
+                        AlinLib.MINECRAFT.gui.setScreen(parent);
                     }));
                 }
             } else {
                 if (!pack.get("version").getAsString().equals(packVersion))
                     builder.addWidget(new ButtonBuilder(Component.translatable("pplhelper.pack.download_update"), Component.literal("v" + pack.get("version").getAsString()))
                             .setOnPress((s) ->
-                                    AlinLib.MINECRAFT.setScreen(new DownloadScreen(build(parent), pack, PepeLandHelper.onlyEmotesCheck(), modrinth))
+                                    AlinLib.MINECRAFT.gui.setScreen(new DownloadScreen(build(parent), pack, PepeLandHelper.onlyEmotesCheck(), modrinth))
                             ).build());
                 builder.addWidget(new ButtonBuilder(Component.translatable("pplhelper.pack.installed"), Component.literal("v" + packVersion)).setActive(false));
             }

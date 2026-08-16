@@ -8,10 +8,12 @@ package ru.pplh.mod.gui.components;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import ru.kelcuprum.alinlib.AlinLib;
@@ -52,7 +54,7 @@ public class VerticalConfigureScrolWidget extends AbstractWidget {
         this.onScroll.accept(this);
     }
 
-    protected void renderBackground(GuiGraphics guiGraphics) {
+    protected void renderBackground(GuiGraphicsExtractor guiGraphics) {
         if (this.scrollbarVisible()) {
             guiGraphics.fill(this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.getHeight(), 1962934272);
         }
@@ -67,7 +69,7 @@ public class VerticalConfigureScrolWidget extends AbstractWidget {
         return Mth.clamp((int)((float)(this.width * this.width) / (float)this.getContentHeight()), 16, this.width);
     }
 
-    protected void renderDecorations(GuiGraphics guiGraphics) {
+    protected void renderDecorations(GuiGraphicsExtractor guiGraphics) {
         if (this.scrollbarVisible()) {
             int i = this.getScrollBarHeight();
             int k = Math.max(this.getX(), (int)this.scrollAmount() * (this.width - i) / this.getMaxScrollAmount() + this.getX());
@@ -135,12 +137,12 @@ public class VerticalConfigureScrolWidget extends AbstractWidget {
         }
     }
 
-    public boolean mouseReleased(double d, double e, int i) {
-        if (i == 0) {
+    public boolean mouseReleased(MouseButtonEvent m) {
+        if (m.button() == 0) {
             this.scrolling = false;
         }
 
-        return super.mouseReleased(d, e, i);
+        return super.mouseReleased(m);
     }
 
     public boolean mouseDragged(double d, double e, int i, double f, double g) {
@@ -165,9 +167,9 @@ public class VerticalConfigureScrolWidget extends AbstractWidget {
         return d >= (double)this.getX() && d < (double)(this.getX() + this.width) && e >= (double)this.getY() && e < (double)(this.getY() + this.height);
     }
 
-    public boolean keyPressed(int i, int j, int k) {
-        boolean bl = i == 265;
-        boolean bl2 = i == 264;
+    public boolean keyPressed(KeyEvent key) {
+        boolean bl = key.key() == 265;
+        boolean bl2 = key.key() == 264;
         if (bl || bl2) {
             double d = this.scrollAmount;
             this.setScrollAmount(this.scrollAmount + (double)(bl ? -1 : 1) * this.scrollRate());
@@ -176,10 +178,10 @@ public class VerticalConfigureScrolWidget extends AbstractWidget {
             }
         }
 
-        return super.keyPressed(i, j, k);
+        return super.keyPressed(key);
     }
 
-    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+    public void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
         if (AlinLib.bariumConfig.getBoolean("SCROLLER.SMOOTH", false)) {
             this.checkOutOfBounds(delta);
             if (Math.abs(scrollbarVelocity(this.animationTimer, this.scrollStartVelocity)) > (double)1.0F) {

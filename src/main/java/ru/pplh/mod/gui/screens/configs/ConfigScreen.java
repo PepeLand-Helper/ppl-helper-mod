@@ -27,24 +27,24 @@ public class ConfigScreen {
         this.parent = parent;
         ConfigScreenBuilder builder = new ConfigScreenBuilder(parent, Component.translatable("pplhelper"))
                 .setIcon(WHITE_PEPE)
-                .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.configs")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ConfigScreen().build(parent))).setIcon(OPTIONS))
-                .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.configs.chat")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new ChatConfigsScreen().build(parent))).setIcon(LIST));
+                .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.configs")).setOnPress((s) -> AlinLib.MINECRAFT.gui.setScreen(new ConfigScreen().build(parent))).setIcon(OPTIONS))
+                .addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.configs.chat")).setOnPress((s) -> AlinLib.MINECRAFT.gui.setScreen(new ChatConfigsScreen().build(parent))).setIcon(LIST));
         if (!FabricLoader.getInstance().getModContainer("alinlib").get().getMetadata().getVersion().getFriendlyString().startsWith("2.1.0-alpha"))
-            builder.addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.configs.stealth.title")).setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new StealthScreen().build(parent))).setIcon(INVISIBILITY));
+            builder.addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.configs.stealth.title")).setOnPress((s) -> AlinLib.MINECRAFT.gui.setScreen(new StealthScreen().build(parent))).setIcon(INVISIBILITY));
         if (PepeLandHelper.isTestSubject())
-            builder.addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.test"), (s) -> AlinLib.MINECRAFT.setScreen(new TestConfigScreen().build(parent))).setIcon(CLOWNFISH));
+            builder.addPanelWidget(new ButtonBuilder(Component.translatable("pplhelper.test"), (s) -> AlinLib.MINECRAFT.gui.setScreen(new TestConfigScreen().build(parent))).setIcon(CLOWNFISH));
         if (PepeLandHelper.isTestSubject()) {
             builder.addPanelWidget(new ButtonBuilder(Component.literal("Crash me!")).setIcon(DONT).setOnPress((s) -> {
                 try {
                     throw new RuntimeException("Эта карусель крутится и никогда не остановится!");
                 } catch (Exception ex) {
-                    AlinLib.MINECRAFT.setScreen(new ErrorScreen(ex, AlinLib.MINECRAFT.screen));
+                    AlinLib.MINECRAFT.gui.setScreen(new ErrorScreen(ex, AlinLib.MINECRAFT.gui.screen()));
                 }
             })).addPanelWidget(new ButtonBuilder(Component.literal("Crash me! (без exception)")).setIcon(DONT).setOnPress((s) -> {
                 try {
                     throw new RuntimeException("Эта карусель крутится и никогда не остановится!");
                 } catch (Exception ex) {
-                    AlinLib.MINECRAFT.setScreen(new ErrorScreen(AlinLib.MINECRAFT.screen));
+                    AlinLib.MINECRAFT.gui.setScreen(new ErrorScreen(AlinLib.MINECRAFT.gui.screen()));
                 }
             }));
         }

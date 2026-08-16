@@ -3,7 +3,7 @@
   "name": "PepeLand Helper",
   "id": "pplhelper",
   "version": "${version}",
-  "description": "Проект направленный на помощь игроку в ориентировании на сервере",
+  "description": "Проект направленный на помощь игроку в ориентировании на сервере.\n\n⚠ Данный проект не является официальной частью сети серверов PepeLand.",
   "authors": [
     "Kel Cuprum"
   ],
@@ -36,7 +36,6 @@
   "icon": "assets/pplhelper/icon.png",
   "depends": {
     "fabricloader": "*",
-    "fabric": "*",
     "alinlib": "*",
     "minecraft": "${minecraft_dependency}"
   },

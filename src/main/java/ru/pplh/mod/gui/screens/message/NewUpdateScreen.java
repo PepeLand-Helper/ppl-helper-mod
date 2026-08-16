@@ -1,7 +1,7 @@
 package ru.pplh.mod.gui.screens.message;
 
 import com.google.gson.JsonObject;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import ru.kelcuprum.alinlib.AlinLib;
@@ -29,11 +29,11 @@ public class NewUpdateScreen extends Screen {
         msg = (TextBox) addRenderableOnly(new TextBuilder( Component.translatable("pplhelper.pack.update.avalible.description", oldVer, pack.get("version").getAsString()))
                 .setType(TextBuilder.TYPE.MESSAGE).setAlign(TextBuilder.ALIGN.CENTER).setPosition(width/2-125, 40).setSize(250, 40).build());
         addRenderableWidget(new ButtonBuilder(Component.translatable("pplhelper.pack.update.avalible.accept"))
-                .setOnPress((s) -> AlinLib.MINECRAFT.setScreen(new DownloadScreen(parent, pack, PepeLandHelper.onlyEmotesCheck(), modrinth)))
+                .setOnPress((s) -> AlinLib.MINECRAFT.gui.setScreen(new DownloadScreen(parent, pack, PepeLandHelper.onlyEmotesCheck(), modrinth)))
                 .setPosition(width/2-150, height-50).setWidth(148).build());
         addRenderableWidget(new ButtonBuilder(Component.translatable("pplhelper.pack.update.avalible.auto"))
                 .setOnPress((s) -> {
-                    AlinLib.MINECRAFT.setScreen(new DownloadScreen(parent, pack, PepeLandHelper.config.getBoolean("PACK_UPDATES.ONLY_EMOTE", false), modrinth));
+                    AlinLib.MINECRAFT.gui.setScreen(new DownloadScreen(parent, pack, PepeLandHelper.config.getBoolean("PACK_UPDATES.ONLY_EMOTE", false), modrinth));
                     PepeLandHelper.config.setBoolean("PACK_UPDATES.AUTO_UPDATE", true);
                 })
                 .setPosition(width/2-150, height-25).setWidth(148).build());
@@ -46,14 +46,14 @@ public class NewUpdateScreen extends Screen {
     }
 
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
-        super.renderBackground(guiGraphics, i, j, f);
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
+        super.extractBackground(guiGraphics, i, j, f);
         guiGraphics.fillGradient(0, 0, this.width, this.height, 0x7F0A2725, 0x7F134E4A);
     }
 
     @Override
     public void onClose() {
         assert this.minecraft != null;
-        this.minecraft.setScreen(parent);
+        this.minecraft.gui.setScreen(parent);
     }
 }
